@@ -1,0 +1,196 @@
+{
+  "score": 1,
+  "extracted_answer": "34.3",
+  "task_id": "15",
+  "question": "阿里巴巴成立时，18位创始团队成员中，姓马、姓蔡、姓张的创始人的平均年龄，保留一位小数",
+  "full_query": "阿里巴巴成立时，18位创始团队成员中，姓马、姓蔡、姓张的创始人的平均年龄，保留一位小数",
+  "golden_answer": "34.3",
+  "status": "success",
+  "agent_result": "阿里巴巴成立时（1999年），18位创始团队成员中姓马（马云）、姓蔡（蔡崇信）、姓张（张瑛）的创始人的平均年龄为34.3岁。",
+  "agent_trajectory": [
+    {
+      "name": "plan",
+      "value": "## Goal 1: 确定阿里巴巴18位创始人的完整名单（十八罗汉）\n- Path 1.1: 中文关键词广度搜索\n  - Success: 使用中文关键词如“阿里巴巴十八罗汉 完整名单”“阿里18罗汉 姓名”进行web_search，从百度百科、搜狐、网易等中文网站提取至少18个姓名的列表，并记录来源URL。\n- Path 1.2: 英文关键词广度搜索\n  - Success: 使用英文关键词如“Alibaba 18 founders list”“Alibaba 18 arhats”进行web_search，从维基百科、TechCrunch、Business Insider等英文媒体获取名单，与中文来源交叉验证。\n- Path 1.3: 深度爬取权威百科页面\n  - Success: 对搜索得到的百度百科“阿里巴巴十八罗汉”词条、维基百科“Alibaba Group”页面等使用crawl_page工具，结构化提取所有创始人的姓名和简要信息，确保名单完整（18人）且无遗漏。\n\n## Goal 2: 提取姓马、蔡、张的创始人的出生年份/出生日期\n- Path 2.1: 逐人精确搜索\n  - Success: 从名单中筛选出姓马（如马云、马？）、姓蔡（蔡崇信）、姓张（如张瑛、张？）的创始人，对每个人单独使用web_search（如“马云 出生年份”“蔡崇信 出生日期”“张瑛 出生日期”），优先从百度百科人物词条、维基百科人物页面获取出生日期，并记录。\n- Path 2.2: 组合关键词批量搜索\n  - Success: 使用组合关键词如“阿里巴巴 创始团队 马姓 蔡姓 张姓 出生年份”“Alibaba founders Ma Cai Zhang birth year”进行web_search，直接提取搜索结果摘要中的年份信息，快速获取初步数据，并记录来源。\n- Path 2.3: 深度爬取人物传记或专访文章\n  - Success: 针对存在歧义（如农历/公历、多个同名人物）或数据缺失的情况，使用crawl_page爬取权威人物传记（如《阿里巴巴：马云和他的102年梦想》章节、官方传记网页）或深度专访文章，核实准确的出生日期。\n\n## Goal 3: 计算平均年龄并验证数据可靠性\n- Path 3.1: 基于出生年份计算1999年年龄并求平均\n  - Success: 利用Path 2获得的每个创始人出生年份，计算1999年时的年龄（1999 - 出生年份），对姓马、蔡、张的所有创始人年龄求和后除以人数，结果保留一位小数。如有出生月日信息，需确认是否在1999年时已过生日（若未过生日则年龄减1），但任务仅要求年龄，可统一按年份计算。\n- Path 3.2: 多来源交叉验证\n  - Success: 对比至少两个独立来源（如百度百科与维基百科、官方传记与新闻稿）的年龄数据，若存在差异（超过0.5岁），则补充搜索更权威资料（如人物专访、公司官网历史档案）进行核实，修正不一致的数据，并重新计算平均年龄。\n- Path 3.3: 利用直接年龄摘要验证\n  - Success: 若搜索摘要直接显示“马云1999年时35岁”等年龄信息，则直接采纳并与Path 3.1计算结果比对，确保一致性。同时留意是否有同名或年龄歧义（如使用虚岁），最终以权威来源的公历周岁为准。",
+      "think": "",
+      "cot_think": "我们被要求规划如何完成这个任务。任务：阿里巴巴成立时（1999年），18位创始团队成员中，姓马、姓蔡、姓张的创始人的平均年龄，保留一位小数。我们需要先分解目标，然后设计路径。注意：不是直接执行，而是规划。输出格式：Goal 1, Goal 2等，每个Goal有多个Path。\n\n根据记忆系统指导，我们需要找到阿里巴巴18位创始人（十八罗汉）名单，从中筛选姓马、蔡、张的，获取他们的出生年份或年龄，计算平均年龄（1999年时的年龄），保留一位小数。需要并行搜索，中英文关键词，对比来源等。\n\n我们可以分解为几个目标：\nGoal 1: 获取完整18位创始人的名单及出生年份（或出生日期）。\nGoal 2: 从名单中筛选出姓马、蔡、张的成员，并确认他们的具体出生信息。\nGoal 3: 计算平均年龄（1999年年龄）并验证数据准确性。\n\n每个目标可以有多个路径。注意路径之间是顺序执行（每个Goal内的路径顺序），但Goal之间并行。我们设计路径时要考虑使用工具：web_search, crawl_page等。\n\n我们需要规划如何搜索、爬取、验证。\n\n让我们细化：\n\nGoal 1: 确定阿里巴巴18位创始人的完整名单（十八罗汉）。\n- Path 1.1: 使用中文关键词搜索“阿里巴巴十八罗汉 完整名单”或“阿里18罗汉 姓名”，从百度百科等站点获取列表。\n  - Success: 获得至少包含18个名字的列表。\n- Path 1.2: 使用英文关键词搜索“Alibaba 18 founders list”或“Alibaba 18 arhats”，从维基百科或英文媒体报道获取名单。\n  - Success: 获得一致的名单。\n- Path 1.3: 直接爬取百度百科“阿里巴巴十八罗汉”词条，获取表格或列表。\n  - Success: 准确提取所有名字。\n\nGoal 2: 获取姓马、蔡、张的创始人的出生年份或出生日期。\n- Path 2.1: 从已获取的名单中，针对每个姓马、蔡、张的人，单独搜索其出生年份（如“马云 出生年份”、“蔡崇信 出生日期”、“张瑛 出生日期”等），从百度百科或权威资料获取。\n  - Success: 获得每个相关创始人的出生年份（或出生日期），并确认一致性。\n- Path 2.2: 使用组合搜索“阿里巴巴 马 蔡 张 年龄 1999”或“Alibaba founders Ma Cai Zhang birth year”，快速抓取摘要信息。\n  - Success: 获取到每个的出生年份。\n- Path 2.3: 若存在年龄歧义（如农历公历），则进一步爬取具体传记文章验证。\n  - Success: 得到准确出生日期。\n\nGoal 3: 计算平均年龄并验证数据准确性。\n- Path 3.1: 使用出生年份计算1999年时的年龄（1999 - 出生年份），然后求平均，保留一位小数。检查是否有人的出生年份缺失或明显错误。\n  - Success: 计算结果。\n- Path 3.2: 交叉验证至少两个独立来源（如百度百科和维基百科）的年龄数据，若不一致，补充搜索更权威资料（如官方传记、专访）进行核实，修正后重新计算。\n  - Success: 得到一致的平均年龄。\n- Path 3.3: 如果搜索摘要直接给出了1999年时的年龄，则直接使用并验证。\n  - Success: 年龄数据可靠。\n\n注意：这些Goal在规划中是并行的，但具体执行时我们可以先执行Goal1得到名单，然后Goal2计算年龄，Goal3计算平均值。但我们作为规划，可以并行描述。\n\n另外，记忆系统也提到：若搜索摘要直接显示年龄，可直接计算。注意同名或年龄歧义。\n\n最终输出要清晰。",
+      "memory_guidance": "AGENT-KB Student Guidance:\n1. 先明确阿里巴巴18位创始人的完整名单（可参考“阿里巴巴十八罗汉”相关百科或报道），再从中筛选出姓马、蔡、张的成员，分别确认其出生年份或成立时的年龄，最后计算平均值并保留一位小数。  \n2. 同时使用中英文多组关键词并行搜索，例如“阿里巴巴十八罗汉 姓名 出生日期”“Alibaba 18 founders Ma Cai Zhang birth year”，以快速覆盖百科、权威传记和新闻报道等不同来源。  \n3. 对比至少两个独立来源（如百度百科与维基百科，或官方传记与新闻稿）的年龄数据，若存在差异，再补充搜索更权威的资料（如人物传记、专访文章）进行核实，确保数据准确。\n\nAGENT-KB Teacher Guidance:\n在查询阿里巴巴18位创始团队成员中姓马、姓蔡、姓张的年龄时，建议优先使用精确关键词组合（如“阿里巴巴18罗汉 马 蔡 张 年龄”或“阿里巴巴创始团队 马姓 蔡姓 张姓 出生年份”）进行广度搜索，快速获取百度百科、维基百科等结构化页面；然后对高置信度来源进行深度爬取，提取每位创始人的出生日期并计算成立时（1999年）的年龄，注意交叉验证不同来源的数字是否一致，并优先采用官方传记或权威百科的数据。若搜索摘要显示“马云 1964年”等具体信息，可直接利用摘要计算年龄，同时留意是否存在同名或年龄歧义（如农历/公历），最终保留一位小数。"
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "阿里巴巴十八罗汉 完整名单"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "Alibaba 18 founders list"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "马云 出生年份"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "蔡崇信 出生年份"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "张瑛 出生年份"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '阿里巴巴十八罗汉 完整名单'}':\n1. [详解阿里27名合伙人大名单 - 新浪](http://d.tech.sina.com.cn/contribute/post/detail/i/2014-06-16/pid_8454993.htm?_m=wap)\nDate published: Jun 16, 2014\nSource: Unknown source\n   在合伙人名单中，程立、刘振飞、王坚、姜鹏和吴泳铭、张建锋都是“技术派”出身，占到大名单的超过五分之一。在他们当中，吴泳铭是十八罗汉之一，属于创始团队， ...\n\n2. [马云已是首富,当年的18罗汉今何在?](https://m.sohu.com/n/457643530/?wscrid=32576_4)\nDate published: Jul 4, 2016\nSource: Unknown source\n   十八罗汉”当中有7人进入名单,分别是马云、蔡崇信、吴咏铭、彭蕾、戴姗、金建杭和蒋芳。 被外界称之为“十八罗汉”。\n\n3. [阿里巴巴初创时的十八罗汉与上市时的三十合伙人 - 搜狐](https://www.sohu.com/a/303320195_99935476)\nDate published: Mar 23, 2019\nSource: Unknown source\n   1. 张瑛. 马云妻子，202室房主。 · 2. 孙彤宇. 花名财神，前淘宝网总裁。 · 3. 彭蕾. 彭蕾毕业于杭州商学院（现浙江工商大学），在浙江财经学院（现浙江财经大学） ...\n\n4. [今夜无眠！18年过去，阿里的“十八罗汉”今安在](https://zhuanlan.zhihu.com/p/29177293)\nDate published: Sep 8, 2017\nSource: Unknown source\n   阿里巴巴的创始团队“十八罗汉”当中，担任合伙人的有7位，占到合伙人大名单的近四分之一。留在合伙人名单上的这7个人是：马云、蔡崇信、吴咏铭、彭蕾、戴姗、 ...\n\n5. [阿里巴巴上市的前夜最初十八罗汉今何在？ - 凤凰网陕西](http://sn.ifeng.com/caijing/detail_2014_07/18/2614818_0.shtml)\nDate published: Jul 18, 2014\nSource: Unknown source\n   而将阿里巴巴引入“合伙人时代”后，“十八罗汉”中有11位，无缘象征阿里权利中枢的“合伙人名单”。他们中有的留学国外“深造”、有的退居台后相夫教子、有仍在阿里 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'Alibaba 18 founders list'}':\n1. [Meet the 18 original founders of Alibaba - Yahoo News Singapore](https://sg.news.yahoo.com/meet-18-original-founders-alibaba-052039728.html)\nDate published: Oct 18, 2018\nSource: Unknown source\n   Jack Ma is the founder and chairman of Alibaba Group, but it is a little-known fact that the company has actually 17 other co-founders.\n\n2. [Alibaba Group - Wikipedia](https://en.wikipedia.org/wiki/Alibaba_Group)\nSource: Unknown source\n   SoftBank Group (11.9%) · The Vanguard Group (13.39%) · BlackRock (3.02%) · Norges Bank (1.99%) · APN Ltd (1.4%) · Joseph Tsai (1.31%) · Pzena Investment Management ( ...\n\n3. [How Jack Ma Built Alibaba with His 18 Founders - EasyStore](https://blog.easystore.co/en-us/how-jack-ma-built-alibaba)\nDate published: Apr 16, 2025\nSource: Unknown source\n   Discover how Jack Ma built Alibaba with 17 diverse co-founders and the powerful networking lessons behind the e-commerce giant's rise.\n\n4. [Introduction to Alibaba Group](https://www.alibabagroup.com/about-alibaba)\nSource: Unknown source\n   Alibaba Group was established in 1999 by 18 people led by Jack Ma, a former English teacher from Hangzhou, China. From the outset, the company's founders ...\n\n5. [Jack Ma co-founded Alibaba with 17 other people. Here are their ...](https://www.techinasia.com/talk/jack-ma-17-alibaba-co-founders)\nDate published: Sep 25, 2018\nSource: Unknown source\n   We at iPrice Group embarked on a research to uncover the 18 founding members of Alibaba Group and summarized our findings in an infographic.\n\nResults for tool call 'web_search' with arguments '{'query': '马云 出生年份'}':\n1. [馬雲- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E9%A9%AC%E4%BA%91)\nSource: Unknown source\n   馬雲（1964年9月10日—），字天行，祖籍浙江嵊州，生於浙江杭州，中國大陸企業家，原阿里巴巴集團董事局主席，阿里巴巴、淘寶網、支付寶（螞蟻集團）的創始人，大自然保護協會大 ...\n\n2. [马云_百度百科](https://baike.baidu.com/item/%E9%A9%AC%E4%BA%91/6252)\nSource: Unknown source\n   马云，1964年9月10日出生于浙江杭州，祖籍浙江省嵊县（现嵊州市）谷来镇，汉族，中共党员，阿里巴巴主要创始人之一，阿里巴巴原首席执行官（CEO）、董事局原主席，中国人民政治协商 ...\n\n3. [马云已识乾坤大犹怜草木青 - 中国民航网](http://www.caacnews.com.cn/special/4260/4992/ggkf40nlm5/201812/t20181210_1262579.html)\nSource: Unknown source\n   早些年那些事第一份工作是教师1964年9月10日,马云出生于浙江省杭州市。小时候的马云是个顽童,成绩让老师很头痛,大学也是考了3次才\n\n4. [马云- MBA智库百科](https://wiki.mbalib.com/wiki/%E9%A9%AC%E4%BA%91)\nSource: Unknown source\n   马云(Jack ma),1964年10月出生,浙江杭州人。 1964年10月出生于杭州。 1988年毕业于杭州师范学院英语专业,之后任教于杭州电子工学院。 元坤,出生于1992年。\n\n5. [从高考落榜生到科技大佬，马云用19年讲了一个好莱坞故事 - 搜狐](https://www.sohu.com/a/257579103_117195)\nDate published: Oct 3, 2018\nSource: Unknown source\n   1964年9月10日，马云出生于中国浙江省杭州市一个贫困家庭。来自海外媒体的报道称，读小学时候的他在学校里很挣扎，在接受采访时曾表示，自己曾被美国哈佛 ...\n\nResults for tool call 'web_search' with arguments '{'query': '蔡崇信 出生年份'}':\n1. [蔡崇信_百度百科](https://baike.baidu.com/item/%E8%94%A1%E5%B4%87%E4%BF%A1/8995884)\nSource: Unknown source\n   蔡崇信（Joseph Tsai），男，1964年出生于中国台湾，加拿大籍，祖籍浙江省湖州市南浔区双林镇，耶鲁经济学及东亚研究学士学位、法学博士学位，具有美国纽约州执业律师资格，现任 ...\n\n2. [蔡崇信-阿里巴巴集團 - Alibaba Group](https://www.alibabagroup.com/zh-HK/about-alibaba-leadership-1493301768354791424)\nSource: Unknown source\n   蔡崇信於1999年加入阿里巴巴集團，為公司創始人之一，自公司成立以來一直為董事會成員。他曾擔任首席財務官至2013年，並擔任執行副主席至2023年9月，目前擔任阿里巴巴集團 ...\n\n3. [蔡崇信，马云背后的男人，阿里2号人物](https://m.shenkexin.com/news/info-learning-12545.html)\nDate published: Nov 20, 2024\nSource: Unknown source\n   蔡崇信，祖籍浙江省湖州，1964年出生于台湾，1990年拿到耶鲁法学院法学博士学位。 从耶鲁毕业后，蔡崇信先是在纽约做税务律师，三年后进入私募股权行业，1995年 ...\n\n4. [阿里巴巴新任掌门履历：蔡崇信（Joseph Tsai，1964年-） - 雪球](https://xueqiu.com/3385563170/253690393)\nDate published: Jun 20, 2023\nSource: Unknown source\n   阿里巴巴新任掌门履历：蔡崇信（Joseph Tsai，1964年-），企业家，出生于中国台北市，毕业于耶鲁大学，加拿大籍华人，阿里巴巴集团的创办人之一[1]，现任阿里 ...\n\n5. [蔡崇信- 維基百科，自由嘅百科全書](https://zh-yue.wikipedia.org/wiki/%E8%94%A1%E5%B4%87%E4%BF%A1)\nSource: Unknown source\n   蔡崇信（英文：Joseph Tsai ，暱稱Joe Tsai ，1964年 1月1號 — ），台 ... 1964年1月1號，蔡崇信喺臺北市出生，曾就讀臺北私立復興小學、中學，13歲時，移民 ...\n\nResults for tool call 'web_search' with arguments '{'query': '张瑛 出生年份'}':\n1. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103)\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。 张瑛和马云是杭州师范大学的校友。张瑛毕业后，与马云正式 ...\n\n2. [張瑛- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E5%BC%B5%E7%91%9B)\nSource: Unknown source\n   張瑛(1919年1月25日—1984年12月14日), 出生 (1919-01-25)1919年1月25日英屬香港逝世1984年12月14日(1984-12-14)(65歲)\n\n3. [[PDF] 張瑛（1919–1984.12.14） 演員、導演福建人 - 香港電影資料館](https://www.filmarchive.gov.hk/documents/6.-Research-and-Publication/06-02-Filmmakers-Search/Chinese/Cheung-Ying_c.pdf)\nSource: Unknown source\n   張瑛（1919–1984.12.14）. 演員、導演. 福建人，香港出生，原名張益生。因在家中排行第十四，人稱「十四哥」，有「千. 面小生」之稱。曾於華仁書院就讀，早年醉心演藝，得 ...\n\n4. [张瑛（阿里巴巴创始人之一，马云的妻子） - 经历网](https://www.jili20.com/article/1716463846580817921)\nDate published: Mar 9, 2026\nSource: Unknown source\n   出生于浙江绍兴嵊州市甘霖镇,毕业于杭州师范大学,阿里巴巴创始人之一、马云的妻子。 1966年,我出生在浙江绍兴,嵊\n\n5. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3500)\nSource: Unknown source\n   张瑛（1919年1月25日—1984年），原名张溢生，出生于中国香港，就读于华仁书院，中国香港男演员、因家族排行第十四被称“十四叔”。张瑛于1937年进入影坛，与吴楚帆、张活游、李 ...",
+      "think": "The task requires computing the average age (at founding 1999) of founders with surnames Ma, Cai, Zhang among Alibaba's 18 founders. I need to first obtain the complete list of 18 founders (Goal 1) and then extract birth years for the specific surnames (Goal 2). Since these goals are independent, I will execute them in parallel. For Goal 1, I start with Chinese and English keyword searches (Paths 1.1 and 1.2). For Goal 2, I start with individual searches for the three expected surnames (Ma Yun, Cai Chongxin, Zhang Ying) and a combined keyword search (Paths 2.1 and 2.2). I'll use 5 parallel searches to cover both goals simultaneously.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://sg.news.yahoo.com/meet-18-original-founders-alibaba-052039728.html",
+            "query": "List all 18 original founders of Alibaba with their full names"
+          }
+        },
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103",
+            "query": "张瑛 出生日期 出生年份"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://sg.news.yahoo.com/meet-18-original-founders-alibaba-052039728.html', 'query': 'List all 18 original founders of Alibaba with their full names'}':\nBased on the provided web page content, the following 12 original founders of Alibaba are explicitly named. The page does not list the remaining 6 founders.\n\n- **Jack Ma** (founder and chairman)\n- **Jin Jianhang** (President, Alibaba Group)\n- **Joseph Tsai** (Executive Vice Chairman)\n- **Lucy Peng** (CEO, Lazada)\n- **Cathy Zhang** (full-time homemaker, married to Jack Ma)\n- **Eddie Wu** (Chairman, AliHealth)\n- **James Sheng** (Managing Director, Alibaba Singapore)\n- **Simon Xie** (Vice President, Alibaba China Investment Team)\n- **Lou Wensheng** (no current role specified)\n- **Jin Yuanying** (no current role specified)\n- **Zhou Yuehong** (no current role specified)\n- **Shi Yufeng** (no current role specified)\n\nThe article mentions that there are 17 co-founders plus Jack Ma, but only these 12 individuals are identified by name.\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103', 'query': '张瑛 出生日期 出生年份'}':\nNo relevant information",
+      "think": "We have partial data. We need to confirm the full list of 18 founders and specifically the birth year of 张瑛 (the only 张姓 founder). Also, verify if there are any other 马姓 or 蔡姓 founders besides 马云 and 蔡崇信. I will crawl two sources in parallel: one that reliably lists all 18 founders (e.g., a known article), and the 张瑛百度百科 page to extract her birth year. This advances Goal 1 (full list) and Goal 2 (birth year extraction) simultaneously.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "阿里巴巴十八罗汉 全部名单 18人"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "张瑛 阿里巴巴 出生 1966"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "Alibaba 18 co-founders complete list names"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '阿里巴巴十八罗汉 全部名单 18人'}':\n1. [详解阿里27名合伙人大名单 - 新浪](http://d.tech.sina.com.cn/contribute/post/detail/i/2014-06-16/pid_8454993.htm?_m=wap)\nDate published: Jun 16, 2014\nSource: Unknown source\n   时间过去14年，18罗汉中的大部分人还留在公司。同时，留在合伙人名单上的有7人：马云、蔡崇信、吴咏铭、彭蕾、戴姗、金建杭和蒋芳。\n\n2. [阿里巴巴上市的前夜最初十八罗汉今何在？ - 凤凰网陕西](http://sn.ifeng.com/caijing/detail_2014_07/18/2614818_0.shtml)\nDate published: Jul 18, 2014\nSource: Unknown source\n   而将阿里巴巴引入“合伙人时代”后，“十八罗汉”中有11位，无缘象征阿里权利中枢的“合伙人名单”。他们中有的留学国外“深造”、有的退居台后相夫教子、有仍在阿里 ...\n\n3. [今夜无眠！18年过去，阿里的“十八罗汉”今安在](https://zhuanlan.zhihu.com/p/29177293)\nDate published: Sep 8, 2017\nSource: Unknown source\n   阿里巴巴的创始团队“十八罗汉”当中，担任合伙人的有7位，占到合伙人大名单的近四分之一。留在合伙人名单上的这7个人是：马云、蔡崇信、吴咏铭、彭蕾、戴姗、 ...\n\n4. [马云已是首富,当年的18罗汉今何在?](https://m.sohu.com/n/457643530/?wscrid=32576_4)\nDate published: Jul 4, 2016\nSource: Unknown source\n   在阿里合伙人名单中，“十八罗汉”当中有7人进入名单，分别是马云、蔡崇信 ... 再到如今，阿里巴巴在全球的离职员工甚至已经超过了6万人。不论如何 ...\n\n5. [最年轻的“十八罗汉”，阿里巴巴的新CEO](https://www.jfdaily.com/wx/detail.do?id=655445)\nDate published: Sep 15, 2023\nSource: Unknown source\n   除马云外，18名合伙人里既有蔡崇信，也有吴泳铭，他们既是阿里巴巴的创始人，也是最早的一批员工，吴泳铭同时还是公司第一代程序员。 在阿里，吴泳铭的花名是“东 ...\n\nResults for tool call 'web_search' with arguments '{'query': '张瑛 阿里巴巴 出生 1966'}':\n1. [张瑛（阿里巴巴创始人之一，马云的妻子） - 经历网](https://www.jili20.com/article/1716463846580817921)\nDate published: Mar 9, 2026\nSource: Unknown source\n   1966年，我出生在浙江绍兴，嵊州很多人说我是典型的江南女子，长得清秀，性格也温顺。毕业后，我考上了杭州师范学院，在那里我遇见了一个颠覆我认知的师兄马云， ...\n\n2. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103)\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。张瑛和马云是杭州师范大学的校友。张瑛毕业后，与马云正式步入婚姻殿堂 ...\n\n3. [阿里巴巴创始团队'马蔡张'成员平均年龄揭秘- U深搜 - UniFuncs](https://unifuncs.com/s/qeFE4FPd)\nSource: Unknown source\n   注意事项：张瑛的出生年份信息虽然多个来源一致指向1966年，但缺乏权威官方来源的明确记录。马云和蔡崇信的出生年份信息则有多个权威来源交叉验证。\n\n4. [张瑛马云老婆几月出生 - 抖音](https://www.douyin.com/search/%E5%BC%A0%E7%91%9B%E9%A9%AC%E4%BA%91%E8%80%81%E5%A9%86%E5%87%A0%E6%9C%88%E5%87%BA%E7%94%9F)\nDate published: Apr 17, 2026\nSource: Unknown source\n   00:17 张瑛1966年出生在浙江绍兴嵊州市甘霖镇。 ... 1999年，马云率18人在杭州创立阿里巴巴，以B2B电商起步。2003年推淘宝、2004年上线支付宝，击败eBay、重构 ...\n\n5. [为什么我们不知道马云的老婆孩子长啥样？叫什么？ ？ - 知乎](https://www.zhihu.com/question/35701522)\nDate published: Sep 17, 2015\nSource: Unknown source\n   张瑛，1966年出生于浙江绍兴的一个普通家庭，后在杭州师范学院求学。 不要小看了这个杭州师范学院，说它是现在的985也 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'Alibaba 18 co-founders complete list names'}':\n1. [Meet the 18 original founders of Alibaba - Yahoo News Singapore](https://sg.news.yahoo.com/meet-18-original-founders-alibaba-052039728.html)\nDate published: Oct 18, 2018\nSource: Unknown source\n   Jack Ma is the founder and chairman of Alibaba Group, but it is a little-known fact that the company has actually 17 other co-founders.\n\n2. [Alibaba Group - Wikipedia](https://en.wikipedia.org/wiki/Alibaba_Group)\nSource: Unknown source\n   Alibaba's main co-founder Jack Ma served as the executive chairman of the Alibaba Group from its founding until 10 September 2019. Daniel Zhang succeeded Ma ...\n\n3. [How Jack Ma Built Alibaba with His 18 Founders - EasyStore](https://blog.easystore.co/en-us/how-jack-ma-built-alibaba)\nDate published: Apr 16, 2025\nSource: Unknown source\n   Networking Lessons from the Founder of E-commerce Giant, Alibaba Group · Lucy Peng · 1. Jack Ma – Executive Chairman, Alibaba Group · 2. Joseph ...\n\n4. [Jack Ma co-founded Alibaba with 17 other people. Here are their ...](https://www.techinasia.com/talk/jack-ma-17-alibaba-co-founders)\nDate published: Sep 25, 2018\nSource: Unknown source\n   And among the 18 co-founders are six women, including Lazada CEO Lucy Peng, who now hold top-level management roles. alibaba-founders. Alibaba ...\n\n5. [Jack Ma（the main founder of Alibaba Group, the former CEO of ...](https://baike.baidu.com/en/item/Jack%20Ma/979028)\nSource: Unknown source\n   Jack Ma appointed the 18 co-founders as team managers and hired vice presidents from Fortune 500 companies. Years later, reflecting on this period, Jack Ma ...",
+      "think": "I need to get the complete list of 18 founders (十八罗汉) to identify all with surnames Ma, Cai, Zhang. I also need to confirm 张瑛's birth year. Let me search for a more comprehensive list and also crawl the page that mentioned 张瑛 born 1966.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://www.techinasia.com/talk/jack-ma-17-alibaba-co-founders",
+            "query": "Complete list of all 18 co-founders with full names in English and Chinese"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "阿里巴巴十八罗汉 18人 姓名 马 蔡 张"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://www.techinasia.com/talk/jack-ma-17-alibaba-co-founders', 'query': 'Complete list of all 18 co-founders with full names in English and Chinese'}':\nError when executing tool crawl_page with arguments {'url': 'https://www.techinasia.com/talk/jack-ma-17-alibaba-co-founders', 'query': 'Complete list of all 18 co-founders with full names in English and Chinese'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string\n\nResults for tool call 'web_search' with arguments '{'query': '阿里巴巴十八罗汉 18人 姓名 马 蔡 张'}':\n1. [最年轻的“十八罗汉”，阿里巴巴的新CEO](https://www.jfdaily.com/wx/detail.do?id=655445)\nDate published: Sep 15, 2023\nSource: Unknown source\n   ·阿里巴巴初创时期的“十八罗汉”。 除马云外，18名合伙人里既有蔡崇信，也有吴泳铭，他们既是阿里巴巴的创始人，也是最早的一批员工，吴泳铭同时还是 ...\n\n2. [阿里巴巴创始十八罗汉的前世今生 - 知乎专栏](https://zhuanlan.zhihu.com/p/19600422)\nSource: Unknown source\n   十八罗汉之六：张瑛. 1988年在杭州师范学院（现杭州师范大学）英语专业毕业，随即与马云结婚。1999年随马云等18人团队创建阿里巴巴。现在家做全职太太，相夫教子。 个人 ...\n\n3. [【行业深度研究】阿里合伙人大瘦身，为何“十八罗汉”仅剩4人？](https://mp.ofweek.com/Internet/a456714915557)\nDate published: Jul 3, 2025\nSource: Unknown source\n   这次聚会集资50万元，成为阿里的启动资金。参会的十八人也被后来称为“阿里十八罗汉”。 参会的18人成了阿里的创始人，具体名单如下：马云、蔡崇信、张 ...\n\n4. [阿里巴巴上市的前夜最初十八罗汉今何在？ - 凤凰网陕西](http://sn.ifeng.com/caijing/detail_2014_07/18/2614818_0.shtml)\nDate published: Jul 18, 2014\nSource: Unknown source\n   阿里巴巴从最初的十八罗汉，到之后“马云杯酒释兵权”，请来外部职业经理人，让十八罗汉几乎纷纷下课，再到之后，外来职业经理人几乎又纷纷淹没，部分罗汉们重回 ...\n\n5. [接棒张勇，“十八罗汉”之一何许人也？ - 证券时报](https://www.stcn.com/article/detail/898213.html)\nDate published: Jun 21, 2023\nSource: Unknown source\n   或许外界不熟悉吴泳铭，但他对阿里人来说并不陌生。吴泳铭出生于1975年，是阿里巴巴的004号员工，同时也是阿里的第一名程序员，也因此被同行戏称为“圈内最富有 ...",
+      "think": "To calculate the average age of the founders with surnames Ma, Cai, and Zhang, we need the complete list of the 18 founders and their birth years. We have already found Ma Yun (1964), Cai Chongxin (1964), and Zhang Ying (1966). However, we must confirm if there are other founders with these surnames (e.g., another Ma or another Zhang). We need a reliable, complete list. Let's crawl the Yahoo News article and the Tech in Asia article to get the full names, and also search for a Chinese authoritative list.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://mp.ofweek.com/Internet/a456714915557",
+            "query": "具体名单 马云 蔡崇信 张 十八罗汉"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "张瑛 1966年 出生 阿里巴巴 创始人 百度百科"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://mp.ofweek.com/Internet/a456714915557', 'query': '具体名单 马云 蔡崇信 张 十八罗汉'}':\n根据搜索查询“具体名单 马云 蔡崇信 张 十八罗汉”，从网页内容中提取的相关信息如下：\n\n- **阿里“十八罗汉”完整名单**（1999年创业初始成员）：马云、蔡崇信、张瑛、孙彤宇、彭蕾、金建杭、吴泳铭、戴珊、蒋芳、盛一飞、谢世煌、楼文胜、麻长炜、金媛影、韩敏、周悦虹、师昱峰、饶彤彤。其中“张”指张瑛（马云妻子）。\n- **当前仍在阿里巴巴任职的“十八罗汉”成员**（截至2025年阿里年报后）：仅剩马云、蔡崇信、吴泳铭、蒋芳四人。其余成员或已退出管理层、离职或转向投资等领域。\n- **马云与蔡崇信为永久合伙人**，吴泳铭现任阿里集团董事兼CEO，蒋芳任集团副首席人力资源官。\n- **张勇（逍遥子）** 虽非十八罗汉，但作为前阿里CEO，已从合伙人序列退出，标志着其时代终结。\n\n上述内容直接对应查询中的“具体名单”及“马云、蔡崇信、张（瑛）、十八罗汉”等关键词。\n\nResults for tool call 'web_search' with arguments '{'query': '张瑛 1966年 出生 阿里巴巴 创始人 百度百科'}':\n1. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103)\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。张瑛和马云是杭州师范大学的校友。张瑛毕业后，与马云正式步入婚姻殿堂 ...\n\n2. [张瑛（阿里巴巴创始人之一，马云的妻子） - 经历网](https://www.jili20.com/article/1716463846580817921)\nDate published: Mar 9, 2026\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。 张瑛和马云是杭州师范大学的校友。张瑛毕业后，与 ...\n\n3. [马云_百度百科](https://baike.baidu.com/item/%E9%A9%AC%E4%BA%91/6252)\nSource: Unknown source\n   马云，1964年9月10日出生于浙江杭州，祖籍浙江省嵊县（现嵊州市）谷来镇，汉族，中共党员，阿里巴巴主要创始人之一，阿里巴巴原首席执行官（CEO）、董事局原主席，中国人民政治协商 ...\n\n4. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/17916519)\nSource: Unknown source\n   张瑛，男，汉族，1966年10月生，四川射洪人，1998年6月加入中国共产党，1989年7月参加工作， ... 阿里巴巴创始人之一、马云的妻子; 云南省人民政府参事室原主任; 徽州区法制办副主任 ...\n\n5. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3500)\nSource: Unknown source\n   张瑛（1919年1月25日—1984年），原名张溢生，出生于中国香港，就读于华仁书院， ... 中国香港男演员; 阿里巴巴创始人之一、马云的妻子; 云南省人民政府参事室原主任 ...",
+      "think": "We need to confirm the complete list of 18 founders to identify all individuals with surnames Ma (马), Cai (蔡), and Zhang (张). Based on the search snippet, the list includes 马云, 蔡崇信, 张瑛. But there might be others like 麻长炜 (surname Ma?), but 麻 is different from 马. There could be 张建锋? No, he's not a founder. I'll crawl the article that mentions the full list to get the 18 names and verify. Also, I need exact birth years for each. I have 马云 (1964), 蔡崇信 (1964), 张瑛 (1966, but need authoritative source). I'll also search for a reliable source confirming Zhang Ying's birth year.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103",
+            "query": "张瑛 出生年份 出生日期 1966"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "张瑛 阿里巴巴创始人 出生 1966 年 权威 来源"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103', 'query': '张瑛 出生年份 出生日期 1966'}':\nNo relevant information\n\nResults for tool call 'web_search' with arguments '{'query': '张瑛 阿里巴巴创始人 出生 1966 年 权威 来源'}':\n1. [张瑛（阿里巴巴创始人之一，马云的妻子） - 经历网](https://www.jili20.com/article/1716463846580817921)\nDate published: Mar 9, 2026\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。 张瑛和马云是杭州师范大学的校友。张瑛毕业后，与 ...\n\n2. [阿里巴巴创始团队'马蔡张'成员平均年龄揭秘- U深搜 - UniFuncs](https://unifuncs.com/s/qeFE4FPd)\nSource: Unknown source\n   阿里巴巴成立时，18位创始团队成员中姓马、姓蔡、姓张的创始人的平均年龄为34.3岁。 注意事项：张瑛的出生年份信息虽然多个来源一致指向1966年，但缺乏权威官方来源的明确记录 ...\n\n3. [张瑛_百度百科](https://baike.baidu.com/item/%E5%BC%A0%E7%91%9B/3446103)\nSource: Unknown source\n   张瑛，女，汉族，出生于浙江绍兴嵊州市甘霖镇，毕业于杭州师范大学，阿里巴巴创始人之一、马云的妻子。张瑛和马云是杭州师范大学的校友。张瑛毕业后，与马云正式步入婚姻殿堂 ...\n\n4. [張瑛(消歧義) - 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E5%BC%A0%E7%91%9B_(%E6%B6%88%E6%AD%A7%E4%B9%89))\nSource: Unknown source\n   張瑛(蜀漢) · 張瑛(正統進士)，明朝正統七年進士，杭州錢塘縣人 · 張瑛(成化進士)，明朝成化八年進士，廣東新會人 · 張瑛(大學士)，華蓋殿大學士，直隸邢臺人 · 張瑛(惠安伯) · 張瑛( ...\n\n5. [为什么我们不知道马云的老婆孩子长啥样？叫什么？ ？ - 知乎](https://www.zhihu.com/question/35701522)\nDate published: Sep 17, 2015\nSource: Unknown source\n   张瑛，1966年出生于浙江绍兴的一个普通家庭，后在杭州师范学院求学。 不要小看了这个杭州师范学院，说它是现在的985也不为过，而张瑛也是那个时代的高材生。",
+      "think": "I now have a clear picture. The 18 founders list is confirmed from the OFweek article. I have verified birth years for 马云 (1964) and 蔡崇信 (1964) from multiple authoritative sources. For 张瑛, multiple secondary sources consistently state 1966, but I should crawl her specific Baidu Baike page to attempt to get the birth year directly from the page content. Let me do that now, and if that doesn't provide the year, I'll search for a more authoritative source. Meanwhile, I can also compute the preliminary average.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "final_answer",
+          "arguments": {
+            "answer": "阿里巴巴成立时（1999年），18位创始团队成员中姓马（马云）、姓蔡（蔡崇信）、姓张（张瑛）的创始人的平均年龄为34.3岁。"
+          }
+        }
+      ],
+      "obs": "阿里巴巴成立时（1999年），18位创始团队成员中姓马（马云）、姓蔡（蔡崇信）、姓张（张瑛）的创始人的平均年龄为34.3岁。",
+      "think": "I have consolidated all required information. The 18 founders list is confirmed. The Ma, Cai, Zhang founders are 马云 (1964), 蔡崇信 (1964), and 张瑛 (1966). Their ages at founding (1999) are 35, 35, and 33 respectively. Average = (35+35+33)/3 = 34.333..., which rounds to 34.3 when keeping one decimal place. No further tools are needed; I will call final_answer with the result in Chinese.",
+      "cot_think": null,
+      "memory_guidance": null
+    }
+  ],
+  "metrics": {
+    "elapsed_time": 173.6446189880371,
+    "total_tokens": 117141,
+    "prompt_tokens": 105321,
+    "completion_tokens": 11820,
+    "api_calls": 16
+  }
+}

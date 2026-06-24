@@ -1,0 +1,270 @@
+{
+  "score": 1,
+  "extracted_answer": "王",
+  "task_id": "17",
+  "question": "清华大学建校至湖畔大学成立期间，中央财经大学历任校长哪个姓氏最多？",
+  "full_query": "清华大学建校至湖畔大学成立期间，中央财经大学历任校长哪个姓氏最多？",
+  "golden_answer": "王",
+  "status": "success",
+  "agent_result": "在清华大学建校（1911年）至湖畔大学成立（2015年）期间，中央财经大学历任校长中，姓氏“王”出现次数最多，共有3位（王绍鏊、王柯敬、王广谦）。",
+  "agent_trajectory": [
+    {
+      "name": "plan",
+      "value": "## Goal 1: Compile the complete list of all Central University of Finance and Economics (CUFE) presidents from 1949 to 2015\n- Path 1.1: Search for the “中央财经大学” Baidu Baike entry and navigate to the “历任领导” (successive leaders) section. Crawl the page to extract each president’s name and term, ensuring the date range ends at or before 2015.\n  - Success: Retrieved a structured list of presidents’ names and tenures, with at least one source confirming coverage up to 2015.\n- Path 1.2: Search the official CUFE website (e.g., “www.cufe.edu.cn”) for the “学校沿革” (history) or “历任校长” (past presidents) page. Crawl the relevant page and extract the official list of presidents with their service periods.\n  - Success: Obtained an authoritative list from the university’s official domain, containing all presidents from the founding to 2015.\n- Path 1.3: Search Chinese Wikipedia for “中央财经大学校长列表” or equivalent, and crawl the page to extract the list. Cross‑check dates to confirm coverage up to 2015.\n  - Success: Acquired a complete list from Wikipedia, with dates that match the required period (if any discrepancies, note them for cross‑referencing).\n\n## Goal 2: Determine the most frequent surname among the compiled list of presidents\n- Path 2.1: From the list obtained in Goal 1, extract the first character (surname) of each president’s name. Manually count the frequency of each surname, including only those presidents who served within 1949–2015. Compare the counts to identify the maximum.\n  - Success: Created a frequency table of all surnames, clearly showing the surname with the highest count, and verified against the original list.\n- Path 2.2: If multiple lists were retrieved (e.g., from Baidu Baike, official site, and Wikipedia), cross‑reference them to resolve any inconsistencies or missing entries. Union the lists to ensure completeness, then compute surname frequencies across the merged set.\n  - Success: Merged list is accurate, with no significant omissions, and the surname frequency calculation is confirmed.",
+      "think": "",
+      "cot_think": "We need to parse the task: \"清华大学建校至湖畔大学成立期间，中央财经大学历任校长哪个姓氏最多？\" That is: \"From the founding of Tsinghua University to the establishment of Hupan University, among the successive presidents of Central University of Finance and Economics, which surname is the most common?\" \n\nWe need to find the list of presidents of Central University of Finance and Economics (中央财经大学) from the founding of Tsinghua University (1911) to the establishment of Hupan University (湖畔大学, founded in 2015? Actually Hupan University was founded in 2015 by Jack Ma et al. But let's confirm: Hupan University (Hupan University) was established in 2015. Tsinghua University was founded in 1911. So time period: 1911 to 2015.\n\nCentral University of Finance and Economics (CUFE) has a history: It was founded in 1949 as the Central School of Finance and Economics. But its predecessors might go earlier? Actually, the university traces its roots to 1949, but we need the list of presidents from its inception to 2015. The task says \"中央财经大学历任校长\" which means all successive presidents of CUFE. The time constraint is from 1911 to 2015, but CUFE didn't exist before 1949. So effectively we need all presidents of CUFE from its founding (1949) to 2015.\n\nBut the task says \"清华大学建校至湖畔大学成立期间\", which is 1911-2015. So we need to include any presidents of CUFE that served during that period. Since CUFE was founded in 1949, we consider all presidents from 1949 to 2015.\n\nGoal: Find the list of presidents of Central University of Finance and Economics, count the frequency of surnames, and determine which surname appears most frequently.\n\nWe need to collect data. Possible paths: web search for lists of presidents, cross-reference with official university website or Wikipedia. Also use the tools available.\n\nWe have tools: web_search, crawl_page, inspect_file_as_text, inspect_file_as_image, inspect_file_as_audio, final_answer. We can search the web for \"中央财经大学历任校长\" or \"List of presidents of Central University of Finance and Economics\". Then crawl the pages to extract names. Then count surnames.\n\nWe need to ensure accuracy. Possibly multiple sources.\n\nPlan:\n\nGoal 1: Find comprehensive list of presidents of Central University of Finance and Economics from its founding to 2015.\n\nPaths:\n- Path 1.1: Search Chinese Wikipedia or Baidu Baike for \"中央财经大学校长列表\" and crawl the page.\n- Path 1.2: Search official CUFE website for history/presidents.\n- Path 1.3: Search for \"中央财经大学历任校长\" in news articles or databases.\n\nGoal 2: Extract surnames and count frequencies.\n\nPaths:\n- Path 2.1: Manually compile surnames from list and count.\n- Path 2.2: Use text processing if we get a text file, but we can just manually count.\n\nBut since we are planning, we should specify success criteria.\n\nAlso note memory: \"Similar historical timeline tasks have succeeded by compiling official lists of university leaders from institutional archives and cross-referencing with authoritative biographical databases.\" So we should consider cross-referencing.\n\nPlan:\n\nGoal 1: Acquire the list of all presidents of Central University of Finance and Economics (CUFE) from its founding (1949) to 2015.\n- Path 1.1: Use web_search to find Baidu Baike entry \"中央财经大学\" and look for \"历任领导\" or \"校长\". Then crawl that page to extract names and tenure.\n  - Success: Obtained a list of presidents with names and dates confirming coverage up to 2015.\n- Path 1.2: Use web_search to find the official CUFE website page on \"学校沿革\" or \"历任校长\". Crawl that page.\n  - Success: Retrieved an official list with names and time periods.\n- Path 1.3: Use web_search to find a Wikipedia page (Chinese) \"中央财经大学校长列表\". Crawl and extract.\n  - Success: Obtained a list from a crowd-sourced but typically accurate source.\n\nGoal 2: Determine the most frequent surname among the presidents from the list.\n- Path 2.1: From the acquired list, extract the surnames of each president (first character of Chinese name). Count occurrences manually or via text analysis.\n  - Success: Counted each surname, identified the maximum.\n- Path 2.2: If multiple lists from different sources, cross-reference to ensure completeness and accuracy. Then compute frequencies.\n  - Success: Verified list is complete and accurate, then surname frequency computed.\n\nWe need to ensure that the time period is respected. The presidents must be within 1949-2015. If the list includes interim or acting presidents, we need to decide whether to include them. Usually \"历任校长\" includes all officially appointed presidents. We should include all.\n\nI'll now write the planning analysis in the required format.",
+      "memory_guidance": "[Context Note] Similar historical timeline tasks have succeeded by compiling official lists of university leaders from institutional archives and cross-referencing with authoritative biographical databases. One approach that worked involved systematically extracting surname frequencies from such lists while verifying date ranges against the defined period."
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 百度百科"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 历任校长 列表"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '中央财经大学 百度百科'}':\n1. [中央财经大学_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6/182071)\nSource: Unknown source\n   中央财经大学（Central University of Finance and Economics），简称中央财大、中财大，位于北京市，是教育部、财政部和北京市人民政府共建的教育部直属高校，是国家“双一流” ...\n\n2. [中央财经大学政府管理学院_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6%E6%94%BF%E5%BA%9C%E7%AE%A1%E7%90%86%E5%AD%A6%E9%99%A2/9006435)\nSource: Unknown source\n   中央财经大学创办于1949年11月6日，是新中国成立后中央人民政府创办的第一所新型高等财经院校，1952年8月与北京大学、清华大学、辅仁大学、燕京大学经济系合并为中央财经学院 ...\n\n3. [中央财经大学学报_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6%E5%AD%A6%E6%8A%A5/8777117)\nSource: Unknown source\n   《中央财经大学学报》是中华人民共和国教育部主管、中央财经大学主办的财经类社会科学学术性期刊，创刊于1981年。\n\n4. [中南财经政法大学_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%8D%97%E8%B4%A2%E7%BB%8F%E6%94%BF%E6%B3%95%E5%A4%A7%E5%AD%A6/324701)\nSource: Unknown source\n   中南财经政法大学（Zhongnan University of Economics and Law）简称中南大，位于湖北省武汉市，是教育部直属的全国重点大学，是国家“211工程”和“985工程优势学科创新平台” ...\n\n5. [中央财经大学金融学院_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6%E9%87%91%E8%9E%8D%E5%AD%A6%E9%99%A2/7606428)\nSource: Unknown source\n   中央财经大学金融学院成立于2003年，其前身是组建于1951年的中央财政学院金融系。作为新中国最早的金融人才培养基地之一，学院及其前身为社会培养了两万多名金融、保险和贸易 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 历任校长 列表'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 ; 李予昂（1949.11－1952.6） ; 陳岱孫（1952.8－1953.8） ; 王紹鰲（1952.8－1955.8） ; 胡立教（1955.8－1956.9） ; 安志成（1957.9－1959.4） ...\n\n2. [中央财经大学历任校长_百科星图](https://baike.baidu.com/starmap/view?nodeId=a212f28724b0d87e1211a29f&lemmaTitle=%E5%A7%9C%E6%98%8E%E8%BF%9C&lemmaId=24608407&starMapFrom=starMapBottom)\nSource: Unknown source\n   百度百科是一部内容开放、自由的网络百科全书，旨在创造一个涵盖所有领域知识，服务所有互联网用户的中文知识性百科全书。在这里你可以参与词条编辑，分享贡献你的知识。\n\n3. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   马海涛，男，1966年5月出生，山东威海人，研究生，经济学博士，中共党员，教授。现任中央财经大学校长、党委副书记、博士生导师，中央财经大学创新发展学院党委 ...\n\n4. [历任领导-上海财经大学](https://www.sufe.edu.cn/lrld_13548/list.htm)\nSource: Unknown source\n   学校概况 ; 蒋传海, 校长, 2017.11～2022.3 ; 丛树海, 党委书记, 2012.6～2018.9 ; 樊丽明, 校长, 2012.6～2017.11 ; 马钦荣, 党委书记, 2004.7～2012.6 ; 谈 敏, 校长, 1998.12～ ...\n\n5. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   姓 名. 职 务. 任职时间. 备 注. 张 清. 党委书记、副校长. 1958.04-1959.08. 党委书记、校长. 1959.09-1964.09. 王工一. 党委副书记. 1958.04-1959.08.",
+      "think": "We need to compile the list of all presidents of Central University of Finance and Economics (CUFE) from 1949 (its founding) to 2015 (Hupan University establishment). The plan suggests starting with Path 1.1 (Baidu Baike) and Path 1.2 (official CUFE website) simultaneously for efficiency. Since these are independent searches to locate the relevant pages, I'll execute them in parallel. First, I'll search for the Baidu Baike page and for the official history/past presidents list.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6/182071",
+            "query": "历任校长"
+          }
+        },
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6",
+            "query": "校长列表"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6/182071', 'query': '历任校长'}':\n根据搜索查询“历任校长”，从中央财经大学百度百科页面中提取到以下相关列表：\n\n- **李予昂**（1949年-1952年，兼）\n- **王绍鏊**（1953年-1955年，兼）\n- **胡立教**（1955年-1956年，兼）\n- **安志成**（1956年-1959年）\n- **贝仲选**（1959年-1961年，兼）\n- **秦穆伯**（1962年）\n- **陈如龙**（1964年-1969年，兼）\n- **戎子和**（1978年-1983年，兼；1953年曾兼）\n- **姜明远**（1979年-1982年）\n- **陈菊铨**（1983年-1985年）\n- **王柯敬**（1992年-2003年）\n- **景致**（1994年-1998年，中央财政管理干部学院）\n- **王广谦**（2003年-2017年）\n- **王瑶琪**（2017年-2023年）\n- **马海涛**（2023年至今）\n\n此外，“历任领导”表格中还包含其他职务（如党委书记）信息，但仅校长相关内容已满足查询需求。\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6', 'query': '校长列表'}':\n根据搜索查询“校长列表”，从中央财经大学维基百科页面中提取的历任校长信息如下：\n\n- 李予昂（1949.11－1952.6）\n- 陈岱孙（1952.8－1953.8）\n- 王绍鳌（1952.8－1955.8）\n- 胡立教（1955.8－1956.9）\n- 安志成（1957.9－1959.4）\n- 贝仲宁（1960.8－1961.5）\n- 陈如龙（1964.10－1966.5）\n- 戎子和（1978.6－1983.8）\n- 陈菊铨（1983.8－1985.11）\n- 王柯敬（1992.9－2003.6）\n- 王广谦（2003.7－2017.9）\n- 王瑶琪（2017.9－2023.1）\n- 马海涛（2023.4－）",
+      "think": "We need to proceed with the plan. Goal 1: Compile the complete list of CUFE presidents from 1949 to 2015. Path 1.1: Crawl Baidu Baike and Wikipedia pages to extract the list of presidents with their terms. Since both resources are independent, we can crawl them in parallel. After obtaining the lists, we will proceed to Goal 2: determine the most frequent surname among the presidents who served within the timeframe.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "陈岱孙 中央财经大学 校长"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "姜明远 中央财经大学 校长"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "秦穆伯 中央财经大学 校长"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 贝仲选"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '陈岱孙 中央财经大学 校长'}':\n1. [陈岱孙- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E9%99%88%E5%B2%B1%E5%AD%99)\nSource: Unknown source\n   陈岱孙（1900年10月20日—1997年7月27日），原名陈总，男，福建福州人，中国经济学家，中央财经学院校长。 ... 1952年院系调整后，陈岱孙历任中央财经学院校长、北京大学教授、经济系 ...\n\n2. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛举行](https://news.pku.edu.cn/xwzh/129-240618.htm)\nSource: Unknown source\n   中央财经大学校长王广谦教授则代表中财师生对作为中央财经大学的主要创建者的陈岱孙先生表达了崇高的敬意。 ... 1952年任中央财经学院第一副院长。1953年起任北京大学 ...\n\n3. [百年三不朽，卓荦陈岱孙 - 清华大学](https://www.tsinghua.edu.cn/info/1661/56237.htm)\nDate published: Nov 5, 2020\nSource: Unknown source\n   ... 陈岱孙任中央财经学院（现中央财经大学）第一副院长；1953年以后任北京大学教授、经济系主任等职。陈岱孙还历任中国人民政治协商会议第二、三、四、五 ...\n\n4. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛举行](https://www.sinobook.com.cn/comment/newsdetail.cfm?iCntno=9247)\nSource: Unknown source\n   中央财经大学校长王广谦教授则代表中财师生对作为中央财经大学的主要创建者的陈岱孙先生表达了崇高的敬意。 ... 1952年任中央财经学院第一副院长。1953年起任北京大学 ...\n\n5. [岱宗仰止——纪念陈岱孙先生诞辰120周年专题图片展在北大开展](https://www.tsinghua.org.cn/info/1014/32497.htm)\nSource: Unknown source\n   陈岱孙（1900.10.20—1997.7.27），我国著名经济学家、教育家。他出生于福建省闽侯县，后就读于福州鹤龄英华中学、清华学校等，1920年以庚子赔款公费留学生身份赴美留学，就读 ...\n\nResults for tool call 'web_search' with arguments '{'query': '姜明远 中央财经大学 校长'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 ; 李予昂（1949.11－1952.6） ; 陳岱孫（1952.8－1953.8） ; 王紹鰲（1952.8－1955.8） ; 胡立教（1955.8－1956.9） ; 安志成（1957.9－1959.4） ...\n\n2. [姜明远_百度百科](https://baike.baidu.com/item/%E5%A7%9C%E6%98%8E%E8%BF%9C/24608407)\nSource: Unknown source\n   姜明远，曾于1960.7-1982.8任中央财政金融学院副院长、党委副书记，于1979.6-1982.8任中央财政金融干部学校校长。\n\n3. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   现任中央财经大学校长、党委副书记、博士生导师，中央财经大学创新发展 ... 教授、博士生导师，中央财经大学党委常委、副校长，中央财经大学金融学院院长，全国 ...\n\n4. [名师风采-中央财经大学保险学院国际本科项目-](http://insp.cufe.edu.cn/?list_44/)\nSource: Unknown source\n   项目专业课师资均是中央财经大学相关学科的知名学者和带头人的优秀师资团队，个别课程由国外著名教授学者进行集中面授。其中教授/研究员15人，副教授/副研究员26人，讲师/ ...\n\n5. [2025级新生开学典礼：新中财人，启航！](https://peking.bjd.com.cn/content/s68cd110ae4b02424b0c06ca4.html)\nDate published: Sep 19, 2025\nSource: Unknown source\n   校长马海涛代表学校对2025级全体新生表示欢迎，期待在中财大校园里见证同学们的成长之路。马海涛表示，今天是九一八事变爆发94周年纪念日，我们要铭记历史， ...\n\nResults for tool call 'web_search' with arguments '{'query': '秦穆伯 中央财经大学 校长'}':\n1. [秦穆伯_百度百科](https://baike.baidu.com/item/%E7%A7%A6%E7%A9%86%E4%BC%AF/24572855)\nSource: Unknown source\n   秦穆伯，曾任中央财政金融干部学校副校长，校长。 中文名. 秦穆伯. 性别. 男. 国籍. 中国. 曾于1953.4-1959.6任中央财政干部学校副校长、党总支书记、党委书记. 曾于 ...\n\n2. [中央财经大学毕业证样本 - 永诚教育印刷服务中心](http://forcnmedical.com/Show.asp?id=2625&table=photo)\nSource: Unknown source\n   历任领导 ; 1953.4-1959.6, 秦穆伯, 中央财政干部学校副校长、党委书记 ; 1962, 秦穆伯, 中央财政金融干部学校、校长 ; 1960.7-1965.5, 秦穆伯, 中央财政金融学院副院长、党委 ...\n\n3. [秦穆伯_山西省晋绥文化教育发展基金会](http://www.jinsui.org/lishi/wangshangjidian/_jsfyrw_/2015/0611/1054.html)\nDate published: Jun 11, 2015\nSource: Unknown source\n   秦穆伯 ... 1910年生，山西省夏县人。在运城第二师范读书时，曾两次参加与领导驱逐反动校长的斗争，当国民党河东市党部包围学校时，他带头掩护了训育主任(共产党 ...\n\n4. [历任领导 - 4066全球赢家之选-首頁welcome!](http://www.qing-yue.com/xxgk/lrld.htm)\nSource: Unknown source\n   中央财经学院副院长(主持工作). (1952.12 ... 秦穆伯. 中央财政干部学校党总支书记（1953.4-1957.11）、党委书记（1957.11-1957.12）. 中央财政金融干部学校校长（1962-1969.9）.\n\n5. [王万有老师访谈综录](https://ahjags.com/html/info10231369.html)\nSource: Unknown source\n   当时姚依林同志是中央财贸政治部的主任，他在这个会上提出：为了加强财政金融工作需要成立一所财政金融方面的高等学校。秦穆伯同志参加了会议，他回来的时候就找我，说姚依林 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 贝仲选'}':\n1. [2023中国仲裁周·第八届西班牙仲裁日在京举办](https://www.cietac.org/articles/19437)\nDate published: Sep 13, 2023\nSource: Unknown source\n   ... 仲代表陈宓女士和中央财经大学法学院副院长殷秋实分别作欢迎致辞，中央财经大学法学院副教授张旗坤担任主持。百余位研究生、本科生参加了本次活动 ...\n\n2. [Unified identity authentication platform](https://ehall.cufe.edu.cn/)\nSource: Unknown source\n   Copyright © Central University of Finance and Economics. South Road:62289140. Shahe:61776543. EMAIL:its@cufe.edu.cn. Support: Smart Campus Construction Center.\n\n3. [中央财经大学图书馆](https://lib.cufe.edu.cn/)\nSource: Unknown source\n   数据库 · 新生指南 · 培训讲座 · 选座服务 · 查收查引 · 馆际互借 · 文献传递 · 读者荐购.\n\n4. [中华人民共和国教育部中外合作办学监管工作信息平台](https://www.crs.jsj.edu.cn/aproval/detail/384)\nSource: Unknown source\n   办学地址, 北京市海淀区学院南路39号, 法定代表人 ; 办学层次和类别, 本科学历教育/外国学士学位教育, 学制 ; 每期招生人数, 计划内招生每期200人（在中央财经大学年度招生 ...\n\n5. [上海财经大学代表队在第二十二届“贸仲杯”国际商事仲裁模拟仲裁庭 ...](https://law.sufe.edu.cn/85/a2/c7990a230818/page.htm)\nDate published: Dec 11, 2024\nSource: Unknown source\n   此次参与比赛的队伍数量在“贸仲杯”的历史上首次破百，参赛队伍的地域范围更加广泛，比赛场次达到历史新高，赛事专业化水平持续提升，赛事影响力进一步扩大。",
+      "think": "We have two lists of CUFE presidents (Baidu Baike and Wikipedia) with some discrepancies. We need to verify the correct list for the period 1949–2015 (end of 湖畔大学 founding). Key discrepancies: \n1. 陈岱孙 appears only in Wikipedia, not Baidu. Need to confirm if he was indeed CUFE president.\n2. 姜明远 appears only in Baidu.\n3. 秦穆伯 appears only in Baidu.\n4. 景致 appears only in Baidu as head of a separate college.\n5. Possible spelling differences: 贝仲选 vs 贝仲宁.\n\nGoal 1: Compile complete and accurate list of CUFE presidents (1949–2015).\nPath 1.4: Search for '陈岱孙 中央财经大学 校长' to verify his role.\nPath 1.5: Search for '中央财经大学 校长 姜明远' to verify.\nPath 1.6: Search for '中央财经大学 秦穆伯 校长' to verify.\nPath 1.7: Search for '中央财经大学 贝仲选' to verify spelling.\n\nAdditionally, we may search for an official CUFE history page (e.g., '中央财经大学 历任领导 校长') on the university website.\n\nWe'll execute multiple searches in parallel to gather more evidence.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "http://www.cufe.edu.cn/xxgk/lrld.htm",
+            "query": "历任校长 列表"
+          }
+        },
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://baike.baidu.com/item/%E9%99%88%E5%B2%B1%E5%AD%99/518438",
+            "query": "中央财经学院校长"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 官方 历任校长 名单"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'http://www.cufe.edu.cn/xxgk/lrld.htm', 'query': '历任校长 列表'}':\n根据中央财经大学“历任领导”页面内容，筛选出任校长（包括院长）职务的人员列表如下：\n\n- **李予昂**：中央税务学校校长（1949.11-1952.6）\n- **戎子和**：中央财政干部学校校长（1953.4-1953.12）；中央财政金融学院院长（1978.6-1983.8）\n- **秦穆伯**：中央财政金融干部学校校长（1962-1969.9）\n- **王绍鏊**：中央财政干部学校校长（1953.12-1955.8）\n- **胡立教**：中央财政干部学校校长（1955.8-1956.9）\n- **安志成**：中央财政干部学校校长（1956.9-1958.12）\n- **贝仲选**：中央财政金融干部学校校长（1959.4-1961.7）；中央财政金融学院院长（1960.7-1961.7）\n- **陈如龙**：中央财政金融学院院长（1964.10-1969.9）\n- **姜明远**：中央财政金融干部学校校长（1979.6-1982.8）\n- **陈菊铨**：中央财政金融学院院长（1983.8-1985.11）；中央财政管理干部学院院长（1984.4-1985.11）\n- **景致**：中央财政管理干部学院院长（1994.8-1998.10）\n- **王柯敬**：中央财政金融学院院长（1992.9-1996.7）；中央财经大学校长（1996.7-2003.6）\n- **王广谦**：中央财经大学校长（2003.6-2017.9）\n- **王瑶琪**：中央财经大学校长（2017.9-2023.1）\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://baike.baidu.com/item/%E9%99%88%E5%B2%B1%E5%AD%99/518438', 'query': '中央财经学院校长'}':\nNo relevant information\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 官方 历任校长 名单'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 ; 李予昂（1949.11－1952.6） ; 陳岱孫（1952.8－1953.8） ; 王紹鰲（1952.8－1955.8） ; 胡立教（1955.8－1956.9） ; 安志成（1957.9－1959.4） ...\n\n2. [中央财经大学历任校长_百科星图](https://baike.baidu.com/starmap/view?nodeId=a212f28724b0d87e1211a29f&lemmaTitle=%E5%A7%9C%E6%98%8E%E8%BF%9C&lemmaId=24608407&starMapFrom=starMapBottom)\nSource: Unknown source\n   百度百科是一部内容开放、自由的网络百科全书，旨在创造一个涵盖所有领域知识，服务所有互联网用户的中文知识性百科全书。在这里你可以参与词条编辑，分享贡献你的知识。\n\n3. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   马海涛，男，1966年5月出生，山东威海人，研究生，经济学博士，中共党员，教授。现任中央财经大学校长、党委副书记、博士生导师，中央财经大学创新发展学院党委 ...\n\n4. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   姓 名. 职 务. 任职时间. 备 注. 张 清. 党委书记、副校长. 1958.04-1959.08. 党委书记、校长. 1959.09-1964.09. 王工一. 党委副书记. 1958.04-1959.08.\n\n5. [历任领导-上海财经大学](https://www.sufe.edu.cn/lrld_13548/list.htm)\nSource: Unknown source\n   学校概况 ; 蒋传海, 校长, 2017.11～2022.3 ; 丛树海, 党委书记, 2012.6～2018.9 ; 樊丽明, 校长, 2012.6～2017.11 ; 马钦荣, 党委书记, 2004.7～2012.6 ; 谈 敏, 校长, 1998.12～ ...",
+      "think": "We have partial lists from Baidu Baike and Wikipedia but need to reconcile discrepancies and confirm the definitive list of CUFE presidents (校长) from 1949 to 2015. Key points: \n- Wikipedia lists 陈岱孙 as a president, while Baidu Baike does not; need to verify his role. \n- The Baidu Baike list includes 姜明远 and 秦穆伯, but they appear to be leaders of affiliated training schools (干部学校), not the university itself. \n- The official CUFE website likely has the most authoritative list. Let's search for the official '历任校长' page on cufe.edu.cn. \n- Also need to check if 陈岱孙 is officially recognized as CUFE president and whether 王绍鳌 (or 王绍鏊) is a separate person (same surname). \n- We also need to consider the period: '清华大学建校至湖畔大学成立期间' means from 1911 to 2015, but CUFE was founded in 1949, so only 1949–2015 matters. \n- While the surname count currently shows 陈 and 王 each appear 3 times (陈岱孙, 陈如龙, 陈菊铨; 王绍鳌, 王柯敬, 王广谦), we must ensure no presidents are missing and that 陈岱孙 indeed counts as a president. \n- Let's crawl the official CUFE '学校沿革' or '历任校长' page and also check a reliable source about 陈岱孙's tenure.",
+      "cot_think": null,
+      "memory_guidance": "[Past Experience (for reference)] Past tasks found that compiling a full list of leaders from university historical records often requires using official chronology or \"历任校长\" pages on the university website."
+    },
+    {
+      "name": "action",
+      "tool_calls": [],
+      "obs": null,
+      "think": "No 'think' field in response",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "plan",
+      "value": "## Goal 1: Acquire the complete list of CUFE presidents (1949–2015) from multiple reliable sources\n- Path 1.1: Wikipedia/Baidu Baike list\n  - Approach: Search for “中央财经大学校长列表” or “中央财经大学历任校长” on a search engine, then crawl the resulting Wikipedia or Baidu Baike page to extract all names and their tenure periods.\n  - Success: A structured list of names (with years) is obtained, covering at least the founding to 2015.\n- Path 1.2: Official CUFE history page\n  - Approach: Navigate to the Central University of Finance and Economics official website (cufe.edu.cn), locate the “学校沿革” or “历任领导” page, crawl it to retrieve the official chronology of presidents.\n  - Success: An authoritative list of presidents with verified tenure dates is extracted.\n- Path 1.3: Academic/educational databases or news archives\n  - Approach: Use search queries like “中央财经大学 校长 1949 2015 列表” and crawl articles from academic repositories, news outlets (e.g., Xinhua, People’s Daily), or institutional chronicles that compile historical leadership.\n  - Success: A supplementary list is captured, which can be cross‑referenced with Paths 1.1 and 1.2 to fill any gaps.\n\n## Goal 2: Determine the most frequent surname among the presidents\n- Path 2.1: Direct surname aggregation from the merged list\n  - Approach: Combine the lists from Goal 1 (deduplicate using tenure dates), extract the surname (first character of the Chinese name) for each unique president, and compute frequency counts. Identify the surname with the highest count.\n  - Success: A clear result showing the most common surname (e.g., “张”, “李”, “王”) and its frequency.\n- Path 2.2: Cross‑validation with biographical databases\n  - Approach: For each candidate surname, search biographical databases (e.g., “中央财经大学校长 张”) to confirm that no president with that surname is missing and that the tenure periods are correctly aligned with the defined period.\n  - Success: The aggregated list is verified to be complete and accurate, and the frequency calculation is confirmed.\n\n## Goal 3: Verify the time‑frame boundaries (Tsinghua founding, Hupan founding, CUFE founding)\n- Path 3.1: Search for Tsinghua University founding year and Hupan University founding year\n  - Approach: Search “清华大学建校时间” and “湖畔大学成立时间” on the web, then crawl authoritative sources (Baidu Baike, university official pages) to confirm the dates (1911 for Tsinghua, 2015 for Hupan).\n  - Success: Exact years are obtained, confirming the period used for the president list (effectively CUFE’s founding in 1949 to 2015).\n- Path 3.2: Search for Central University of Finance and Economics founding year\n  - Approach: Search “中央财经大学建校时间” to confirm the school’s inception year (1949) and ensure the list starts from that point.\n  - Success: Founding year is verified, aligning with the start of the president list.",
+      "think": "",
+      "cot_think": "We need to plan for the task: \"清华大学建校至湖畔大学成立期间，中央财经大学历任校长哪个姓氏最多？\" This translates to: \"During the period from the founding of Tsinghua University to the establishment of Hupan University, which surname is most common among the successive presidents of Central University of Finance and Economics (中央财经大学)?\"\n\nWe need to identify the timeframe: Tsinghua University founded in 1911 (actually 1911, but sometimes 1912? Need to confirm). Hupan University (湖畔大学) was established in 2015. So the period is from 1911 to 2015. Central University of Finance and Economics (CUFE) was founded in 1949 as Central Institute of Finance and Economics, later renamed. So we need the list of presidents (校长) of CUFE from its founding up to 2015. Then count surnames to find the most common.\n\nThis is a factual retrieval task. We can break into parallel goals: \n1. Identify the founding year of Tsinghua University and establishment year of Hupan University to confirm the period.\n2. Obtain the list of presidents of CUFE from its founding to 2015 (or later if needed but up to 2015).\n3. Count surnames and determine most common.\n\nBut since the period is defined by external events, we may need to verify those dates. Also, CUFE's founding year. Possibly there are multiple paths: searching official CUFE website, Wikipedia, Baidu Baike, educational history sites. Use web_search and crawl_page.\n\nWe need to design goals and paths. Since the task requires combining information, we can have parallel goals: Goal 1: Confirm timeframe (Tsinghua founding year, Hupan establishment year, CUFE founding year). Goal 2: Obtain list of CUFE presidents. Goal 3: Extract surnames and count. But the counting is dependent on the list. So Goals 1 and 2 are independent. Goal 3 depends on Goal 2, but since we can plan paths that include the counting part within the same path? Actually, the planning should be about how to approach the task, not sequential steps. But the instruction says goals execute in parallel, paths within goal sequentially. So we can have a goal that is \"Determine the most common surname among CUFE presidents from 1911 to 2015\" which encompasses both obtaining list and counting. But the memory note suggests cross-referencing and aggregating frequencies across multiple sources. So we can have multiple paths within a goal to get the list from different sources. Then another goal to verify timeframe? But timeframe can be quickly checked with one search.\n\nLet's structure:\n\nGoal 1: Determine the exact start and end dates of the period (Tsinghua founding, Hupan founding) and the founding of CUFE to ensure we include all relevant presidents.\n- Path 1.1: Search for \"清华大学建校时间\" and \"湖畔大学成立时间\" and \"中央财经大学建校时间\" on web.\n- Success: Confirmed dates.\n\nGoal 2: Obtain the complete list of presidents (校长) of Central University of Finance and Economics from its founding (1949) to 2015 (or up to 2015). Use multiple sources for cross-validation.\n- Path 2.1: Search Wikipedia or Baidu Baike for \"中央财经大学校长列表\" and crawl the page to extract names.\n- Success: Retrieved list with names and tenure years.\n- Path 2.2: Search CUFE official website for \"历任校长\" and crawl.\n- Success: Retrieved list from official source.\n- Path 2.3: Search other educational databases or news articles that list historical presidents.\n- Success: Additional verified list.\n\nGoal 3: Analyze surnames from the aggregated list to determine the most common surname.\n- Path 3.1: Extract surnames from each path's list, aggregate, and count frequencies.\n- Success: Identified the surname with highest count.\n\nBut note: The memory note says \"cross-referencing official institutional chronologies with biographical databases helped identify all individuals in a leadership series.\" So we should include that advice.\n\nAlso, the output format requires \"Goal N: [Goal Name]\" and paths with approach and success. We should have 1-5 goals. Here we can have 3 goals, or even 2 if we combine timeframe into list retrieval. But timeframe is trivial and can be part of the retrieval goal's verification.\n\nBetter to have:\nGoal 1: Acquire verified list of CUFE presidents (1949-2015) from multiple sources.\n- Path 1.1: Use Wikipedia/Baidu Baike.\n- Path 1.2: Use official CUFE history page.\n- Path 1.3: Use academic or news archives.\nGoal 2: Determine the most common surname among the presidents.\n- Path 2.1: Directly count surnames from aggregated list.\n- Path 2.2: Cross-reference with biographical databases to ensure no missing names.\nGoal 3: Confirm timeframe boundaries (optional, but could be a separate goal to ensure period correctness).\n- Path 3.1: Search for founding years of Tsinghua and Hupan.\n- Path 3.2: Search for CUFE founding year.\n\nBut note: The task asks for period from Tsinghua founding to Hupan founding, but CUFE was founded in 1949, after Tsinghua (1911). So the period effectively starts with CUFE's founding. So we just need from CUFE founding to 2015. However, if there were any presidents before CUFE's current name? The school went through name changes: Central Institute of Finance and Economics (1949), then Central University of Finance and Economics (1996). So presidents before 1996 were of the institute. But they are still considered presidents of the institution.\n\nThus, we need the complete list.\n\nNow, I'll produce the planning analysis in the required format.",
+      "memory_guidance": "[Context Note] Past tasks found that cross-referencing official institutional chronologies with biographical databases helped identify all individuals in a leadership series. One approach that worked involved iteratively searching for rosters and then aggregating surname frequencies across multiple verified sources."
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 历任校长 1949 2015"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "清华大学建校时间"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "湖畔大学成立时间"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学建校时间"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '中央财经大学 历任校长 1949 2015'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   中央財政金融學院. 校訓, 忠誠團結求實創新. 創辦時間, 1949年. 學校標識碼, 4111010034. 學校類型, 公立. 黨委書記 · 吳國生 · 校長 · 馬海濤. 教師人數, 1176. 學生人數 ...\n\n2. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   马海涛，男，1966年5月出生，山东威海人，研究生，经济学博士，中共党员，教授。现任中央财经大学校长、党委副书记、博士生导师，中央财经大学创新发展学院党委 ...\n\n3. [中央财经大学_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6/182071)\nSource: Unknown source\n   ... 1949年11月6日，历经中央税务学校、中央财政学院、中央财经学院、中央财政金融学院等发展阶段，1996年更名为中央财经大学 ... [18] 历任领导-中央财经大学．中央财经 ...\n\n4. [历任领导简介-上海财经大学](https://www.sufe.edu.cn/lrldjj/list.htm)\nSource: Unknown source\n   谈敏谈敏1949年9月生，上海市人，1974年1月加入中国共产党，1969年1月参加工作，经济学博士。曾任校长，现任财大资深教授，享受国务院津贴专家主要经历：1974年9月至1977年7月在 ...\n\n5. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   校长. 1994.08-1995.01. 校长兼党委书记. 1995.01-1999.10. 朱晓芳. 副校长. 1994.08-1999.10. 翟鹤高. 党委副书记. 1995.01-1999.10. 唐福元. 副校长. 1998.12-1999.10.\n\nResults for tool call 'web_search' with arguments '{'query': '清华大学建校时间'}':\n1. [学校沿革 - 清华大学](https://www.tsinghua.edu.cn/xxgk/xxyg.htm)\nSource: Unknown source\n   清华大学的前身清华学堂始建于1911年，1912年更名为清华学校。1928年更名为国立清华大学。1937年抗日战争全面爆发后南迁长沙，与北京大学、南开大学组建国立长沙临时 ...\n\n2. [清华大学- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-cn/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   始建于1911年，因北京西北郊清华园而得名，为常年位居全球前二十之列的亚洲顶级学府。初为清政府利用美国退还的部分庚子赔款所建“游美学务处”及附设“游美肄业馆”，1925 ...\n\n3. [清华大学_百度百科](https://baike.baidu.com/item/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6/111764)\nSource: Unknown source\n   学校前身为始建于1911年的清华学堂，1912年更名为清华学校。1928年更名为国立清华大学。1937年抗日战争全面爆发后南迁长沙，与北京大学、南开大学组建国立长沙临时大学。1938 ...\n\n4. [【校史连载之一】清华创办的背景与经过](https://www.tsinghua.org.cn/info/1952/16833.htm)\nSource: Unknown source\n   1911年，清华大学的前身——清华学堂带着民族屈辱的印记诞生在中华大地上，从建校伊始，清华便始终同国家的兴衰和民族的命运紧密联系在一起。 清华大学植根于中华民族优秀 ...\n\n5. [世纪清华——写在清华大学建校90周年之际](https://www.tsinghua.edu.cn/info/2030/78682.htm)\nSource: Unknown source\n   清华大学的前身是清华学堂，始建于1911年，是清政府用美国“退还”的部分“庚子赔款”而建立的一所留美预备学校。辛亥革命后更名为清华学校，1925年设立大学部，1928年正式定名为 ...\n\nResults for tool call 'web_search' with arguments '{'query': '湖畔大学成立时间'}':\n1. [浙江湖畔創業研學中心- 維基百科](https://zh.wikipedia.org/wiki/%E6%B5%99%E6%B1%9F%E6%B9%96%E7%95%94%E5%88%9B%E4%B8%9A%E7%A0%94%E5%AD%A6%E4%B8%AD%E5%BF%83)\nSource: Unknown source\n   成立時間, 2015年1月26日 (2015-01-26). 類型, 社會團體. 地址. 中國浙江省餘杭區文一 ... cnBeta. 湖畔大学微信公众号更名“湖畔Hupan” 柳传志曾为其“正名” - 视点 ...\n\n2. [湖畔大学，找寻创业的“精神沃土” - 人民日报](http://paper.people.com.cn/rmzk/html/2015-08/18/content_1616262.htm)\nSource: Unknown source\n   湖畔大学的名称源于阿里巴巴1999年创业所在地杭州湖畔花园小区，2003年淘宝也在湖畔花园诞生。据记者了解，马云对“湖畔”情有独钟，阿里的“合伙人”制度也被他称为“湖畔合伙人” ...\n\n3. [“大学”消失“湖畔”还能留多久？ - 美国之音](https://www.voachinese.com/a/Jack-Ma-s-school-for-business-elites-drops-university-from-its-name-20210517/5893442.html)\nDate published: May 17, 2021\nSource: Unknown source\n   湖畔大学成立于2015年1月，是一家面向中国顶级商业领袖的私立辅导机构。它的九名创始成员包括联想董事长柳传志、复星董事长郭广昌和巨人互动的史玉柱。\n\n4. [湖畔大学 - MBA智库百科](http://wiki.mbalib.com/wiki/%E6%B9%96%E7%95%94%E5%A4%A7%E5%AD%A6)\nDate published: Oct 20, 2020\nSource: Unknown source\n   湖畔大学坚持公益性和非营利性,主张坚守底线、完善社会。2015年3月27日,举行了“湖畔大学第一届开学典礼”,马云出任\n\n5. [客座评论：湖畔已无大学，马云不是校长 - DW](https://www.dw.com/zh/%E5%AE%A2%E5%BA%A7%E8%AF%84%E8%AE%BA%E6%B9%96%E7%95%94%E5%B7%B2%E6%97%A0%E5%A4%A7%E5%AD%A6%E9%A9%AC%E4%BA%91%E4%B8%8D%E6%98%AF%E6%A0%A1%E9%95%BF/a-57666569)\nDate published: May 26, 2021\nSource: Unknown source\n   （德国之声中文网）号称比哈佛还难进的\"湖畔大学\"是中国电商巨头阿里巴巴创始人马云和八位中国著名企业家以及学者于2015年创办的。曾经做过英文教师的马云 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学建校时间'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   創辦時間, 1949年. 學校標識碼, 4111010034. 學校類型, 公立. 黨委書記 · 吳國生 ... 中央財經大學建校50周年江澤民題字：「努力辦好中央財經大學，為現代化建設輸送高 ...\n\n2. [中央财经大学 - 中国留学网](https://www.cscse.edu.cn/cscse/gjhz15/yggdjywpxm/hzyx/gnhzyx/2025060313591218137/index.html)\nSource: Unknown source\n   中央财经大学是教育部直属的、教育部、财政部和北京市共建的大学，是国家“双一流”建设、“211工程”建设和首批“国家优势学科创新平台”项目建设高校，是新中国成立后中央人民 ...\n\n3. [中央财经大学_百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6/182071)\nSource: Unknown source\n   ... 学校始建于1949年11月6日，历经中央税务学校、中央财政学院、中央财经学院、中央财政金融学院等发展阶段，1996年更名为中央财经大学，2000年由财政部划转教育部直属 ...\n\n4. [中央财经大学怎么样好不好](https://www.dxsbb.com/news/7348.html)\nDate published: Jun 11, 2025\nSource: Unknown source\n   学校始建于1949年11月6日，创办之初由财政部主管，历经中央税务学校、中央财政学院、中央财经学院、中央财政金融学院等发展阶段，1996年更名为中央财经大学， ...\n\n5. [Unified identity authentication platform](https://ehall.cufe.edu.cn/)\nSource: Unknown source\n   Copyright © Central University of Finance and Economics. South Road:62289140. Shahe:61776543. EMAIL:its@cufe.edu.cn. Support: Smart Campus Construction Center.",
+      "think": "We need to advance all three goals in parallel. For Goal 1, we have already obtained lists from Baidu Baike and the official website, but we need to ensure completeness by executing Path 1.3 (search for additional academic databases or supplementary lists). For Goal 3, we need to verify the time-frame boundaries: Path 3.1 (search for Tsinghua founding and Hupan founding) and Path 3.2 (search for CUFE founding). These are independent and can be executed together. After gathering this additional information, we will merge the president lists, compute surname frequencies, and determine the most common surname.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "陈岱孙 中央财经学院 校长 1952"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 历任校长 王"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "陈如龙 中央财政金融学院 院长 陈菊铨 中央财政金融学院 院长"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '陈岱孙 中央财经学院 校长 1952'}':\n1. [百年三不朽，卓荦陈岱孙 - 清华大学](https://www.tsinghua.edu.cn/info/1661/56237.htm)\nDate published: Nov 5, 2020\nSource: Unknown source\n   在1952年院系调整时，陈岱孙离开了清华，但他对清华的热爱之情从未改变。1980年校庆时，这位当时已80高龄的老人欣喜地表示，愿为新恢复的经济管理工程 ...\n\n2. [陈岱孙- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E9%99%88%E5%B2%B1%E5%AD%99)\nSource: Unknown source\n   1952年院系调整后，陈岱孙历任中央财经学院校长、北京大学教授、经济系主任。1997年，陈岱孙去世，享年97岁。 著作. 编辑. 陈岱孙的经济学著作有《经济学说史》 ...\n\n3. [陈岱孙先生与清华经管学院](https://www.tsinghua.org.cn/info/1952/16975.htm)\nDate published: Apr 13, 2004\nSource: Unknown source\n   会上，陈岱孙先生深情地说：“我离开学校32年了，虽然离开了，我与清华还是维持着'香火之缘'，但只是心理上的一种关系。今天，校长骋我为名誉教授，有机会成为清华 ...\n\n4. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛隆重举行](https://econ.pku.edu.cn/ztbd/yqzt/bnyq/50170econ336563.htm)\nDate published: May 10, 2012\nSource: Unknown source\n   中央财经大学校长王广谦教授则代表中财师生对作为中央财经大学的主要创建者的陈岱孙先生表达了崇高的敬意。 北大经济学院孙祁祥院长致辞. 清华大学经济 ...\n\n5. [陈岱孙_欧美同学会](https://www.wrsa.net/content_39104120.htm)\nDate published: Aug 29, 2017\nSource: Unknown source\n   陈岱孙(1900—1997)经济学家、教育家。福建闽侯人。1926年获美国哈佛大学研究院经济学博士学位。曾任清华大学教授、经济系主任、法学院院长，西南联合 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 历任校长 王'}':\n1. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 · 李予昂（1949.11－1952.6） · 陳岱孫（1952.8－1953.8） · 王紹鰲（1952.8－1955.8） · 胡立教（1955.8－1956.9） · 安志成（1957.9－1959.4） · 貝仲寧（1960.8－1961.5） · 陳如龍（1964.10－ ...\n\n2. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   姓 名. 职 务. 任职时间. 备 注. 张 清. 党委书记、副校长. 1958.04-1959.08. 党委书记、校长. 1959.09-1964.09. 王工一. 党委副书记. 1958.04-1959.08.\n\n3. [中央财经大学历任校长_百科星图](https://baike.baidu.com/starmap/view?nodeId=a212f28724b0d87e1211a29f&lemmaTitle=%E5%A7%9C%E6%98%8E%E8%BF%9C&lemmaId=24608407&starMapFrom=starMapBottom)\nSource: Unknown source\n   百度百科是一部内容开放、自由的网络百科全书，旨在创造一个涵盖所有领域知识，服务所有互联网用户的中文知识性百科全书。在这里你可以参与词条编辑，分享贡献你的知识。\n\n4. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   李建军，男，1970年10月生于山西汾阳，汉族。教授、博士生导师，中央财经大学党委常委、副校长，中央财经大学金融学院院长，全国金融青联委员。\n\n5. [历任领导-山东财经大学](https://www.sdufe.edu.cn/xxgk_/lrld.htm)\nSource: Unknown source\n   王有山, 校长（时任山东省财政厅副厅长，兼任）, 1951.01-1952.10 ; 山东财政经济学院（1952.10-1953.09） ; 马巨涛, 院长（时任山东省计委主任、财委秘书长，兼任）, 1952.10- ...\n\nResults for tool call 'web_search' with arguments '{'query': '陈如龙 中央财政金融学院 院长 陈菊铨 中央财政金融学院 院长'}':\n1. [学院领导- 人大财金 - 中国人民大学财政金融学院](http://sf.ruc.edu.cn/rdcj/xyld/index.htm)\nSource: Unknown source\n   郭彪. 财政金融学院党委副书记、国家金融研究院院长助理. 人大财金. 学院简介 · 历史沿革 · 学院领导 · 历任院长 · 组织机构 · 社会捐赠 · 联系我们. 学者研究.\n\n2. [历史沿革 - 中国人民大学财政金融学院](http://sf.ruc.edu.cn/rdcj/lsyg/index.htm)\nSource: Unknown source\n   院长寄语 · 学院简介 · 历史沿革 · 学院领导 · 历任院长 · 组织机构 · 社会捐赠 · 联系我们. 历史沿革. 当前位置： 首页 > 人大财金 > 历史沿革. 财政金融学科的创建与探索.\n\n3. [邓晖 - 中国人民大学财政金融学院](http://sf.ruc.edu.cn/jszy/dh/719da3d31add4a51b553a1e33d4d9585.htm)\nSource: Unknown source\n   教育背景. 1999年9月至2003年6月：中国人民大学商学院，获管理学学士学位. 2005年9月至2007年6月：中国人民大学商学院，获管理学硕士学位. 工作经历.\n\n4. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/zh-mo/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E6%94%BF%E9%87%91%E8%9E%8D%E5%AD%A6%E9%99%A2?oldformat=true)\nSource: Unknown source\n   中央財經大學追溯於1949年的中央稅務學校，歷經中央財政學院、中央財經學院、中央財政金融學院等發展階段，最終定名為現在的中央財經大學。\n\n5. [历任领导 - 4066全球赢家之选-首頁welcome!](http://www.qing-yue.com/xxgk/lrld.htm)\nSource: Unknown source\n   陈如龙. 中央财政金融学院院长（财政部副部长兼）（1964.10-1969.9）. 党委书记 ... 中央财政金融学院院长（1992.9-1996.7）. 4066全球赢家之选校长（1996.7—2003.6 ...",
+      "think": "We have confirmed the time boundaries: Tsinghua (1911), Hupan (2015), CUFE (1949). Now we need to finalize the list of CUFE presidents from 1949 to 2015. Two key points require verification: (1) whether 陈岱孙 should be counted as a '校长' of CUFE, and (2) whether any other presidents with the most common surname (陈 or 王) might have been missed. We'll search for '陈岱孙 中央财经学院 校长' to confirm his official role, and also search for '中央财经大学 历任校长 王' to ensure we haven't missed any 王 surname presidents. Additionally, we'll search for '中央财经大学 校长 陈如龙 陈菊铨' to verify their full names and count. We can execute these searches in parallel.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经学院 校长 陈岱孙 王绍鳌"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 历届校长 名单 统计"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '中央财经学院 校长 陈岱孙 王绍鳌'}':\n1. [陈岱孙与清华 - 清华大学经济管理学院](https://www.sem.tsinghua.edu.cn/info/1138/8352.htm)\nSource: Unknown source\n   陈岱孙先生是清华1920级的毕业生，自1927年留学回国到母校任教以来，将其人生最美好的岁月奉献给了清华，不仅培养了众多经济学人才，而且为清华经济系和法学院的创办与发展付出 ...\n\n2. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛隆重举行](https://econ.pku.edu.cn/ztbd/yqzt/bnyq/50170econ336563.htm)\nDate published: May 10, 2012\nSource: Unknown source\n   中央财经大学校长王广谦教授则代表中财师生对作为中央财经大学的主要创建者的陈岱孙先生表达了崇高的敬意。 北大经济学院孙祁祥院长致辞. 清华大学经济 ...\n\n3. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 · 李予昂（1949.11－1952.6） · 陳岱孫（1952.8－1953.8） · 王紹鰲（1952.8－1955.8） · 胡立教（1955.8－1956.9） · 安志成（1957.9－1959.4） · 貝仲寧（1960.8－1961.5） · 陳如龍（1964.10－ ...\n\n4. [王传纶：我的老师陈岱孙 - 爱思想](https://www.aisixiang.com/data/122332.html)\nSource: Unknown source\n   陈岱孙（1900-1997），原名陈总，福建闽侯人。毕业清华大学、哈佛大学。著名经济学家、教育家。曾任清华大学经济系教授和系主任，清华大学法学院院长，西南联合大学经济系 ...\n\n5. [陈岱孙先生与清华经管学院](https://www.tsinghua.org.cn/info/1952/16975.htm)\nDate published: Apr 13, 2004\nSource: Unknown source\n   会上，陈岱孙先生深情地说：“我离开学校32年了，虽然离开了，我与清华还是维持着'香火之缘'，但只是心理上的一种关系。今天，校长骋我为名誉教授，有机会成为清华 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 历届校长 名单 统计'}':\n1. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   姓 名. 职 务. 任职时间. 备 注. 张 清. 党委书记、副校长. 1958.04-1959.08. 党委书记、校长. 1959.09-1964.09. 王工一. 党委副书记. 1958.04-1959.08.\n\n2. [历任领导-上海财经大学](https://www.sufe.edu.cn/lrld_13548/list.htm)\nSource: Unknown source\n   学校概况 ; 蒋传海, 校长, 2017.11～2022.3 ; 丛树海, 党委书记, 2012.6～2018.9 ; 樊丽明, 校长, 2012.6～2017.11 ; 马钦荣, 党委书记, 2004.7～2012.6 ; 谈 敏, 校长, 1998.12～ ...\n\n3. [历任领导 - 江西财经大学](https://www.jxufe.edu.cn/news-list-lirenlingdao.html)\nSource: Unknown source\n   历任领导 · 漆权. 1996.7-2000.4. 党委书记 · 史忠良. 校长 · 伍世安. 2000.4—2004.9. 党委书记 · 史忠良. 校长 · 伍世安. 2004.9—2008.6. 党委书记 · 王乔. 王乔. 2008.9—2017.5 ...\n\n4. [中央财经大学- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校长 · 马海涛. 教师人数, 1176. 学生人数, 约15,000. 本科生人数, 10060. 研究生人数, 4668 ... 除非另有声明，本网站内容采用CC BY-SA 4.0授权。 隐私政策 · 关于维基百科 ...\n\n5. [中央财经大学历任校长_百科星图](https://baike.baidu.com/starmap/view?nodeId=a212f28724b0d87e1211a29f&lemmaTitle=%E5%A7%9C%E6%98%8E%E8%BF%9C&lemmaId=24608407&starMapFrom=starMapBottom)\nSource: Unknown source\n   百度百科是一部内容开放、自由的网络百科全书，旨在创造一个涵盖所有领域知识，服务所有互联网用户的中文知识性百科全书。在这里你可以参与词条编辑，分享贡献你的知识。",
+      "think": "I have a lot of data now. Let me consolidate the lists from all sources to get the definitive list of CUFE presidents from 1949 to 2015, then count surnames and identify the most frequent one. I need to confirm a few open points: (1) Whether 陈岱孙 is officially considered a CUFE president (Baidu Baike official list omitted him, Wikipedia includes him), (2) Whether 秦穆伯 and 姜明远 and 景致 count as '校长' of the university's direct lineage (they were heads of affiliated schools, not the main line), (3) Whether there are any additional presidents I may have missed. I will search for a few more queries to resolve these discrepancies. Then I will count surnames from a consolidated list and determine the most frequent one.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 大事记 历任校长"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "陈岱孙 中央财经学院 校长 1952 1953"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "中央财经大学 校史 校长名单"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '中央财经大学 大事记 历任校长'}':\n1. [中央财经大学历任校长_百科星图](https://baike.baidu.com/starmap/view?nodeId=a212f28724b0d87e1211a29f&lemmaTitle=%E5%A7%9C%E6%98%8E%E8%BF%9C&lemmaId=24608407&starMapFrom=starMapBottom)\nSource: Unknown source\n   百度百科是一部内容开放、自由的网络百科全书，旨在创造一个涵盖所有领域知识，服务所有互联网用户的中文知识性百科全书。在这里你可以参与词条编辑，分享贡献你的知识。\n\n2. [中央財經大學- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校長 · 李予昂（1949.11－1952.6） · 陳岱孫（1952.8－1953.8） · 王紹鰲（1952.8－1955.8） · 胡立教（1955.8－1956.9） · 安志成（1957.9－1959.4） · 貝仲寧（1960.8－1961.5） · 陳如龍（1964.10－ ...\n\n3. [历任领导 - 南京财经大学](https://www.nufe.edu.cn/xygk/lrld1.htm)\nSource: Unknown source\n   姓 名. 职 务. 任职时间. 备 注. 张 清. 党委书记、副校长. 1958.04-1959.08. 党委书记、校长. 1959.09-1964.09. 王工一. 党委副书记. 1958.04-1959.08.\n\n4. [历任领导-上海财经大学](https://www.sufe.edu.cn/lrld_13548/list.htm)\nSource: Unknown source\n   丛树海, 党委书记, 2012.6～2018.9 ; 樊丽明, 校长, 2012.6～2017.11 ; 马钦荣, 党委书记, 2004.7～2012.6 ; 谈 敏, 校长, 1998.12～2012.6 ; 谈 敏, 党委书记, 1998.4～2004.7.\n\n5. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   中央财经大学现任领导有: 常委书记:何秀超何秀超,男,1962年9月生,1993年6月入党,1977年7月参加工作,中国人民大学企业管理专业博士研究生毕业。\n\nResults for tool call 'web_search' with arguments '{'query': '陈岱孙 中央财经学院 校长 1952 1953'}':\n1. [百年三不朽，卓荦陈岱孙 - 清华大学](https://www.tsinghua.edu.cn/info/1661/56237.htm)\nDate published: Nov 5, 2020\nSource: Unknown source\n   在1952年院系调整时，陈岱孙离开了清华，但他对清华的热爱之情从未改变。1980年校庆时，这位当时已80高龄的老人欣喜地表示，愿为新恢复的经济管理工程 ...\n\n2. [岱宗仰止——纪念陈岱孙先生诞辰120周年专题图片展在北大开展](https://www.tsinghua.org.cn/info/1014/32497.htm)\nSource: Unknown source\n   1952年任中央财经学院（现中央财经大学）第一副院长。1953年以后任北京大学教授 ... 2020年，适逢陈岱孙先生诞辰120周年，为缅怀陈岱孙先生给予一代代学子的爱护 ...\n\n3. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛隆重举行](https://econ.pku.edu.cn/ztbd/yqzt/bnyq/50170econ336563.htm)\nDate published: May 10, 2012\nSource: Unknown source\n   1945年起历任清华大学教授、法学院院长、经济系主任。1952年任中央财经学院第一副院长。1953年起任北京大学经济系教授，历任北京大学经济系主任、校务 ...\n\n4. [陈岱孙- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E9%99%88%E5%B2%B1%E5%AD%99)\nSource: Unknown source\n   陈岱孙（1900年10月20日—1997年7月27日），原名陈总，男，福建福州人 ... 1952年院系调整后，陈岱孙历任中央财经学院校长、北京大学教授、经济系主任。1997 ...\n\n5. [纪念陈岱孙先生诞辰112周年暨陈岱孙经济学基金发展论坛举行](https://www.sinobook.com.cn/comment/newsdetail.cfm?iCntno=9247)\nSource: Unknown source\n   1952年任中央财经学院第一副院长。1953年起任北京大学经济系教授，历任北京大学经济系主任、校务委员会委员、副主任，兼中华全国外国经济学说研究会会长、全国政协第二至八届 ...\n\nResults for tool call 'web_search' with arguments '{'query': '中央财经大学 校史 校长名单'}':\n1. [中央财经大学- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E4%B8%AD%E5%A4%AE%E8%B4%A2%E7%BB%8F%E5%A4%A7%E5%AD%A6)\nSource: Unknown source\n   校长 · 李予昂（1949.11－1952.6） · 陈岱孙（1952.8－1953.8） · 王绍鳌（1952.8－1955.8） · 胡立教（1955.8－1956.9） · 安志成（1957.9－1959.4） · 贝仲宁（1960.8－1961.5） · 陈如龙（1964.10－ ...\n\n2. [中央财经大学及现任校领导简介](https://zhuanlan.zhihu.com/p/643211356)\nDate published: Jul 12, 2023\nSource: Unknown source\n   马海涛，男，1966年5月出生，山东威海人，研究生，经济学博士，中共党员，教授。现任中央财经大学校长、党委副书记、博士生导师，中央财经大学创新发展学院党委 ...\n\n3. [中央财经大学建校70周年：与祖国发展同向同行—中国教育在线](https://kaoyan.eol.cn/yuan_xiao_xin_xi/201910/t20191023_1688615.shtml)\nDate published: Oct 23, 2019\nSource: Unknown source\n   ... '有特色、多科性、国际化的高水平研究型大学'目标奋勇前进。”在19日举行的中央财经大学建校70周年纪念大会上，该校校长王瑶琪在致辞中郑重表示。\n\n4. [中财“80后”口述校史｜侯荣华：与时俱进育栋梁](https://peking.bjd.com.cn/content/s67354bbee4b0a29cf60ea37d.html)\nSource: Unknown source\n   侯荣华（1934- ），教授，博士生导师。1958年毕业于东北财经学院（现辽宁大学）工业经济系。1980年调入中央财政金融学院，先后任教研室主任、 ...\n\n5. [中央财经大学校长、党委副书记马海涛：教育家精神与数字化技术双 ...](http://www.news.cn/edu/20250729/5b49a7f08dc44d8da6ebec74b16c6675/c.html)\nDate published: Jul 29, 2025\nSource: Unknown source\n   近日，中央财经大学校长、党委副书记马海涛在接受新华网专访时，系统阐释了实施教育家精神铸魂强师行动对高校教师提出的时代要求，同时详细介绍了学校在 ...",
+      "think": "I now have multiple sources for CUFE presidents. The official CUFE website page lists presidents including those of predecessor institutions. Additionally, Wikipedia provides a candidate list. There is a discrepancy regarding 陈岱孙, who is listed on Wikipedia but not on the official page for the period when the institution was called '中央财经学院'. I need to verify whether 陈岱孙 should be counted. Meanwhile, I must also disambiguate entries like 姜明远 (who was a school head, not main president) and decide whether to include 秦穆伯 and 景致. To resolve these ambiguities thoroughly, I will search for a comprehensive, authoritative list of the presidents of the main institution from 1949 to 2015, specifically targeting the '中央财经大学大事记' or a university history page. I will also run a query to confirm 陈岱孙's status as a president in the lineage.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "final_answer",
+          "arguments": {
+            "answer": "在清华大学建校（1911年）至湖畔大学成立（2015年）期间，中央财经大学历任校长中，姓氏“王”出现次数最多，共有3位（王绍鏊、王柯敬、王广谦）。"
+          }
+        }
+      ],
+      "obs": "在清华大学建校（1911年）至湖畔大学成立（2015年）期间，中央财经大学历任校长中，姓氏“王”出现次数最多，共有3位（王绍鏊、王柯敬、王广谦）。",
+      "think": "我已经从多个来源收集了中央财经大学1949年至2015年的历任校长名单，包括官方网站、百度百科和维基百科。经过交叉比对，排除2015年之后上任的校长（如王瑶琪、马海涛），并注意到官方和百度百科列表均未包含陈岱孙。因此，在此时间范围内的校长姓氏频次统计为：李（1）、王（王绍鏊、王柯敬、王广谦，共3次）、胡（1）、安（1）、贝（1）、秦（1）、陈（陈如龙、陈菊铨，共2次）、戎（1）、姜（1）、景（1）。姓氏“王”出现次数最多（3次）。",
+      "cot_think": null,
+      "memory_guidance": null
+    }
+  ],
+  "metrics": {
+    "elapsed_time": 515.320319890976,
+    "total_tokens": 259765,
+    "prompt_tokens": 223252,
+    "completion_tokens": 36513,
+    "api_calls": 42
+  }
+}

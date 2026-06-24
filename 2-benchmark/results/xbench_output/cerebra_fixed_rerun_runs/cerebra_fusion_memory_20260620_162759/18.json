@@ -1,0 +1,157 @@
+{
+  "score": 1,
+  "extracted_answer": "2",
+  "task_id": "18",
+  "question": "从理想汽车成立至小米汽车SU7车型销量（锁单）破十万期间，蔚来共计发售几款轿车？",
+  "full_query": "从理想汽车成立至小米汽车SU7车型销量（锁单）破十万期间，蔚来共计发售几款轿车？",
+  "golden_answer": "2",
+  "status": "success",
+  "agent_result": "从理想汽车成立（2015年7月1日）至小米汽车SU7锁单破十万（2024年5月9日）期间，蔚来共计发售了2款轿车：蔚来ET7（2021年1月发布）和蔚来ET5（2021年12月发布）。",
+  "agent_trajectory": [
+    {
+      "name": "plan",
+      "value": "## Goal 1: Determine Li Auto’s Founding Date\n- Path 1.1: Official Li Auto corporate website / press release\n  - Success: Extract the exact founding date (year, month, day) from the “About Us” or history section of Li Auto’s official site.\n- Path 1.2: Reputable third‑party sources (e.g., Wikipedia, Bloomberg, Reuters)\n  - Success: Confirm founding date through at least two independent, authoritative sources.\n\n## Goal 2: Determine the Date When Xiaomi SU7 Cumulative Locked Orders Exceeded 100,000\n- Path 2.1: Official Xiaomi announcement (social media, investor relations, or press release)\n  - Success: Find a precise date (year, month, day) stated by Xiaomi for reaching 100,000 locked orders of SU7.\n- Path 2.2: Major automotive news outlets (e.g., Dongchedi, Autohome, CNBC, Reuters) reporting the milestone\n  - Success: Cross‑verify the date from at least two independent, credible reports.\n\n## Goal 3: Identify All Sedan Models Launched by NIO During the Observation Window and Count Them\n- Path 3.1: Crawl NIO official “All Models” page to list every production model, including launch dates, then filter for sedans\n  - Success: Obtain a complete list of sedan models (e.g., ET5, ET7, etc.) with launch dates that fall between Goal 1 and Goal 2 dates.\n- Path 3.2: Consult community‑maintained or encyclopedic sources (e.g., Wikipedia “NIO vehicle timeline”, NIO fan wiki)\n  - Success: Verify sedan names and launch dates, ensuring no omission (e.g., special editions or variants may count).\n- Path 3.3: Cross‑reference with official NIO investor relations documents or annual reports for model launch timelines\n  - Success: Confirm the official count of sedans launched within the window, including any models that may have been removed or renamed.",
+      "think": "",
+      "cot_think": "We need to plan for the task: \"从理想汽车成立至小米汽车SU7车型销量（锁单）破十万期间，蔚来共计发售几款轿车？\" (From the establishment of Li Auto to the time when Xiaomi SU7 sales (locked orders) exceeded 100,000, how many sedans did NIO release in total?)\n\nWe need to decompose into goals. The task requires determining a time window: start = Li Auto founding date; end = when Xiaomi SU7 cumulative locked orders surpassed 100,000. Then within that window, count the number of sedan models launched by NIO.\n\nPossible goals:\n1. Determine the founding date of Li Auto. \n2. Determine the date when Xiaomi SU7 cumulative locked orders reached 100,000.\n3. Identify all sedan models launched by NIO during that period, and count them.\n\nWe can search for these independently. Also consider path diversity: e.g., for Li Auto founding date, we can search official site or reliable sources. For Xiaomi SU7 lock order milestone, we might search news articles. For NIO sedan models, we might search official list or community-maintained lists.\n\nSince we have tools: web_search, crawl_page. We'll design paths.\n\nHowever, we must follow output format: goals with paths. Each goal can have 1-5 paths. Paths within goal execute sequentially. But overall goals parallel.\n\nLet's define three goals. Provide paths for each.\n\nGoal 1: Determine Li Auto's founding date.\nPath 1.1: Search official Li Auto website or press release for founding date. Success: get exact date (year-month-day).\nPath 1.2: Search reliable sources like Wikipedia or automotive news. Success: get founding date.\n\nGoal 2: Determine the date when Xiaomi SU7 cumulative locked orders reached 100,000.\nPath 2.1: Search for official Xiaomi press release or social media post about SU7 orders reaching 100,000. Success: get specific date.\nPath 2.2: Search news articles from reputable automotive media reporting milestone. Success: get date.\n\nGoal 3: Identify all sedan models launched by NIO from Li Auto founding to that milestone, and count them.\nPath 3.1: Crawl NIO official website product page to list all models, filter sedans, check launch dates. Success: list and count.\nPath 3.2: Search community-maintained list or Wikipedia page for NIO models, extract sedans and launch dates. Success: list and count.\nPath 3.3: Use existing knowledge? But we should not solve directly, just plan. So we plan to search.\n\nThen final answer will combine results.\n\nNow produce the planning analysis.",
+      "memory_guidance": "[Context Note] Similar tasks have benefitted from first establishing precise start and end dates for the observation window, then consulting official product timelines and community-maintained launch lists to isolate only sedan models."
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "理想汽车 成立 时间"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "小米SU7 锁单 破十万 日期"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "蔚来 轿车 车型 发售 时间"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '理想汽车 成立 时间'}':\n1. [理想汽車- 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E7%90%86%E6%83%B3%E6%B1%BD%E8%BD%A6)\nSource: Unknown source\n   成立, 2015年7月，​10年前​（2015-07）. 創辦人 · 李想. 代表人物, 李想（董事長） 李鐵 ... 老厂房“腾笼换鸟”促北京汽车产业转型升级理想汽车“智造”基地顺义开建. 北京 ...\n\n2. [理想汽车-公司信息 - 佐思汽研](https://db.shujubang.com/home/login/companyinfo/id/1612)\nSource: Unknown source\n   公司简介： 理想汽车是由李想在2015年7月创立的新能源汽车公司，公司稍早前命名为“车和家”，2019年3月，理想智造更名为理想， 希望打造“没有续航里程焦虑”的中大型SUV。\n\n3. [理想汽车_百度百科](https://baike.baidu.com/item/%E7%90%86%E6%83%B3%E6%B1%BD%E8%BD%A6/23679382)\nSource: Unknown source\n   2015年7月1日，理想汽车由李想创立于北京，自有生产基地位于江苏常州。 ... 2018年10月18日，理想汽车正式发布首款智能电动车——理想智造ONE。\n\n4. [理想汽车丨理想，给车和家赋予生命。](https://www.lixiang.com/)\nDate published: Jun 23, 2025\nSource: Unknown source\n   理想汽车致力于成为全球领先的具身智能企业，产品布局包含智能汽车、智能眼镜、空间机器人和人形机器人，提供家一样的体验、具身智能的主动服务。\n\n5. [三分钟了解理想发展史 - 雪球](https://xueqiu.com/8563020425/209431365)\nDate published: Jan 19, 2022\nSource: Unknown source\n   蔚来成立于2014年11月，小鹏成立于2015年，其实在2014年就已经开始组建，理想汽车在2015年7月正式成立，理想成立的最晚。不过，跟其他两家先通过代 ...\n\nResults for tool call 'web_search' with arguments '{'query': '小米SU7 锁单 破十万 日期'}':\n1. [锁单率超40%！ 雷军将直面“幸福的烦恼”？友商：行业平均水平 - 财联社](https://www.cls.cn/detail/1637457)\nSource: Unknown source\n   而最新信息表明，至4月2日，小米SU7 各版本的交付时间再度延长，其中标准版车型在下单锁定后的预计交付周期为20-23周，Pro版为19-22周，Max版则长达28-31周。\n\n2. [传小米SU7锁单破10万！42天卖光雷军小目标，现在下单得明年提车](https://chedongxi.com/p/318808.html)\nDate published: May 9, 2024\nSource: Unknown source\n   车东西也第一时间找到小米汽车官方确认信息，官方目前并未确认具体订单数据。小米预计将会在5月23日发布了第一季度财报，届时可能会公布最新的锁单数据。\n\n3. [小米汽车：34 分钟内，新一代SU7 锁单1.5 万台 - 新浪财经](https://finance.sina.com.cn/tech/digi/2026-03-19/doc-inhrpwvm8508890.shtml)\nDate published: Mar 19, 2026\nSource: Unknown source\n   3月19日晚间，小米汽车官微宣布新一代SU7 用时34 分钟锁单1.5 万台。该车正式上市，标准版21.99 万元，Pro 版24.99 万元，Max 版30.39 万元。\n\n4. [曝小米汽车SU7锁单破10万辆，卖出一年交付目标 - 电子工程专辑](https://www.eet-china.com/mp/a312659.html)\nDate published: May 9, 2024\nSource: Unknown source\n   小米SU7 标准版的交付周期预计为29-32 周,小米SU7 Pro 的交付周期预计为30-33 周,小米SU7 Max 的交付周期预计为34-37 周\n\n5. [传小米SU7锁单破10万！42天卖光雷军小目标，现在下单得明年提车](https://chejiahao.m.autohome.com.cn/info/15177760?from=pc)\nDate published: May 9, 2024\nSource: Unknown source\n   车东西也第一时间找到小米汽车官方确认信息，官方目前并未确认具体订单数据。小米预计将会在5月23日发布了第一季度财报，届时可能会公布最新的锁单数据。但 ...\n\nResults for tool call 'web_search' with arguments '{'query': '蔚来 轿车 车型 发售 时间'}':\n1. [蔚来汽车- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E8%94%9A%E6%9D%A5%E6%B1%BD%E8%BD%A6)\nSource: Unknown source\n   蔚来（NIO） · 4座大型轿车 · 2024年12月发布.\n\n2. [NIO蔚来汽车官方网站](https://www.nio.cn/)\nSource: Unknown source\n   蔚来是一家全球化的智能电动汽车公司，于2014年11月成立。蔚来致力于通过提供高性能的智能电动汽车与极致用户体验，为用户创造愉悦的生活方式。\n\n3. [蔚来_百度百科](https://baike.baidu.com/item/%E8%94%9A%E6%9D%A5/22099728)\nSource: Unknown source\n   2021发布旗舰轿车ET7。 ... 2022年完成在香港、新加坡三地上市布局。 ... 2024年7月发布蔚来自主研发全域操作系统SkyOS·天枢。2025年蔚来自研芯片“神玑NX9031”启动技术对外授权 ...\n\n4. [蔚来智能电动轿跑SUV全新EC6上市- 新闻资讯](https://www.nio.cn/news/20230915001)\nDate published: Sep 15, 2023\nSource: Unknown source\n   9月15日，蔚来智能电动轿跑SUV——全新EC6正式上市，车型起售价358,000元（75kWh电池包）。即日起，用户即可前往蔚来展厅试驾体验，新车交付也同步开启。\n\n5. [蔚来汽车报价_图片](https://car.autohome.com.cn/price/brand-284-464.html)\nSource: Unknown source\n   级 别：中型车 · 续航里程：740公里 · 电动机：490马力 · 充电时间：快充0.6小时 · 外观颜色：. 月辉银 · 镜空粉 · 云白 · 星辰绿 · 深空黑 · 远空紫 · 云初黄. 更多颜色. 月辉银.",
+      "think": "The task requires three independent goals: (1) find Li Auto's founding date, (2) find the date when Xiaomi SU7 cumulative locked orders exceeded 100,000, and (3) identify all sedan models launched by NIO during that time period. All three goals can be initiated in parallel using web searches. I will start with primary paths for each goal.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://baike.baidu.com/item/%E7%90%86%E6%83%B3%E6%B1%BD%E8%BD%A6/23679382",
+            "query": "理想汽车 成立 日期"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "小米SU7 锁单 突破 10万 官方 公告 日期"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "蔚来 所有 轿车 车型 发售 时间 列表 ET5 ET7 ET9"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "NIO sedan models launch timeline ET5 ET7 ET9 list"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://baike.baidu.com/item/%E7%90%86%E6%83%B3%E6%B1%BD%E8%BD%A6/23679382', 'query': '理想汽车 成立 日期'}':\n理想汽车由李想于2015年7月1日创立。\n\nResults for tool call 'web_search' with arguments '{'query': '小米SU7 锁单 突破 10万 官方 公告 日期'}':\n1. [雷军发文：小米新一代SU7锁单突破8万台 - 东方财富](https://wap.eastmoney.com/a/202605063728745030.html)\nDate published: May 6, 2026\nSource: Unknown source\n   中证报中证网讯5月6日，小米汽车官方宣布，新一代SU7自3月19日上市以来，仅用48天，累计锁单量已突破80000台。小米集团创始人、董事长兼CEO雷军同步发文 ...\n\n2. [小米雷军：SU7大定超10万人锁单超4万单](https://m.cnstock.com/commonDetail/713)\nSource: Unknown source\n   上证报中国证券网讯（记者温婷）在4月3日上午的小米SU7首批交付仪式上，小米集团创始人、董事长兼CEO雷军宣布，小米SU7开售短短几天时间，就有超过10万人大定，锁单量已经 ...\n\n3. [雷军官宣新一代SU7首销期锁单超8万，四天大增上万订单 - 证券时报](https://www.stcn.com/article/detail/3895658.html)\nDate published: May 6, 2026\nSource: Unknown source\n   5月1日晚，小米汽车答网友问（第239集）中提到，新一代SU7的首销权益有效期到5月5日24点截止，在此之前支付大定定金的订单，即可享受首销权益，如新一代SU7标准版 ...\n\n4. [小米汽車｜新一代小米SU7上市48日鎖單逾8萬輛五一期間增長顯著](https://hk.finance.yahoo.com/news/%E5%B0%8F%E7%B1%B3%E6%B1%BD%E8%BB%8A-%E6%96%B0-%E4%BB%A3%E5%B0%8F%E7%B1%B3su7%E4%B8%8A%E5%B8%8248%E6%97%A5-%E9%8E%96%E5%96%AE%E9%80%BE8%E8%90%AC%E8%BC%9B-%E4%BA%94-032948457.html)\nDate published: May 5, 2026\nSource: Unknown source\n   小米汽車宣佈，新一代SU7上市48日，鎖單量突破8萬輛。據悉該車款過去4日的鎖單量逾1萬輪，反映五一黃金周的增長強勁。 小米（1810）今年3月發佈新一代SU7， ...\n\n5. [【車主認可】 新一代SU7上市48天鎖單突破8萬小米汽車公佈](https://www.instagram.com/p/DX-_ZDVnbFr/)\nDate published: May 5, 2026\nSource: Unknown source\n   小米汽車公布新一代小米SU7的最新銷售數據。自上市以來僅48日，該車款的鎖單量已經突破8萬輛。受惠於五一黃金周帶動，單是過去4日的鎖單量已超過1萬輛， ...\n\nResults for tool call 'web_search' with arguments '{'query': '蔚来 所有 轿车 车型 发售 时间 列表 ET5 ET7 ET9'}':\n1. [NIO蔚来汽车官方网站](https://www.nio.cn/)\nSource: Unknown source\n   全部车型; 轿车; SUV; 跑车; 概念车. ES9 科技行政旗舰SUV · 全新ES8 全场景科技旗舰SUV · ET5T 智能电动旅行车 · ET5 智能电动中型轿跑 · ES6 智能电动全能SUV · EC6 ...\n\n2. [隔壁大佬们都来看2024款蔚来ET7上市2024-05-23](https://www.nio.cn/media/20240531001)\nSource: Unknown source\n   2024款ET7于北京车展正式上市，售价42.8-51.6万，BaaS电池租用版35.8万起。这次的蔚来ET7带来了180项升级，涵盖外观、内饰、座舱、驾控、智能、智驾六大 ...\n\n3. [蔚来ET7_智能电动行政轿车-NIO蔚来官网](https://www.nio.cn/et7)\nSource: Unknown source\n   蔚来ET7高端智能电动轿车，CLTC续航超1000公里，搭载NAD自动驾驶技术，全系标配空气悬架与4D舒适座舱。立即预约试驾，体验未来出行方式。\n\n4. [蔚来汽车- 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E8%94%9A%E6%9D%A5%E6%B1%BD%E8%BD%A6)\nSource: Unknown source\n   2021年12月发布. 蔚来ET7. 5座中大型轿车; 2020年1月发布. 蔚来ET9. 4座大型轿车; 2024年12月发布. 蔚来EP9. 双门跑车; 间接水冷电动机; 2016年11月发布，为蔚来首款正式 ...\n\n5. [蔚来汽车- 车型大全 - 选车中心](https://newcar.xcar.com.cn/price/pb227/)\nSource: Unknown source\n   蔚来ES8. 厂商指导价：41.68万起. 蔚来ES8 · 蔚来ES6. 厂商指导价：34.98万起. 蔚来ES6 · 蔚来EC6. 厂商指导价：暂无. 蔚来EC6 · 蔚来ET7. 厂商指导价：42.80万起. 蔚来ET7 · 蔚来 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'NIO sedan models launch timeline ET5 ET7 ET9 list'}':\n1. [NIO ET9 | NIO Official Website](https://www.nio.com/et9)\nSource: Unknown source\n   NIO ET9, Smart Electric Executive flagship. An embodiment of vision and action. Drive the evolution of NIO's design DNA, unlock groundbreaking experiences like ...\n\n2. [What's New with NIO in May - News](https://www.nio.com/news/20250603002)\nDate published: Jun 3, 2025\nSource: Unknown source\n   Building upon two years of development efforts, NIO officially launched the smart electric mid-size sedan New ET5, and the smart electric tourer ...\n\n3. [Nio ET7 - Wikipedia](https://en.wikipedia.org/wiki/Nio_ET7)\nSource: Unknown source\n   The ET7 is the first Nio vehicle to come equipped with LiDAR, and is currently serving as Nio's flagship model before the ET9 begins deliveries in early 2025.\n\n4. [Nio ET9 sold out 999units hours after launch. Price at ... - Facebook](https://www.facebook.com/groups/341871730272007/posts/1318596582599512/)\nDate published: Dec 23, 2024\nSource: Unknown source\n   NIO ET5 Is A New Chinese Electric Sedan With 360kw And A 1000km Range ... Nio launches 150 kwh solid state battery and ET7 sedan. Thanasi ...\n\n5. [Ultra Luxury NIO ET9 First Look & Full Tour! The Next ... - YouTube](https://www.youtube.com/watch?v=ScMqr1RSaBw)\nDate published: Feb 5, 2025\nSource: Unknown source\n   Carbon Raffle is ending SOON! Get your tickets now!http://www.carbonraffle.org/OutofSpec The NIO ET9 is an insane vertically integrated ...",
+      "think": "From the initial search results, I have preliminary data. For Goal 1, Li Auto was founded on 2015-07-01 (Baidu Baike). For Goal 2, there are rumors from May 9, 2024 about SU7 exceeding 100k locked orders, but I need official confirmation. For Goal 3, I need a comprehensive list of NIO sedan models. Let me now verify these with deeper crawls and more targeted searches.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "小米SU7 累计锁单 10万 官方 宣布 日期 2024"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "NIO ET7 发布 上市 日期"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "NIO ET5 发布 上市 日期"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "NIO ET9 发布 上市 日期"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '小米SU7 累计锁单 10万 官方 宣布 日期 2024'}':\n1. [首批小米SU7交付，雷军公布最新锁单量 - 证券时报](https://www.stcn.com/article/detail/1166332.html)\nDate published: Apr 3, 2024\nSource: Unknown source\n   在现场，雷军亲自为小米汽车的车主打开车门。对于外界关心的交付数量，据雷军透露，小米SU7开售至今，已有超过10万人大定，锁单量已经超过4万单。\n\n2. [小米：SU7锁单量已超7万台今年交付目标超10万辆 - 财联社电报](https://m.cls.cn/detail/1655015)\nSource: Unknown source\n   小米：SU7锁单量已超7万台今年交付目标超10万辆. 2024-04-22 19 ... 小米SU7锁单量已经超过7万台。 随后，卢伟冰发文表示，雷军宣布，2024年小米su7交付目标超过10万辆。\n\n3. [车展速递丨小米SU7累计交付5781辆雷军：2024年确保交付10万辆](http://www.nbd.com.cn/rss/toutiao/articles/3354528.html)\nDate published: Apr 25, 2026\nSource: Unknown source\n   “4月20日，我们发布小米SU7锁单量超7万辆。从宣布7万锁单量至今，我们经历了很多，包括特斯拉降价、友商截胡等，但小米SU7依然在5天时间内锁单量增加了5000多 ...\n\n4. [小米汽车亮相2024北京车展：雷军宣布小米SU7锁单75723台 - 新华网](http://www.news.cn/auto/20240426/0f252163f0c643ff8d3fe63e44443a62/c.html)\nDate published: Apr 26, 2024\nSource: Unknown source\n   4月25日，小米汽车在2024北京国际车展上召开发布会，雷军宣布小米SU7正式发布28天后锁单量75723台，已交付5781台，创下业内新品牌首款车型上市首月的交付 ...\n\n5. [网传小米汽车锁单破10万：今年产能或全部卖光 - 新浪财经](https://finance.sina.com.cn/tech/roll/2024-05-10/doc-inauriap3005767.shtml?cre=tianyi&mod=pchp&loc=4&r=0&rfunc=66&tj=cxvertical_pc_hp&tr=12)\nDate published: May 10, 2024\nSource: Unknown source\n   2024年5月9日，汽车博主孙少军爆料称，“车fans已确认，小米汽车锁单破10万”。5月1日，小米汽车官方发布消息称，小米SU7的4月交付量达7058台（4月3日首次交付）， ...\n\nResults for tool call 'web_search' with arguments '{'query': 'NIO ET7 发布 上市 日期'}':\n1. [隔壁大佬们都来看2024款蔚来ET7上市2024-05-23](https://www.nio.cn/media/20240531001)\nSource: Unknown source\n   2024款ET7于北京车展正式上市，售价42.8-51.6万，BaaS电池租用版35.8万起。这次的蔚来ET7带来了180项升级，涵盖外观、内饰、座舱、驾控、智能、智驾六大 ...\n\n2. [蔚来ET7 - 维基百科，自由的百科全书](https://zh.wikipedia.org/zh-hans/%E8%94%9A%E6%9D%A5ET7)\nSource: Unknown source\n   蔚来ET7是中国电动汽车公司蔚来汽车生产的一款大型电动汽车。2021年1月9日在中华人民共和国成都举行的\"NIO Day \"上首次亮相，2022年初上市，起售价为人民币44.8万元。\n\n3. [蔚来汽车发布新款ET7轿车，迎战特斯拉- WSJ](https://cn.wsj.com/articles/%E8%94%9A%E6%9D%A5%E6%B1%BD%E8%BD%A6%E5%8F%91%E5%B8%83%E6%96%B0%E6%AC%BEet7%E8%BD%BF%E8%BD%A6%EF%BC%8C%E8%BF%8E%E6%88%98%E7%89%B9%E6%96%AF%E6%8B%89-11610347512)\nDate published: Jan 12, 2021\nSource: Unknown source\n   蔚来汽车上周六发布了第四款量产车型ET7，目前该公司正准备迎接特斯拉在中国生产的Model Y跨界车的挑战，后者将于未来几周在中国上市。\n\n4. [蔚来首款旗舰轿车ET7及150kwh固态电池发布会全程 - YouTube](https://www.youtube.com/watch?v=IB-nGyrQa4g)\nDate published: Jan 9, 2021\nSource: Unknown source\n   2020年1月9日晚，在蔚来汽车的NIO Day 2020之夜上，蔚来正式发布了全新中大型电动轿车——蔚来ET7。并且公布了它的补贴前售价，70kWh版本为44.80万元 ...\n\n5. [蔚来ET7上市：给市场一记温柔的暴击](https://chejiahao.autohome.com.cn/info/7751967?isfrom=m)\nDate published: Jan 13, 2021\nSource: Unknown source\n   在1月9日刚刚结束的NIO Day 2020蔚来日上，蔚来首款轿车也是第四款量产车——智能电动旗舰轿车蔚来ET7正式上市。新车共分为70kWh和100kWh两个版本，补贴前 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'NIO ET5 发布 上市 日期'}':\n1. [蔚來ET5 - 維基百科，自由的百科全書](https://zh.wikipedia.org/wiki/%E8%94%9A%E6%9D%A5ET5)\nSource: Unknown source\n   ET5於2021年12月18日在蘇州奧林匹克體育中心首次亮相，並於2022年9月上市，起步價為人民幣328,000元，以特斯拉Model 3和小鵬P7為競爭對手。2023年6月，蔚來發布ET5旅行版（ ...\n\n2. [Starting at RMB 298,000, NIO's New ET5 and ET5T Launched With ...](https://www.nio.com/news/20250525001)\nDate published: May 26, 2025\nSource: Unknown source\n   Since the start of its delivery in September 2022, the NIO ET5 has set a new benchmark in the RMB 300,000 premium sedan segment in China, ...\n\n3. [Live Replay：蔚来新ET5、 新ET5T上市发布会 - YouTube](https://www.youtube.com/watch?v=eP6xlY65NH0)\nDate published: May 25, 2025\nSource: Unknown source\n   Live Replay：蔚来新ET5、 新ET5T上市发布会| NIO New ET5、 New ET5T Launch Conference. 1.3K views · 1 year ago ...more ...\n\n4. [The ET5: Mid-size Smart Electric Sedan - NIO](https://www.nio.com/et5)\nSource: Unknown source\n   Introducing the NIO ET5, where supercar DNA meets tech aesthetics. This smart electric mid-size sedan is a bold expression of style and attitude.\n\n5. [据说ET5 Touring将于6月10日起在中国蔚来展厅上市 - Moomoo](https://www.moomoo.com/hans/news/post/23890927/et5-touring-said-to-be-available-at-nio-showrooms-in)\nSource: Unknown source\n   ... 上市，并将于6月9日晚在蔚来展厅上市，有兴趣的人可以在6月10日前来看看。 ET5 Touring 是蔚来（纽约证券交易所代码：NIO）ET5 轿车的衍生产品，尚未正式推出，但已不再是秘密。\n\nResults for tool call 'web_search' with arguments '{'query': 'NIO ET9 发布 上市 日期'}':\n1. [十年科技创新结晶蔚来ET9正式上市](https://www.nio.cn/news/20241221003)\nDate published: Dec 21, 2024\nSource: Unknown source\n   12月21日，2024蔚来日（NIO Day 2024）在广州举行，蔚来宣布智能电动行政旗舰ET9正式上市，售价788,000元起，采用BaaS电池租用方式购买，售价660,000起；同步 ...\n\n2. [蔚來ET9 - 維基百科，自由的百科全書](https://zh.wikipedia.org/zh-hant/%E8%94%9A%E6%9D%A5ET9)\nSource: Unknown source\n   蔚來ET9是中國電動汽車公司蔚來生產的一款4座大型電動汽車，2023年12月23日在中國西安舉行的「NIO Day」上首次亮相，並於2024年12月21日在廣州舉辦的「NIO Day」正式 ...\n\n3. [发布会：NIO Day 蔚来ET9上市发布部分 - 哔哩哔哩](https://www.bilibili.com/video/BV1ffk8YAESH/)\nDate published: Dec 21, 2024\nSource: Unknown source\n   发布会：NIO Day 蔚来ET9上市发布部分. 新能车官方. 相关推荐. 查看更多. 发布会｜艾瑞泽8征服版上市发布会. 879 1. 35:29. App. 发布会｜艾瑞泽8征服版上市 ...\n\n4. [蔚来ET9正式发布；星途星纪元ES正式上市｜E 周要闻](https://share-m.kakamobi.com/m.toutiao.kakamobi.com/detail/?origin=1&id=3097192)\nSource: Unknown source\n   ... NIO Day 蔚来ET9 正式发布12 月23 日，蔚来在西安举办2023 NIO Day ... 12 月20 日，星途星纪元ES 正式上市。星纪元ES 共包括5 个版本：. Air ...\n\n5. [【完整版】NIO Day 2024｜同行— 行政级旗舰ET9新车发布会](https://www.youtube.com/watch?v=_xHFJjDLPCY)\nDate published: Dec 21, 2024\nSource: Unknown source\n   2024年的NIO Day蔚来日，也是第十个蔚来日，与其说这是一场新车发布会，倒不如说是一场见证过去十年与蔚来“同行”的所有用户、供应商伙伴等等的盛大聚会。",
+      "think": "We have confirmed Goal 1: Li Auto founded on 2015年7月1日. Now we need to advance Goal 2 and Goal 3. For Goal 2, the previous search did not find a clear official date for SU7 reaching 100,000 locked orders. I will search more specifically for official confirmation and reliable reports. For Goal 3, we need the precise launch dates of NIO sedan models (ET7, ET5, ET9, and possibly others) to count only those that fell between 2015-07-01 and the SU7 milestone date. I will search for the launch dates of these models from official or authoritative sources. Both goals can be advanced in parallel.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "小米SU7 锁单 破10万 2024年5月9日 官方 确认"
+          }
+        },
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://zh.wikipedia.org/zh-hans/%E8%94%9A%E6%9D%A5%E6%B1%BD%E8%BD%A6",
+            "query": "蔚来 轿车 车型 发售 时间 列表 ET7 ET5 ET9"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '小米SU7 锁单 破10万 2024年5月9日 官方 确认'}':\n1. [传小米SU7锁单破10万，42天卖光雷军小目标 - 36氪](https://m.36kr.com/p/2768594719177473)\nDate published: May 9, 2024\nSource: Unknown source\n   车东西也第一时间找到小米汽车官方确认信息，官方目前并未确认具体订单数据。小米预计将会在5月23日发布了第一季度财报，届时可能会公布最新的锁单数据。 但 ...\n\n2. [传小米SU7锁单破10万！42天卖光雷军小目标，现在下单得明年提车](https://news.qq.com/rain/a/20240509A08WUX00)\nDate published: May 9, 2024\nSource: Unknown source\n   车东西也第一时间找到小米汽车官方确认信息，官方目前并未确认具体订单数据。小米预计将会在5月23日发布了第一季度财报，届时可能会公布最新的锁单数据。\n\n3. [网传小米汽车锁单破10万：今年产能或全部卖光 - 新浪财经](https://finance.sina.com.cn/tech/roll/2024-05-10/doc-inauriap3005767.shtml?cre=tianyi&mod=pchp&loc=4&r=0&rfunc=66&tj=cxvertical_pc_hp&tr=12)\nDate published: May 10, 2024\nSource: Unknown source\n   2024年5月9日，汽车博主孙少军爆料称，“车fans已确认，小米汽车锁单破10万”。5月1日，小米汽车官方发布消息称，小米SU7的4月交付量达7058台（4月3日首次交付）， ...\n\n4. [小米SU7销量破十万期间，蔚来发布几款轿车？ - UniFuncs](https://unifuncs.com/s/x2nG4VhP)\nSource: Unknown source\n   ✓ 最终答案 ... 从理想汽车成立（2015年7月1日）至小米汽车SU7销量（锁单）破十万（2024年5月9日）期间，蔚来共计发售2款轿车（ET7和ET5）。 这个结论基于多源交叉验证，具有高置信度。\n\n5. [曝小米汽车SU7锁单破10万辆，卖出一年交付目标 - 电子工程专辑](https://www.eet-china.com/mp/a312659.html)\nDate published: May 9, 2024\nSource: Unknown source\n   5月9日，据汽车博主孙少军爆料，小米汽车锁单量已突破10万辆。 3月28日，小米SU7正式发布。 5月1日，小米汽车官方发布的信息显示，截止4月30日24时，小米SU7锁单 ...\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://zh.wikipedia.org/zh-hans/%E8%94%9A%E6%9D%A5%E6%B1%BD%E8%BD%A6', 'query': '蔚来 轿车 车型 发售 时间 列表 ET7 ET5 ET9'}':\n根据维基百科页面内容，蔚来轿车车型及发售时间如下：\n\n- **蔚来ET7**：5座中大型轿车，2020年1月发布。\n- **蔚来ET5**：5座中型轿车（有旅行车版本），2021年12月发布。\n- **蔚来ET9**：4座大型轿车，2024年12月发布。\n\n以上为查询涉及的三个轿车车型的具体发售时间。",
+      "think": "I have partial results: Li Auto founding date is confirmed (2015-07-01). Xiaomi SU7 lock orders reaching 100,000: reports indicate around May 9, 2024, but I need to confirm the exact date or find official announcement. NIO sedan models: need to verify the complete list and their launch dates to count those launched within the window. I'll search for more precise SU7 100k lock date and crawl NIO Wikipedia page for model launch timeline.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "final_answer",
+          "arguments": {
+            "answer": "从理想汽车成立（2015年7月1日）至小米汽车SU7锁单破十万（2024年5月9日）期间，蔚来共计发售了2款轿车：蔚来ET7（2021年1月发布）和蔚来ET5（2021年12月发布）。"
+          }
+        }
+      ],
+      "obs": "从理想汽车成立（2015年7月1日）至小米汽车SU7锁单破十万（2024年5月9日）期间，蔚来共计发售了2款轿车：蔚来ET7（2021年1月发布）和蔚来ET5（2021年12月发布）。",
+      "think": "All three goals have been resolved. \n\n**Goal 1:** Li Auto was founded on July 1, 2015 (verified via Baidu Baike crawl).\n\n**Goal 2:** Xiaomi SU7 locked orders exceeded 100,000 on or around May 9, 2024 (widely reported by multiple automotive news sources based on industry insider confirmation; official Xiaomi did not explicitly confirm the number but the milestone is treated as factual by the industry).\n\n**Goal 3:** Within the observation window (2015-07-01 to 2024-05-09), NIO launched two sedan models:\n- NIO ET7: First revealed on January 9, 2021 (NIO Day 2020), deliveries began early 2022.\n- NIO ET5: First revealed on December 18, 2021 (NIO Day 2021), deliveries began September 2022.\n- NIO ET9 was launched in December 2024, after the window, so it does not count.\n- NIO EP9 is a limited-production supercar, not a production sedan.\n\nThus, NIO released exactly 2 sedans during the specified period.",
+      "cot_think": null,
+      "memory_guidance": null
+    }
+  ],
+  "metrics": {
+    "elapsed_time": 182.46030688285828,
+    "total_tokens": 136307,
+    "prompt_tokens": 125822,
+    "completion_tokens": 10485,
+    "api_calls": 22
+  }
+}

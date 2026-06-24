@@ -1,0 +1,308 @@
+{
+  "agent_result": "在2024年中国高校计算机教育大会（CCEC2024）首届教学案例大赛中，南华大学计算机学院李萌老师领衔设计的教学案例《面向科学计算程序的白盒测试综合训练》荣获三等奖。\n\n湘亭奖学金的捐赠者是南华大学计算机学院2001级校友、杭州湘亭科技有限公司董事长何帅兴。",
+  "judgement": "error",
+  "item_index": 23,
+  "question": "2024年中国高校计算机教育大会李萌老师获奖的教学案例以及湘亭奖学金的捐赠者是哪位校友？",
+  "enhanced_question": "You are tasked with answering a question that requires navigating through a website to find the information.\n\nQuestion: 2024年中国高校计算机教育大会李萌老师获奖的教学案例以及湘亭奖学金的捐赠者是哪位校友？\n\nStarting URL: https://jsjxy.usc.edu.cn/\n\nPlease:\n1. Start from the provided root URL\n2. Navigate through the website to find the information needed\n3. Use web search and page crawling tools to explore the site\n4. Provide a clear and accurate answer based on what you find\n\nImportant: You MUST begin by accessing https://jsjxy.usc.edu.cn/\n",
+  "golden_answer": "李萌的《面向科学计算程序的白盒测试综合训练》教学案例获奖，捐赠者是2001级校友何帅兴。",
+  "root_url": "https://jsjxy.usc.edu.cn/",
+  "domain": "education",
+  "difficulty": "medium",
+  "language": "zh",
+  "type": "multi_source",
+  "source_websites": [
+    "https://jsjxy.usc.edu.cn/info/1993/11291.htm",
+    "https://jsjxy.usc.edu.cn/info/2046/11326.htm"
+  ],
+  "golden_path": [
+    "root->本科教育->南华大学教师荣获CCEC首届全国高校计算机教学案例大赛三等奖",
+    "root->校友工作->计算机学院2001级校友何帅兴捐赠《湘亭奖学金》协议签约仪式顺利举行"
+  ],
+  "status": "success",
+  "agent_trajectory": [
+    {
+      "name": "plan",
+      "value": "## Goal 1: Find Li Meng's winning teaching case at the 2024 China University Computer Education Conference\n- Path 1.1: Search the site for “李萌 教学案例 计算机教育大会”  \n  - Success: Retrieved a page (e.g., news article or announcement) that explicitly states the name of the teaching case Li Meng won at the 2024 conference.\n- Path 1.2: Browse the “新闻公告” (News & Announcements) section from the root URL  \n  - Success: Find a news item about the conference awards that includes Li Meng’s case title.\n- Path 1.3: Navigate to the “教学管理” (Teaching Management) or “教学成果” (Teaching Achievements) section  \n  - Success: Locate a list of awards or cases with the specific entry for Li Meng in 2024.\n- Path 1.4: Use the site’s search function (if any) with keyword “2024计算机教育大会 获奖”  \n  - Success: Obtain a page containing the award details and case name.\n\n## Goal 2: Find the donor of the Xiangting Scholarship (湘亭奖学金)\n- Path 2.1: Search the site for “湘亭奖学金 捐赠者” or “湘亭奖学金 校友”  \n  - Success: Get a page (e.g., scholarship introduction, alumni donation list) that names the donor.\n- Path 2.2: Look for an “校友工作” (Alumni Affairs) or “捐赠” (Donations) section on the website  \n  - Success: Find a record of the Xiangting Scholarship and its donor.\n- Path 2.3: Browse the “学生工作” (Student Affairs) or “奖助学金” (Scholarships) section  \n  - Success: Open a scholarship description that includes the donor’s name.\n- Path 2.4: Crawl the root page for any mention of “湘亭” and follow related links  \n  - Success: Reach a dedicated page that clearly states who donated the scholarship.",
+      "think": "",
+      "cot_think": "We need to plan the decomposition of the task. The task is to find two pieces of information from a specific website (https://jsjxy.usc.edu.cn/):\n\n1. In the \"2024年中国高校计算机教育大会\" (2024 China University Computer Education Conference), the teaching case that teacher Li Meng won.\n2. The donor of the \"湘亭奖学金\" (Xiangting Scholarship).\n\nWe need to navigate the website to find this info. We can use web_search and crawl_page tools.\n\nWe should break into goals: one goal for each piece of information, but they might be found on different pages. Possibly they are independent, so parallel goals.\n\nGoal 1: Find information about Li Meng's award at the 2024 China University Computer Education Conference.\nGoal 2: Find information about the donor of Xiangting Scholarship.\n\nEach goal may have multiple paths: e.g., searching the site for keywords, browsing news or announcements, checking specific sections like \"师资队伍\" or \"学生工作\", etc.\n\nWe need to specify core approach and success criteria.\n\nSince the task says \"You MUST begin by accessing https://jsjxy.usc.edu.cn/\", the first step is to crawl that root page to understand the site structure. That could be a common initial path for both goals, but we can incorporate it into each goal or have a separate initial goal. However, the instructions say goals should be independent and parallel. So we can have a goal \"Explore the website structure\" but that might not be a direct goal of finding the answer. Alternatively, each path within goals can start by accessing the root URL.\n\nBetter to have two goals, each with paths that start by crawling the root, then navigate to relevant pages.\n\nFor Goal 1 paths: search site for \"李萌\" and \"教学案例\" and \"计算机教育大会\"; or look for 新闻 or 通知; or look for a 竞赛 or 获奖栏目.\n\nFor Goal 2 paths: search for \"湘亭奖学金\" or \"奖学金\" and \"捐赠者\"; or look for 校友 or 捐赠栏目.\n\nSuccess criteria: For each path, once we have the specific answer (the teaching case name and the donor name), we can consider that goal achieved.\n\nWe must ensure we use tools correctly.\n\nLet's produce the plan.",
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://jsjxy.usc.edu.cn/",
+            "query": "网站结构 新闻公告 教学 获奖 奖学金"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "site:jsjxy.usc.edu.cn 李萌 教学案例"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "2024年中国高校计算机教育大会 李萌 获奖 教学案例"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://jsjxy.usc.edu.cn/', 'query': '网站结构 新闻公告 教学 获奖 奖学金'}':\nError when executing tool crawl_page with arguments {'url': 'https://jsjxy.usc.edu.cn/', 'query': '网站结构 新闻公告 教学 获奖 奖学金'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 李萌 教学案例'}':\nNo results found for 'site:jsjxy.usc.edu.cn 李萌 教学案例'. Try a more general query.\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者'}':\nNo results found for 'site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者'. Try a more general query.\n\nResults for tool call 'web_search' with arguments '{'query': '2024年中国高校计算机教育大会 李萌 获奖 教学案例'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   历时4个多月的案例提交、网络评审、专家会评和现场决赛，首届教学案例大赛共收到教学案例357篇，其中：71篇优秀案例入围现场决赛（决赛比例：19.89%），最终评选 ...\n\n2. [CCEC2024：计算机应用中心漆舒汉、吴宇琳获得“教学案例大赛”特等奖](http://carc.hitsz.edu.cn/info/1022/2712.htm)\nDate published: Jul 22, 2024\nSource: Unknown source\n   获奖教学案例《基于开悟平台的多智能体博弈课程教学探索》采用创新的情景化设计,紧密结合多智能体博弈的实际应用场景,围绕王者荣耀这一广受欢迎的MOBA（多 ...\n\n3. [2024中国高校计算机教育大会圆满落幕](https://04665u.npoall.com/news/itemid-19406.html)\nDate published: Jul 12, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。历时5个多月的论文征文、网络评审、专家会评、期刊终审等环节，大会共收到论文481篇，最终评选出最佳 ...\n\n4. [计算机教育](https://jyjs.cbpt.cnki.net/)\nSource: Unknown source\n   2025参会指南｜第七届中国计算机教育大会即将盛大启幕！ 重磅！2022年国家级教学成果奖获奖项目公布 · 2023年高校课程思政建设系列专题研讨会日程 · 新华访谈 ...\n\n5. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024-07-12, 全天, 注册. 下午, 教学案例比赛现场决赛. 晚上, 大会预备会，CCF教育专委常务委员会，全国高等学校计算机教育研究会理事长会议. 2024-07-13 ...",
+      "think": "I need to start by accessing the root URL https://jsjxy.usc.edu.cn/ and simultaneously search for information about Li Meng's teaching case and the Xiangting Scholarship donor. The plan has two goals: (1) find Li Meng's winning teaching case at the 2024 China University Computer Education Conference, and (2) find the donor of the Xiangting Scholarship. For each goal, I'll start with the first path (Path 1.1 and Path 2.1) which involve searching the site. I'll crawl the root page to understand the site structure and use web searches with site restriction to find specific pages. I'll also do a general web search to see if external results provide the answer. I'll execute these in parallel.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "2024中国高校计算机教育大会 教学案例 获奖名单 李萌"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "李萌 南华大学 计算机 教学案例 获奖"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "site:jsjxy.usc.edu.cn 湘亭"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "湘亭奖学金 南华大学 捐赠"
+          }
+        },
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml",
+            "query": "获奖名单 教学案例 一等奖 李萌"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '2024中国高校计算机教育大会 教学案例 获奖名单 李萌'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   历时4个多月的案例提交、网络评审、专家会评和现场决赛，首届教学案例大赛共收到教学案例357篇，其中：71篇优秀案例入围现场决赛（决赛比例：19.89%），最终评选 ...\n\n2. [CCEC2024：计算机应用中心漆舒汉、吴宇琳获得“教学案例大赛”特等奖](http://carc.hitsz.edu.cn/info/1022/2712.htm)\nDate published: Jul 22, 2024\nSource: Unknown source\n   本次大赛分为计算机、人工智能、网络安全三个专题组。漆舒汉、吴宇琳与校区实验中心谢佳、房敏合作的教学案例《基于开悟平台的多智能体博弈课程教学探索》 ...\n\n3. [2024中国高校计算机教育大会圆满落幕](https://04665u.npoall.com/news/itemid-19406.html)\nDate published: Jul 12, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。 决赛获奖案例除了获得证书之外还将获得丰厚的奖金。 获奖代表现场领取获奖证书。\n\n4. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 各高校征集优秀教学研究论文。 首届计算机教学案例大赛・ 分别评选出优秀案例, 2024年5月31日会议日期:2024年7 ...\n\n5. [北京大学助理教授李萌喜获2024CCF集成电路Early Career Award](https://ic.pku.edu.cn/xwdt/67e201f7f83b4cc68b4aab80ba17120e.htm)\nDate published: Jul 28, 2024\nSource: Unknown source\n   近日，中国计算机学会（CCF）将2024年度“CCF集成电路Early Career Award”授予北京大学助理教授李萌，并于7月20日在第二届中国计算机学会芯片大会CCF Chip ...\n\nResults for tool call 'web_search' with arguments '{'query': '李萌 南华大学 计算机 教学案例 获奖'}':\n1. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   5月29日，南华大学计算机学院在雨母校区崇业楼学术报告厅举办第七届学生社团联合会年度总结大会暨第三期创新创业讲座。计算机学院党委副书记李国华， ...\n\n2. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   李萌, Yixuan Hu, Tengyu Zhang, Renjie Wei, Yawen Zhang, Ru Huang ... In Conference on Computer Vision and Pattern Recognition (CVPR) 2022. PDF.\n\n3. [软件学院教师在第七届中国计算机教育大会案例评选中斩获佳绩](https://news.uestc.edu.cn/info/1004/36432.htm)\nSource: Unknown source\n   教育教学 ; 10, 基于泊松几何引擎的CAD应用开发与实践, 二等奖 ; 11, 基于PaddlePaddle的图像分割教学案例, 二等奖 ; 12, “8086/8088操作数寻址方式”教学案例, 二等奖 ; 13 ...\n\n4. [全国计算机实验案例评选活动](https://lab.cs.tsinghua.edu.cn/expcase/show_by_year_ui/)\nSource: Unknown source\n   历年获奖案例. 一、目标. 为实现高校计算机类课程实验教学体系与教学内容的协同，推进探究性、创新性实验教学改革，提升高校教师的实验教学水平。以问题为导向，在教学中 ...\n\n5. [计算机科学学院2021年考研录取情况一览表](https://jky.yangtzeu.edu.cn/info/1262/3133.htm)\nDate published: May 17, 2021\nSource: Unknown source\n   南华大学. 14. 计科11702. 柳义. 男. 南京航空航天大学. 15. 计科11702 ... 长江大学. 106. 网络11701. 李萌. 女. 长江大学. 上一条：这个宿舍“研值”满满 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 湘亭'}':\n1. [计算机学院/软件学院 - 南华大学](https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105)\nSource: Unknown source\n   · 计算机学院2001级校友何帅兴捐赠《湘亭奖学金》协议签约仪式顺利举行. 共1926条 104/129. 上页1..102103104105106..129下页. --学生常用网站--, 中国大学慕课网 ...\n\n2. [校友回湘｜计算机科学与技术专业2001级校友重返母校，共叙同窗情谊](https://jsjxy.usc.edu.cn/info/2046/11652.htm)\nSource: Unknown source\n   8月16日，计算机科学与技术专业2001级校友从全国各地重返母校，举行了一场“你好同学，好久不见；二十年后，仍是少年”主题聚会活动。校友们先后参观了红湘校区和雨母校 ...\n\nResults for tool call 'web_search' with arguments '{'query': '湘亭奖学金 南华大学 捐赠'}':\n1. [南华大学校友回校设立“湘亭奖学金” - 资讯广场- 湖南在线- 华声在线](https://hunan.voc.com.cn/news/202410/21977467.html?mobile)\nSource: Unknown source\n   近日，南华大学计算机学院2001级校友杭州湘亭科技有限公司董事长何帅兴回到母校，设立“湘亭奖学金”。学院举行了捐赠仪式。 仪式上，南华大学教育基金会秘书长李先国与 ...\n\n2. [新闻头条-南华大学教育基金会](https://fund.usc.edu.cn/xwzx/xwtt/21.htm)\nSource: Unknown source\n   庆祝建校66周年——南华大学举办校友企业专场招聘会, 2024/10/20. 校友回湘｜计算机学院01级校友何帅兴回母校捐赠设立“湘亭奖学金”, 2024/10/19. 分别二十年，再续南华缘 ...\n\n3. [南华大学校友回校设立奖学金 - 腾讯新闻](https://news.qq.com/rain/a/20241018A047ZT00)\nDate published: Oct 18, 2024\nSource: Unknown source\n   捐赠仪式上，南华大学教育基金会秘书长李先国与杭州湘亭科技有限公司董事长何帅兴签署捐赠协议，并为其颁发捐赠证书。 何帅兴表示，回到母校内心非常 ...\n\n4. [南华大学第二届湘亭科技奖学金颁发仪式举行- 校园新闻- 新湖南](https://www.hunantoday.cn/news/xhn/202312/19064520.html)\nDate published: Dec 1, 2023\nSource: Unknown source\n   近日，南华大学举行第二届湘亭科技奖学金颁发仪式，12名同学分别获得5000元或8000元奖学金。湘亭科技奖学金于2022年成立，每学年评选一次，奖励对象为南华 ...\n\n5. [南华大学第二届湘亭科技奖学金颁发仪式举行-南华大学教育发展与 ...](https://fzghb.usc.edu.cn/info/2043/3608.htm)\nSource: Unknown source\n   李先国对湘亭科技奖学金的设立表示真切感激，同时感谢杭州湘亭科技有限公司在南华大学建校65周年之际为学校教育事业发展捐设科研协同创新基金500万元，他鼓励南华学子向 ...\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml', 'query': '获奖名单 教学案例 一等奖 李萌'}':\nError when executing tool crawl_page with arguments {'url': 'https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml', 'query': '获奖名单 教学案例 一等奖 李萌'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string",
+      "think": "The previous steps encountered quota errors and no results from site-specific searches. I need to continue with alternative paths for both goals. For Goal 1 (Li Meng's teaching case): I'll search the CCF conference page for award winners, and also search more broadly for Li Meng at University of South China. For Goal 2 (Xiangting Scholarship donor): I'll search the site for '湘亭' and also search externally for '湘亭奖学金 南华大学'. All these are independent, so I can execute them in parallel.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "crawl_page",
+          "arguments": {
+            "url": "https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105",
+            "query": "湘亭奖学金 何帅兴"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "南华大学 计算机学院 李萌 教学案例 获奖 2024"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "site:jsjxy.usc.edu.cn 李萌 获奖"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "2024年中国高校计算机教育大会 教学案例大赛 一等奖 名单"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'crawl_page' with arguments '{'url': 'https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105', 'query': '湘亭奖学金 何帅兴'}':\nError when executing tool crawl_page with arguments {'url': 'https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105', 'query': '湘亭奖学金 何帅兴'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string\n\nResults for tool call 'web_search' with arguments '{'query': '南华大学 计算机学院 李萌 教学案例 获奖 2024'}':\n1. [‪李萌‬ - ‪Google 学术搜索‬](https://scholar.google.com/citations?user=t2HdWQYAAAAJ&hl=zh-CN)\nSource: Unknown source\n   软件工程学生团队构建的案例分析. 阳小华， 李萌， 刘志明， 刘杰， 刘立， 蒋辉. 计算机教育, 57-61, 2011. 17, 2011 ; 软件工程专业实训教学改革探索. 王丽君， 李萌， 徐卓然， ...\n\n2. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   会议现场公布了2024-2025学年学生社团考核结果，并对表现突出的社团进行表彰。 创新创业经验分享现场. 在经验分享环节，优秀协会指导老师代表李萌从 ...\n\n3. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   In International Conference on Computer-Aided Design (ICCAD) 2024. Tianshi Xu, Shuzhang Zhong, Wenxuan Zeng, Runsheng Wang, 李萌 (2024). PrivQuant ...\n\n4. [南华大学计算机学院召开2024年秋季学期团学首次例会](https://jsjxy.usc.edu.cn/info/2037/11317.htm)\nDate published: Sep 20, 2024\nSource: Unknown source\n   为贯彻落实团中央会议精神，在学院党委的领导下，学院团学组织于近日举行本学期第一次例会，对团学年度发展进行规划和安排。参与会议的有陈杰烜、李筱 ...\n\n5. [计算机学院2024年度本科生国家奖学金、国家励志奖学金拟推荐名单 ...](https://cse.csu.edu.cn/info/1040/9974.htm)\nDate published: Nov 8, 2024\nSource: Unknown source\n   计算机学院2024年度本科生国家奖学金、国家励志奖学金拟推荐名单公示 ... 学院将拟推荐人名单公示3天，公示期自11月8日至11月10日12：00。如对以上结果有异议 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 李萌 获奖'}':\n1. [南华大学教师荣获2023年度中国辐射防护学会科学技术二等奖](https://jsjxy.usc.edu.cn/info/2219/11298.htm)\nDate published: Jul 28, 2024\nSource: Unknown source\n   其中，南华大学李萌老师所参与的《核电自主化源项分析软件确认与评价技术》项目荣获二等奖。 此项目在核电自主化领域进行了源项分析软件的确认与评价技术 ...\n\n2. [不甘平凡者，自当露风采——计算机学院卡布奇诺信息安全协会在 ...](https://jsjxy.usc.edu.cn/info/2048/6565.htm)\nSource: Unknown source\n   2018年全国大学生软件测试大赛卡布奇诺信息安全协会获奖名单. 姓名. 参赛项目 ... 二等奖. 二等奖. 李萌. 周涛涛. web安全测试. 三等奖. 二等奖. 楚燕婷. 上一条：计算机 ...\n\n3. [南华大学在全国软件测试大赛总决赛中荣获佳绩-计算机学院/软件学院](https://jsjxy.usc.edu.cn/info/2048/6558.htm)\nSource: Unknown source\n   2018年全国大学生软件测试大赛总决赛南华大学获奖名单. 姓名. 备注. 奖项. 指导 ... 三等奖. 李萌. 袁玥. 嵌入式测试. 三等奖. 李萌. 王晨. 嵌入式测试. 三等奖. 龚向坚.\n\nResults for tool call 'web_search' with arguments '{'query': '2024年中国高校计算机教育大会 教学案例大赛 一等奖 名单'}':\n1. [CCEC2025第二届全国计算机教学案例大赛正式启动](https://www.ccf.org.cn/Chapters/TC/News_/2025-03-04/838693.shtml)\nDate published: Mar 4, 2025\nSource: Unknown source\n   首届中国高校计算机教育大会教学案例大赛自2024年3月启动以来，历时近4个月，共收到来自183所高校的357份有效案例投稿，71篇优秀案例入围现场决赛，发放 ...\n\n2. [全国计算机教学案例大赛](https://case.educg.net/)\nSource: Unknown source\n   获奖作品需注册参加中国高校计算机教育大会（CCEC2026），现场决赛将于7月10日在成都举办的中国高校计算机教育大会（CCEC2026）进行，颁奖仪式将于7月11日的颁奖晚宴上举行。\n\n3. [软件学院团队获中国高校计算机教育大会首届教学案例大赛一等奖](https://www.thss.tsinghua.edu.cn/info/1024/2411.htm)\nDate published: Jul 29, 2024\nSource: Unknown source\n   发布于2024-07-29 计算机教育大会(CCEC2024) 滨、万海团队完成的教学作品“网络安全侦、攻、防、溯系统的实验教学案例”获得一等奖。 © 2020 010-62773900\n\n4. [2024中国高校计算机教育大会圆满召开](https://paatinfo.ceracu.org.cn/nd.jsp?fromColId=2&id=35)\nSource: Unknown source\n   本次会议以“开拓教育数字化发展新空间，构建计算机教育高质量发展新格局”为主题，邀请了计算机领域院士、知名专家作大会报告，并组织12场分论坛以及教学案例大赛决赛和优秀 ...\n\n5. [中国高校计算机教育大会（CCEC2026）第三届全国计算机教学案例 ...](https://zhuanlan.zhihu.com/p/2017979004834033861)\nDate published: Mar 19, 2026\nSource: Unknown source\n   通过对教学案例的文档材料、以及交流现场的演讲报告和互动讨论等环节的综合评审，本次大赛将按照各赛道，分别评选出特等、一、二、三等若干名，并颁发奖金和 ...",
+      "think": "Goal 2 (湘亭奖学金捐赠者) appears to be confirmed: multiple sources indicate that the donor is 何帅兴 (He Shuai-xing), a 2001 alumni of the School of Computer Science. To be thorough, I should crawl a page on the school's website to verify this. For Goal 1 (李萌的教学案例), I need to find which teaching case Li Meng won. I'll search more specifically using the school site and broader queries.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "南华大学 李萌 教学案例大赛 2024"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "2024中国高校计算机教育大会 教学案例 获奖 南华大学"
+          }
+        },
+        {
+          "name": "web_search",
+          "arguments": {
+            "query": "李萌 南华大学 计算机学院 教学案例 一等奖"
+          }
+        }
+      ],
+      "obs": "Results for tool call 'web_search' with arguments '{'query': '南华大学 李萌 教学案例大赛 2024'}':\n1. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   会议现场公布了2024-2025学年学生社团考核结果，并对表现突出的社团进行表彰。 创新创业经验分享现场. 在经验分享环节，优秀协会指导老师代表李萌从 ...\n\n2. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   李萌(2024). In Conference on Neural Information Processing Systems (NeurIPs) 2024. In International Conference on Computer-Aided Design (ICCAD) 2024.\n\n3. [南华大学计算机学院召开2024年秋季学期团学首次例会](https://jsjxy.usc.edu.cn/info/2037/11317.htm)\nDate published: Sep 20, 2024\nSource: Unknown source\n   为贯彻落实团中央会议精神，在学院党委的领导下，学院团学组织于近日举行本学期第一次例会，对团学年度发展进行规划和安排。参与会议的有陈杰烜、李筱 ...\n\n4. [会议通知| 2024年中国高校计算机教育大会（CCEC2024）](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-04-18/820333.shtml)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 分别评选出优秀案例, 会议主题开拓教育数字化发展新空间华(华中科技大学) 教学案例比赛现场决赛\n\n5. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 各高校征集优秀教学研究论文。 计算机教学案例大赛,按计算机、人工智能、网络安全等专题组征集教学案例。 分别 ...\n\nResults for tool call 'web_search' with arguments '{'query': '2024中国高校计算机教育大会 教学案例 获奖 南华大学'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。 决赛获奖案例除了获得证书之外还将获得丰厚的奖金。7 获奖代表现场领取获奖证书。\n\n2. [全国计算机教学案例大赛](https://case.educg.net/)\nSource: Unknown source\n   获奖作品需注册参加中国高校计算机教育大会（CCEC2026），现场决赛将于7月10日在成都举办的中国高校计算机教育大会（CCEC2026）进行，颁奖仪式将于7月11日的颁奖晚宴上举行。\n\n3. [软件学院团队获中国高校计算机教育大会首届教学案例大赛一等奖](https://www.thss.tsinghua.edu.cn/info/1024/2411.htm)\nDate published: Jul 29, 2024\nSource: Unknown source\n   奖助学金软件・ 发布于2024-07-29 ・ 系统的实验教学案例”获得一等奖。 赛事组委会共收到有效案例投稿357篇 ・ 挑选出其中71篇优秀案例入围现场决赛\n\n4. [2024中国高校计算机教育大会圆满召开](https://paatinfo.ceracu.org.cn/nd.jsp?fromColId=2&id=35)\nSource: Unknown source\n   本次会议以“开拓教育数字化发展新空间，构建计算机教育高质量发展新格局”为主题，邀请了计算机领域院士、知名专家作大会报告，并组织12场分论坛以及教学案例大赛决赛和优秀 ...\n\n5. [中国高校计算机教育大会（CCEC2026）第三届全国计算机教学案例 ...](https://zhuanlan.zhihu.com/p/2017979004834033861)\nDate published: Mar 19, 2026\nSource: Unknown source\n   通过对教学案例的文档材料、以及交流现场的演讲报告和互动讨论等环节的综合评审，本次大赛将按照各赛道，分别评选出特等、一、二、三等若干名，并颁发奖金和 ...\n\nResults for tool call 'web_search' with arguments '{'query': '李萌 南华大学 计算机学院 教学案例 一等奖'}':\n1. [南华大学教师荣获首届全国高校计算机教学案例大赛三等奖- 校园新闻 ...](https://www.hunantoday.cn/news/xhn/202407/20302332.html)\nSource: Unknown source\n   ... 计算机教育大会（CCEC）教学案例大赛落幕。南华大学计算机学院教师李萌领衔设计的《面向科学计算程序的白盒测试综合训练》教学案例荣获三等奖。 自2024年3月份启动教学 ...\n\n2. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: 31 thg 5, 2025\nSource: Unknown source\n   5月29日，南华大学计算机学院在雨母校区崇业楼学术报告厅举办第七届学生社团联合会年度总结大会暨第三期创新创业讲座。计算机学院党委副书记李国华， ...\n\n3. [‪李萌‬ - ‪Google 学术搜索‬](https://scholar.google.com/citations?user=t2HdWQYAAAAJ&hl=zh-CN)\nSource: Unknown source\n   软件工程学生团队构建的案例分析. 阳小华， 李萌， 刘志明， 刘杰， 刘立， 蒋辉. 计算机教育, 57-61, 2011. 17, 2011 ; 软件工程专业实训教学改革探索. 王丽君， 李萌， 徐卓然， ...\n\n4. [计算机学院学生参加大学生创新创业训练计划情况（2009-2017年）](https://jsjxy.usc.edu.cn/info/2172/5651.htm)\nDate published: 4 thg 6, 2018\nSource: Unknown source\n   王小亮. 20084440127. 李萌. 教学资源云存储系统. 省级. 2012. 薛瑞仓 ... 南华大学雨母校区计算机学院 电话：0734-8282473 邮编:421001. 版权所有 ...\n\n5. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   助理教授、研究员、博雅青年学者.",
+      "think": "Goal 2 (湘亭奖学金捐赠者) is already solved: the donor is He Shuaixing (何帅兴), 2001-level alumnus. For Goal 1, we still need Li Meng's winning teaching case at the 2024 China University Computer Education Conference. So far, site-specific searches haven't found it. Let's try a broader search combining her name and the school, and also try to directly crawl a relevant page that might list winners. We'll also search for the conference's official results page.",
+      "cot_think": null,
+      "memory_guidance": null
+    },
+    {
+      "name": "action",
+      "tool_calls": [
+        {
+          "name": "final_answer",
+          "arguments": {
+            "answer": "在2024年中国高校计算机教育大会（CCEC2024）首届教学案例大赛中，南华大学计算机学院李萌老师领衔设计的教学案例《面向科学计算程序的白盒测试综合训练》荣获三等奖。\n\n湘亭奖学金的捐赠者是南华大学计算机学院2001级校友、杭州湘亭科技有限公司董事长何帅兴。"
+          }
+        }
+      ],
+      "obs": "在2024年中国高校计算机教育大会（CCEC2024）首届教学案例大赛中，南华大学计算机学院李萌老师领衔设计的教学案例《面向科学计算程序的白盒测试综合训练》荣获三等奖。\n\n湘亭奖学金的捐赠者是南华大学计算机学院2001级校友、杭州湘亭科技有限公司董事长何帅兴。",
+      "think": "I have now gathered sufficient evidence from multiple web searches to answer both parts of the question. For the teaching case: a news article from hunantoday.cn explicitly states that Li Meng from the School of Computer Science at University of South China won the third prize in the first national computer teaching case competition (part of the 2024 China University Computer Education Conference) with the case titled \"面向科学计算程序的白盒测试综合训练\". For the Xiangting Scholarship donor: multiple authoritative sources (voc.com.cn, fund.usc.edu.cn, etc.) consistently report that the donor is alumnus He Shuai Xing (何帅兴), Chairman of Hangzhou Xiangting Technology Co., Ltd. The information is reliable and cross-verified, so I can now provide a consolidated final answer.",
+      "cot_think": null,
+      "memory_guidance": null
+    }
+  ],
+  "agent_messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "New task:\nYou are tasked with answering a question that requires navigating through a website to find the information.\n\nQuestion: 2024年中国高校计算机教育大会李萌老师获奖的教学案例以及湘亭奖学金的捐赠者是哪位校友？\n\nStarting URL: https://jsjxy.usc.edu.cn/\n\nPlease:\n1. Start from the provided root URL\n2. Navigate through the website to find the information needed\n3. Use web search and page crawling tools to explore the site\n4. Provide a clear and accurate answer based on what you find\n\nImportant: You MUST begin by accessing https://jsjxy.usc.edu.cn/\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Now, begin your planning analysis for this task!"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "[PLAN]:\n## Goal 1: Find Li Meng's winning teaching case at the 2024 China University Computer Education Conference\n- Path 1.1: Search the site for “李萌 教学案例 计算机教育大会”  \n  - Success: Retrieved a page (e.g., news article or announcement) that explicitly states the name of the teaching case Li Meng won at the 2024 conference.\n- Path 1.2: Browse the “新闻公告” (News & Announcements) section from the root URL  \n  - Success: Find a news item about the conference awards that includes Li Meng’s case title.\n- Path 1.3: Navigate to the “教学管理” (Teaching Management) or “教学成果” (Teaching Achievements) section  \n  - Success: Locate a list of awards or cases with the specific entry for Li Meng in 2024.\n- Path 1.4: Use the site’s search function (if any) with keyword “2024计算机教育大会 获奖”  \n  - Success: Obtain a page containing the award details and case name.\n\n## Goal 2: Find the donor of the Xiangting Scholarship (湘亭奖学金)\n- Path 2.1: Search the site for “湘亭奖学金 捐赠者” or “湘亭奖学金 校友”  \n  - Success: Get a page (e.g., scholarship introduction, alumni donation list) that names the donor.\n- Path 2.2: Look for an “校友工作” (Alumni Affairs) or “捐赠” (Donations) section on the website  \n  - Success: Find a record of the Xiangting Scholarship and its donor.\n- Path 2.3: Browse the “学生工作” (Student Affairs) or “奖助学金” (Scholarships) section  \n  - Success: Open a scholarship description that includes the donor’s name.\n- Path 2.4: Crawl the root page for any mention of “湘亭” and follow related links  \n  - Success: Reach a dedicated page that clearly states who donated the scholarship."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Calling tools:\n{'tools': [{'name': 'crawl_page', 'arguments': {'url': 'https://jsjxy.usc.edu.cn/', 'query': '网站结构 新闻公告 教学 获奖 奖学金'}}, {'name': 'web_search', 'arguments': {'query': 'site:jsjxy.usc.edu.cn 李萌 教学案例'}}, {'name': 'web_search', 'arguments': {'query': 'site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者'}}, {'name': 'web_search', 'arguments': {'query': '2024年中国高校计算机教育大会 李萌 获奖 教学案例'}}]}"
+        }
+      ]
+    },
+    {
+      "role": "tool-response",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool calling observation:\nResults for tool call 'crawl_page' with arguments '{'url': 'https://jsjxy.usc.edu.cn/', 'query': '网站结构 新闻公告 教学 获奖 奖学金'}':\nError when executing tool crawl_page with arguments {'url': 'https://jsjxy.usc.edu.cn/', 'query': '网站结构 新闻公告 教学 获奖 奖学金'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 李萌 教学案例'}':\nNo results found for 'site:jsjxy.usc.edu.cn 李萌 教学案例'. Try a more general query.\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者'}':\nNo results found for 'site:jsjxy.usc.edu.cn 湘亭奖学金 捐赠者'. Try a more general query.\n\nResults for tool call 'web_search' with arguments '{'query': '2024年中国高校计算机教育大会 李萌 获奖 教学案例'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   历时4个多月的案例提交、网络评审、专家会评和现场决赛，首届教学案例大赛共收到教学案例357篇，其中：71篇优秀案例入围现场决赛（决赛比例：19.89%），最终评选 ...\n\n2. [CCEC2024：计算机应用中心漆舒汉、吴宇琳获得“教学案例大赛”特等奖](http://carc.hitsz.edu.cn/info/1022/2712.htm)\nDate published: Jul 22, 2024\nSource: Unknown source\n   获奖教学案例《基于开悟平台的多智能体博弈课程教学探索》采用创新的情景化设计,紧密结合多智能体博弈的实际应用场景,围绕王者荣耀这一广受欢迎的MOBA（多 ...\n\n3. [2024中国高校计算机教育大会圆满落幕](https://04665u.npoall.com/news/itemid-19406.html)\nDate published: Jul 12, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。历时5个多月的论文征文、网络评审、专家会评、期刊终审等环节，大会共收到论文481篇，最终评选出最佳 ...\n\n4. [计算机教育](https://jyjs.cbpt.cnki.net/)\nSource: Unknown source\n   2025参会指南｜第七届中国计算机教育大会即将盛大启幕！ 重磅！2022年国家级教学成果奖获奖项目公布 · 2023年高校课程思政建设系列专题研讨会日程 · 新华访谈 ...\n\n5. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024-07-12, 全天, 注册. 下午, 教学案例比赛现场决赛. 晚上, 大会预备会，CCF教育专委常务委员会，全国高等学校计算机教育研究会理事长会议. 2024-07-13 ..."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Calling tools:\n{'tools': [{'name': 'web_search', 'arguments': {'query': '2024中国高校计算机教育大会 教学案例 获奖名单 李萌'}}, {'name': 'web_search', 'arguments': {'query': '李萌 南华大学 计算机 教学案例 获奖'}}, {'name': 'web_search', 'arguments': {'query': 'site:jsjxy.usc.edu.cn 湘亭'}}, {'name': 'web_search', 'arguments': {'query': '湘亭奖学金 南华大学 捐赠'}}, {'name': 'crawl_page', 'arguments': {'url': 'https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml', 'query': '获奖名单 教学案例 一等奖 李萌'}}]}"
+        }
+      ]
+    },
+    {
+      "role": "tool-response",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool calling observation:\nResults for tool call 'web_search' with arguments '{'query': '2024中国高校计算机教育大会 教学案例 获奖名单 李萌'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   历时4个多月的案例提交、网络评审、专家会评和现场决赛，首届教学案例大赛共收到教学案例357篇，其中：71篇优秀案例入围现场决赛（决赛比例：19.89%），最终评选 ...\n\n2. [CCEC2024：计算机应用中心漆舒汉、吴宇琳获得“教学案例大赛”特等奖](http://carc.hitsz.edu.cn/info/1022/2712.htm)\nDate published: Jul 22, 2024\nSource: Unknown source\n   本次大赛分为计算机、人工智能、网络安全三个专题组。漆舒汉、吴宇琳与校区实验中心谢佳、房敏合作的教学案例《基于开悟平台的多智能体博弈课程教学探索》 ...\n\n3. [2024中国高校计算机教育大会圆满落幕](https://04665u.npoall.com/news/itemid-19406.html)\nDate published: Jul 12, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。 决赛获奖案例除了获得证书之外还将获得丰厚的奖金。 获奖代表现场领取获奖证书。\n\n4. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 各高校征集优秀教学研究论文。 首届计算机教学案例大赛・ 分别评选出优秀案例, 2024年5月31日会议日期:2024年7 ...\n\n5. [北京大学助理教授李萌喜获2024CCF集成电路Early Career Award](https://ic.pku.edu.cn/xwdt/67e201f7f83b4cc68b4aab80ba17120e.htm)\nDate published: Jul 28, 2024\nSource: Unknown source\n   近日，中国计算机学会（CCF）将2024年度“CCF集成电路Early Career Award”授予北京大学助理教授李萌，并于7月20日在第二届中国计算机学会芯片大会CCF Chip ...\n\nResults for tool call 'web_search' with arguments '{'query': '李萌 南华大学 计算机 教学案例 获奖'}':\n1. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   5月29日，南华大学计算机学院在雨母校区崇业楼学术报告厅举办第七届学生社团联合会年度总结大会暨第三期创新创业讲座。计算机学院党委副书记李国华， ...\n\n2. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   李萌, Yixuan Hu, Tengyu Zhang, Renjie Wei, Yawen Zhang, Ru Huang ... In Conference on Computer Vision and Pattern Recognition (CVPR) 2022. PDF.\n\n3. [软件学院教师在第七届中国计算机教育大会案例评选中斩获佳绩](https://news.uestc.edu.cn/info/1004/36432.htm)\nSource: Unknown source\n   教育教学 ; 10, 基于泊松几何引擎的CAD应用开发与实践, 二等奖 ; 11, 基于PaddlePaddle的图像分割教学案例, 二等奖 ; 12, “8086/8088操作数寻址方式”教学案例, 二等奖 ; 13 ...\n\n4. [全国计算机实验案例评选活动](https://lab.cs.tsinghua.edu.cn/expcase/show_by_year_ui/)\nSource: Unknown source\n   历年获奖案例. 一、目标. 为实现高校计算机类课程实验教学体系与教学内容的协同，推进探究性、创新性实验教学改革，提升高校教师的实验教学水平。以问题为导向，在教学中 ...\n\n5. [计算机科学学院2021年考研录取情况一览表](https://jky.yangtzeu.edu.cn/info/1262/3133.htm)\nDate published: May 17, 2021\nSource: Unknown source\n   南华大学. 14. 计科11702. 柳义. 男. 南京航空航天大学. 15. 计科11702 ... 长江大学. 106. 网络11701. 李萌. 女. 长江大学. 上一条：这个宿舍“研值”满满 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 湘亭'}':\n1. [计算机学院/软件学院 - 南华大学](https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105)\nSource: Unknown source\n   · 计算机学院2001级校友何帅兴捐赠《湘亭奖学金》协议签约仪式顺利举行. 共1926条 104/129. 上页1..102103104105106..129下页. --学生常用网站--, 中国大学慕课网 ...\n\n2. [校友回湘｜计算机科学与技术专业2001级校友重返母校，共叙同窗情谊](https://jsjxy.usc.edu.cn/info/2046/11652.htm)\nSource: Unknown source\n   8月16日，计算机科学与技术专业2001级校友从全国各地重返母校，举行了一场“你好同学，好久不见；二十年后，仍是少年”主题聚会活动。校友们先后参观了红湘校区和雨母校 ...\n\nResults for tool call 'web_search' with arguments '{'query': '湘亭奖学金 南华大学 捐赠'}':\n1. [南华大学校友回校设立“湘亭奖学金” - 资讯广场- 湖南在线- 华声在线](https://hunan.voc.com.cn/news/202410/21977467.html?mobile)\nSource: Unknown source\n   近日，南华大学计算机学院2001级校友杭州湘亭科技有限公司董事长何帅兴回到母校，设立“湘亭奖学金”。学院举行了捐赠仪式。 仪式上，南华大学教育基金会秘书长李先国与 ...\n\n2. [新闻头条-南华大学教育基金会](https://fund.usc.edu.cn/xwzx/xwtt/21.htm)\nSource: Unknown source\n   庆祝建校66周年——南华大学举办校友企业专场招聘会, 2024/10/20. 校友回湘｜计算机学院01级校友何帅兴回母校捐赠设立“湘亭奖学金”, 2024/10/19. 分别二十年，再续南华缘 ...\n\n3. [南华大学校友回校设立奖学金 - 腾讯新闻](https://news.qq.com/rain/a/20241018A047ZT00)\nDate published: Oct 18, 2024\nSource: Unknown source\n   捐赠仪式上，南华大学教育基金会秘书长李先国与杭州湘亭科技有限公司董事长何帅兴签署捐赠协议，并为其颁发捐赠证书。 何帅兴表示，回到母校内心非常 ...\n\n4. [南华大学第二届湘亭科技奖学金颁发仪式举行- 校园新闻- 新湖南](https://www.hunantoday.cn/news/xhn/202312/19064520.html)\nDate published: Dec 1, 2023\nSource: Unknown source\n   近日，南华大学举行第二届湘亭科技奖学金颁发仪式，12名同学分别获得5000元或8000元奖学金。湘亭科技奖学金于2022年成立，每学年评选一次，奖励对象为南华 ...\n\n5. [南华大学第二届湘亭科技奖学金颁发仪式举行-南华大学教育发展与 ...](https://fzghb.usc.edu.cn/info/2043/3608.htm)\nSource: Unknown source\n   李先国对湘亭科技奖学金的设立表示真切感激，同时感谢杭州湘亭科技有限公司在南华大学建校65周年之际为学校教育事业发展捐设科研协同创新基金500万元，他鼓励南华学子向 ...\n\nResults for tool call 'crawl_page' with arguments '{'url': 'https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml', 'query': '获奖名单 教学案例 一等奖 李萌'}':\nError when executing tool crawl_page with arguments {'url': 'https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml', 'query': '获奖名单 教学案例 一等奖 李萌'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Calling tools:\n{'tools': [{'name': 'crawl_page', 'arguments': {'url': 'https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105', 'query': '湘亭奖学金 何帅兴'}}, {'name': 'web_search', 'arguments': {'query': '南华大学 计算机学院 李萌 教学案例 获奖 2024'}}, {'name': 'web_search', 'arguments': {'query': 'site:jsjxy.usc.edu.cn 李萌 获奖'}}, {'name': 'web_search', 'arguments': {'query': '2024年中国高校计算机教育大会 教学案例大赛 一等奖 名单'}}]}"
+        }
+      ]
+    },
+    {
+      "role": "tool-response",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool calling observation:\nResults for tool call 'crawl_page' with arguments '{'url': 'https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105', 'query': '湘亭奖学金 何帅兴'}':\nError when executing tool crawl_page with arguments {'url': 'https://jsjxy.usc.edu.cn/ssjg.jsp?a43758t=111&a43758p=104&a43758c=15&wbtreeid=2105', 'query': '湘亭奖学金 何帅兴'}: RuntimeError: TERMINATE_QUOTA: Jina API quota or rate limit exceeded (status=402)\nYou should only use this tool with a correct input.\nAs a reminder, this tool's description is the following: 'Access webpage using the provided URL and extract relevant content.  Please make full use of this tool to verify the accuracy of the searched content.'.\nIt takes inputs: {'url': {'type': 'string', 'description': 'The URL of the webpage to visit.'}, 'query': {'type': 'string', 'description': 'The specific information to extract from the webpage.'}} and returns output type string\n\nResults for tool call 'web_search' with arguments '{'query': '南华大学 计算机学院 李萌 教学案例 获奖 2024'}':\n1. [‪李萌‬ - ‪Google 学术搜索‬](https://scholar.google.com/citations?user=t2HdWQYAAAAJ&hl=zh-CN)\nSource: Unknown source\n   软件工程学生团队构建的案例分析. 阳小华， 李萌， 刘志明， 刘杰， 刘立， 蒋辉. 计算机教育, 57-61, 2011. 17, 2011 ; 软件工程专业实训教学改革探索. 王丽君， 李萌， 徐卓然， ...\n\n2. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   会议现场公布了2024-2025学年学生社团考核结果，并对表现突出的社团进行表彰。 创新创业经验分享现场. 在经验分享环节，优秀协会指导老师代表李萌从 ...\n\n3. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   In International Conference on Computer-Aided Design (ICCAD) 2024. Tianshi Xu, Shuzhang Zhong, Wenxuan Zeng, Runsheng Wang, 李萌 (2024). PrivQuant ...\n\n4. [南华大学计算机学院召开2024年秋季学期团学首次例会](https://jsjxy.usc.edu.cn/info/2037/11317.htm)\nDate published: Sep 20, 2024\nSource: Unknown source\n   为贯彻落实团中央会议精神，在学院党委的领导下，学院团学组织于近日举行本学期第一次例会，对团学年度发展进行规划和安排。参与会议的有陈杰烜、李筱 ...\n\n5. [计算机学院2024年度本科生国家奖学金、国家励志奖学金拟推荐名单 ...](https://cse.csu.edu.cn/info/1040/9974.htm)\nDate published: Nov 8, 2024\nSource: Unknown source\n   计算机学院2024年度本科生国家奖学金、国家励志奖学金拟推荐名单公示 ... 学院将拟推荐人名单公示3天，公示期自11月8日至11月10日12：00。如对以上结果有异议 ...\n\nResults for tool call 'web_search' with arguments '{'query': 'site:jsjxy.usc.edu.cn 李萌 获奖'}':\n1. [南华大学教师荣获2023年度中国辐射防护学会科学技术二等奖](https://jsjxy.usc.edu.cn/info/2219/11298.htm)\nDate published: Jul 28, 2024\nSource: Unknown source\n   其中，南华大学李萌老师所参与的《核电自主化源项分析软件确认与评价技术》项目荣获二等奖。 此项目在核电自主化领域进行了源项分析软件的确认与评价技术 ...\n\n2. [不甘平凡者，自当露风采——计算机学院卡布奇诺信息安全协会在 ...](https://jsjxy.usc.edu.cn/info/2048/6565.htm)\nSource: Unknown source\n   2018年全国大学生软件测试大赛卡布奇诺信息安全协会获奖名单. 姓名. 参赛项目 ... 二等奖. 二等奖. 李萌. 周涛涛. web安全测试. 三等奖. 二等奖. 楚燕婷. 上一条：计算机 ...\n\n3. [南华大学在全国软件测试大赛总决赛中荣获佳绩-计算机学院/软件学院](https://jsjxy.usc.edu.cn/info/2048/6558.htm)\nSource: Unknown source\n   2018年全国大学生软件测试大赛总决赛南华大学获奖名单. 姓名. 备注. 奖项. 指导 ... 三等奖. 李萌. 袁玥. 嵌入式测试. 三等奖. 李萌. 王晨. 嵌入式测试. 三等奖. 龚向坚.\n\nResults for tool call 'web_search' with arguments '{'query': '2024年中国高校计算机教育大会 教学案例大赛 一等奖 名单'}':\n1. [CCEC2025第二届全国计算机教学案例大赛正式启动](https://www.ccf.org.cn/Chapters/TC/News_/2025-03-04/838693.shtml)\nDate published: Mar 4, 2025\nSource: Unknown source\n   首届中国高校计算机教育大会教学案例大赛自2024年3月启动以来，历时近4个月，共收到来自183所高校的357份有效案例投稿，71篇优秀案例入围现场决赛，发放 ...\n\n2. [全国计算机教学案例大赛](https://case.educg.net/)\nSource: Unknown source\n   获奖作品需注册参加中国高校计算机教育大会（CCEC2026），现场决赛将于7月10日在成都举办的中国高校计算机教育大会（CCEC2026）进行，颁奖仪式将于7月11日的颁奖晚宴上举行。\n\n3. [软件学院团队获中国高校计算机教育大会首届教学案例大赛一等奖](https://www.thss.tsinghua.edu.cn/info/1024/2411.htm)\nDate published: Jul 29, 2024\nSource: Unknown source\n   发布于2024-07-29 计算机教育大会(CCEC2024) 滨、万海团队完成的教学作品“网络安全侦、攻、防、溯系统的实验教学案例”获得一等奖。 © 2020 010-62773900\n\n4. [2024中国高校计算机教育大会圆满召开](https://paatinfo.ceracu.org.cn/nd.jsp?fromColId=2&id=35)\nSource: Unknown source\n   本次会议以“开拓教育数字化发展新空间，构建计算机教育高质量发展新格局”为主题，邀请了计算机领域院士、知名专家作大会报告，并组织12场分论坛以及教学案例大赛决赛和优秀 ...\n\n5. [中国高校计算机教育大会（CCEC2026）第三届全国计算机教学案例 ...](https://zhuanlan.zhihu.com/p/2017979004834033861)\nDate published: Mar 19, 2026\nSource: Unknown source\n   通过对教学案例的文档材料、以及交流现场的演讲报告和互动讨论等环节的综合评审，本次大赛将按照各赛道，分别评选出特等、一、二、三等若干名，并颁发奖金和 ..."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Calling tools:\n{'tools': [{'name': 'web_search', 'arguments': {'query': '南华大学 李萌 教学案例大赛 2024'}}, {'name': 'web_search', 'arguments': {'query': '2024中国高校计算机教育大会 教学案例 获奖 南华大学'}}, {'name': 'web_search', 'arguments': {'query': '李萌 南华大学 计算机学院 教学案例 一等奖'}}]}"
+        }
+      ]
+    },
+    {
+      "role": "tool-response",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool calling observation:\nResults for tool call 'web_search' with arguments '{'query': '南华大学 李萌 教学案例大赛 2024'}':\n1. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: May 31, 2025\nSource: Unknown source\n   会议现场公布了2024-2025学年学生社团考核结果，并对表现突出的社团进行表彰。 创新创业经验分享现场. 在经验分享环节，优秀协会指导老师代表李萌从 ...\n\n2. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   李萌(2024). In Conference on Neural Information Processing Systems (NeurIPs) 2024. In International Conference on Computer-Aided Design (ICCAD) 2024.\n\n3. [南华大学计算机学院召开2024年秋季学期团学首次例会](https://jsjxy.usc.edu.cn/info/2037/11317.htm)\nDate published: Sep 20, 2024\nSource: Unknown source\n   为贯彻落实团中央会议精神，在学院党委的领导下，学院团学组织于近日举行本学期第一次例会，对团学年度发展进行规划和安排。参与会议的有陈杰烜、李筱 ...\n\n4. [会议通知| 2024年中国高校计算机教育大会（CCEC2024）](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-04-18/820333.shtml)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 分别评选出优秀案例, 会议主题开拓教育数字化发展新空间华(华中科技大学) 教学案例比赛现场决赛\n\n5. [会议通知| 2024年中国高校计算机教育大会（CCEC2024） - 知乎专栏](https://zhuanlan.zhihu.com/p/693206253)\nDate published: Apr 18, 2024\nSource: Unknown source\n   2024年中国高校计算机教育大会(CCEC2024) 各高校征集优秀教学研究论文。 计算机教学案例大赛,按计算机、人工智能、网络安全等专题组征集教学案例。 分别 ...\n\nResults for tool call 'web_search' with arguments '{'query': '2024中国高校计算机教育大会 教学案例 获奖 南华大学'}':\n1. [2024中国高校计算机教育大会圆满落幕](https://www.ccf.org.cn/Chapters/TC/TC_Listing/TCEDU/hyxw/2024-07-19/828110.shtml)\nDate published: Jul 19, 2024\nSource: Unknown source\n   本届大会还举行了论文征文和首届教学案例大赛。 决赛获奖案例除了获得证书之外还将获得丰厚的奖金。7 获奖代表现场领取获奖证书。\n\n2. [全国计算机教学案例大赛](https://case.educg.net/)\nSource: Unknown source\n   获奖作品需注册参加中国高校计算机教育大会（CCEC2026），现场决赛将于7月10日在成都举办的中国高校计算机教育大会（CCEC2026）进行，颁奖仪式将于7月11日的颁奖晚宴上举行。\n\n3. [软件学院团队获中国高校计算机教育大会首届教学案例大赛一等奖](https://www.thss.tsinghua.edu.cn/info/1024/2411.htm)\nDate published: Jul 29, 2024\nSource: Unknown source\n   奖助学金软件・ 发布于2024-07-29 ・ 系统的实验教学案例”获得一等奖。 赛事组委会共收到有效案例投稿357篇 ・ 挑选出其中71篇优秀案例入围现场决赛\n\n4. [2024中国高校计算机教育大会圆满召开](https://paatinfo.ceracu.org.cn/nd.jsp?fromColId=2&id=35)\nSource: Unknown source\n   本次会议以“开拓教育数字化发展新空间，构建计算机教育高质量发展新格局”为主题，邀请了计算机领域院士、知名专家作大会报告，并组织12场分论坛以及教学案例大赛决赛和优秀 ...\n\n5. [中国高校计算机教育大会（CCEC2026）第三届全国计算机教学案例 ...](https://zhuanlan.zhihu.com/p/2017979004834033861)\nDate published: Mar 19, 2026\nSource: Unknown source\n   通过对教学案例的文档材料、以及交流现场的演讲报告和互动讨论等环节的综合评审，本次大赛将按照各赛道，分别评选出特等、一、二、三等若干名，并颁发奖金和 ...\n\nResults for tool call 'web_search' with arguments '{'query': '李萌 南华大学 计算机学院 教学案例 一等奖'}':\n1. [南华大学教师荣获首届全国高校计算机教学案例大赛三等奖- 校园新闻 ...](https://www.hunantoday.cn/news/xhn/202407/20302332.html)\nSource: Unknown source\n   ... 计算机教育大会（CCEC）教学案例大赛落幕。南华大学计算机学院教师李萌领衔设计的《面向科学计算程序的白盒测试综合训练》教学案例荣获三等奖。 自2024年3月份启动教学 ...\n\n2. [南华大学计算机学院成功举办第七届学生社团联合会年度总结大会暨 ...](https://jsjxy.usc.edu.cn/info/2037/11590.htm)\nDate published: 31 thg 5, 2025\nSource: Unknown source\n   5月29日，南华大学计算机学院在雨母校区崇业楼学术报告厅举办第七届学生社团联合会年度总结大会暨第三期创新创业讲座。计算机学院党委副书记李国华， ...\n\n3. [‪李萌‬ - ‪Google 学术搜索‬](https://scholar.google.com/citations?user=t2HdWQYAAAAJ&hl=zh-CN)\nSource: Unknown source\n   软件工程学生团队构建的案例分析. 阳小华， 李萌， 刘志明， 刘杰， 刘立， 蒋辉. 计算机教育, 57-61, 2011. 17, 2011 ; 软件工程专业实训教学改革探索. 王丽君， 李萌， 徐卓然， ...\n\n4. [计算机学院学生参加大学生创新创业训练计划情况（2009-2017年）](https://jsjxy.usc.edu.cn/info/2172/5651.htm)\nDate published: 4 thg 6, 2018\nSource: Unknown source\n   王小亮. 20084440127. 李萌. 教学资源云存储系统. 省级. 2012. 薛瑞仓 ... 南华大学雨母校区计算机学院 电话：0734-8282473 邮编:421001. 版权所有 ...\n\n5. [Publications | 李萌的个人主页 - Meng Li](https://mengli.me/zh/publication/)\nSource: Unknown source\n   助理教授、研究员、博雅青年学者."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Calling tools:\n{'tools': [{'name': 'final_answer', 'arguments': {'answer': '在2024年中国高校计算机教育大会（CCEC2024）首届教学案例大赛中，南华大学计算机学院李萌老师领衔设计的教学案例《面向科学计算程序的白盒测试综合训练》荣获三等奖。\\n\\n湘亭奖学金的捐赠者是南华大学计算机学院2001级校友、杭州湘亭科技有限公司董事长何帅兴。'}}]}"
+        }
+      ]
+    },
+    {
+      "role": "tool-response",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool calling observation:\n在2024年中国高校计算机教育大会（CCEC2024）首届教学案例大赛中，南华大学计算机学院李萌老师领衔设计的教学案例《面向科学计算程序的白盒测试综合训练》荣获三等奖。\n\n湘亭奖学金的捐赠者是南华大学计算机学院2001级校友、杭州湘亭科技有限公司董事长何帅兴。"
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "elapsed_time": 85.20878791809082,
+    "total_tokens": 37184,
+    "prompt_tokens": 31691,
+    "completion_tokens": 5493,
+    "api_calls": 11
+  },
+  "trajectory_summary": "Failed to generate summary: Error code: 400 - {'error': {'message': 'The supported API model names are deepseek-v4-pro or deepseek-v4-flash, but you passed gpt-4o-mini.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_request_error'}}"
+}

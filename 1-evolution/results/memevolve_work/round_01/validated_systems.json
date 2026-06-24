@@ -1,0 +1,355 @@
+{
+  "validated": [
+    "thought_loom_memory",
+    "temporal_experience_graph",
+    "adaptive_echo_memory"
+  ],
+  "failed": [],
+  "details": {
+    "temporal_experience_graph": {
+      "system": "temporal_experience_graph",
+      "timestamp": "2026-06-19T23:22:28.347478",
+      "static_check": {
+        "passed": true,
+        "issues": [
+          {
+            "type": "missing_import",
+            "description": "Uses BaseMemoryProvider but missing import from EvolveLab.base_memory",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryRequest but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryResponse but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          }
+        ]
+      },
+      "test_results": {},
+      "logs": [
+        "Simulation test passed: all core methods available"
+      ],
+      "error_logs": [],
+      "verdict": "passed",
+      "fast_validation": {
+        "verdict": "passed",
+        "tests": {
+          "import": {
+            "status": "passed",
+            "class_name": "TemporalExperienceGraphProvider",
+            "module_name": "temporal_experience_graph_provider"
+          },
+          "instantiation": {
+            "status": "passed"
+          },
+          "initialize": {
+            "status": "passed",
+            "returned": true
+          },
+          "provide_memory": {
+            "status": "passed",
+            "memories_count": 0
+          },
+          "take_in_memory": {
+            "status": "passed",
+            "success": true,
+            "description": "Stored new memory entry ffbc7d04-00d1-4bfd-8e5a-be7e53916ca3",
+            "storage_changes": {}
+          }
+        },
+        "errors": [],
+        "error_logs": [],
+        "captured_logs": [
+          "[INFO] datasets - PyTorch version 2.8.0 available.",
+          "[INFO] sentence_transformers.SentenceTransformer - Use pytorch device_name: mps",
+          "[INFO] sentence_transformers.SentenceTransformer - Load pretrained SentenceTransformer: ./storage/models/sentence-transformers_all-MiniLM-L6-v2",
+          "[DEBUG] openai._base_client - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'json_data': {'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': 'You are an expert AI trainer analyzing a successful task execution. Extract memory at three abstraction levels.\\n\\nTASK: test query for memory ingestion simulation\\nRESULT: test result - successful task completion\\nTRAJECTORY:\\nStep 1:  - test query\\nStep 2:  - test response\\n\\nGenerate the following JSON output:\\n{\\n  \"strategy\": \"One-sentence high-level strategy essence.\",\\n  \"methodology\": \"2-3 sentence mid-level workflow description.\",\\n  \"detailed_steps\": \"Numbered step-by-step execution with tool choices and reasoning.\",\\n  \"experience\": \"Key lessons learned, best practices, and pitfalls to avoid.\"\\n}\\n\\nEnsure each field is substantial. Output ONLY the JSON.'}]}], 'model': 'deepseek-v4-flash', 'max_completion_tokens': 32768}}",
+          "[DEBUG] openai._base_client - Sending HTTP Request: POST https://api.deepseek.com/chat/completions",
+          "[DEBUG] httpcore.connection - connect_tcp.started host='127.0.0.1' port=17891 local_address=None timeout=5.0 socket_options=None",
+          "[DEBUG] httpcore.connection - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x308698400>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'Connection established', [])",
+          "[DEBUG] httpcore.proxy - start_tls.started ssl_context=<ssl.SSLContext object at 0x131d90b40> server_hostname='api.deepseek.com' timeout=5.0",
+          "[DEBUG] httpcore.proxy - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x308698760>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'openresty'), (b'Content-Type', b'application/json'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true'), (b'x-ds-trace-id', b'3c6166e40d02ed1ba4e1eaf4169ad34b'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Age', b'0'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 19 Jun 2026 15:22:30 GMT'), (b'EO-LOG-UUID', b'13120442221522244610'), (b'EO-Cache-Status', b'MISS')])",
+          "[INFO] httpx - HTTP Request: POST https://api.deepseek.com/chat/completions \"HTTP/1.1 200 OK\"",
+          "[DEBUG] httpcore.http11 - receive_response_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_body.complete",
+          "[DEBUG] httpcore.http11 - response_closed.started",
+          "[DEBUG] httpcore.http11 - response_closed.complete",
+          "[DEBUG] openai._base_client - HTTP Response: POST https://api.deepseek.com/chat/completions \"200 OK\" Headers({'server': 'openresty', 'content-type': 'application/json', 'vary': 'origin, access-control-request-method, access-control-request-headers', 'access-control-allow-credentials': 'true', 'x-ds-trace-id': '3c6166e40d02ed1ba4e1eaf4169ad34b', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'age': '0', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'date': 'Fri, 19 Jun 2026 15:22:30 GMT', 'eo-log-uuid': '13120442221522244610', 'eo-cache-status': 'MISS'})",
+          "[DEBUG] openai._base_client - request_id: None",
+          ""
+        ],
+        "memory_details": {
+          "provide_memory": {
+            "count": 0,
+            "memories": [],
+            "response_type": "MemoryResponse"
+          },
+          "take_in_memory": {
+            "success": true,
+            "description": "Stored new memory entry ffbc7d04-00d1-4bfd-8e5a-be7e53916ca3",
+            "storage_before": {},
+            "storage_after": {},
+            "storage_changes": {}
+          }
+        }
+      }
+    },
+    "adaptive_echo_memory": {
+      "system": "adaptive_echo_memory",
+      "timestamp": "2026-06-19T23:22:37.723053",
+      "static_check": {
+        "passed": true,
+        "issues": [
+          {
+            "type": "missing_import",
+            "description": "Uses BaseMemoryProvider but missing import from EvolveLab.base_memory",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryRequest but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryResponse but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          }
+        ]
+      },
+      "test_results": {},
+      "logs": [
+        "Simulation test passed: all core methods available"
+      ],
+      "error_logs": [],
+      "verdict": "passed",
+      "fast_validation": {
+        "verdict": "passed",
+        "tests": {
+          "import": {
+            "status": "passed",
+            "class_name": "AdaptiveEchoMemoryProvider",
+            "module_name": "adaptive_echo_memory_provider"
+          },
+          "instantiation": {
+            "status": "passed"
+          },
+          "initialize": {
+            "status": "passed",
+            "returned": true
+          },
+          "provide_memory": {
+            "status": "passed",
+            "memories_count": 0
+          },
+          "take_in_memory": {
+            "status": "passed",
+            "success": true,
+            "description": "Stored raw and refined core memory for 'test query for memory ingestion simulation'",
+            "storage_changes": {}
+          }
+        },
+        "errors": [],
+        "error_logs": [],
+        "captured_logs": [
+          "[INFO] sentence_transformers.SentenceTransformer - Use pytorch device_name: mps",
+          "[INFO] sentence_transformers.SentenceTransformer - Load pretrained SentenceTransformer: ./storage/models/sentence-transformers_all-MiniLM-L6-v2",
+          "[DEBUG] openai._base_client - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'json_data': {'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': 'Extract core concepts and key terms from the following query for effective memory retrieval. Return only the refined query text (no extra explanation).\\n\\nQuery: test query for memory retrieval simulation\\n\\nRefined query:'}]}], 'model': 'deepseek-v4-flash', 'max_completion_tokens': 32768}}",
+          "[DEBUG] openai._base_client - Sending HTTP Request: POST https://api.deepseek.com/chat/completions",
+          "[DEBUG] httpcore.connection - connect_tcp.started host='127.0.0.1' port=17891 local_address=None timeout=5.0 socket_options=None",
+          "[DEBUG] httpcore.connection - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x30870a560>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'Connection established', [])",
+          "[DEBUG] httpcore.proxy - start_tls.started ssl_context=<ssl.SSLContext object at 0x3071fdc40> server_hostname='api.deepseek.com' timeout=5.0",
+          "[DEBUG] httpcore.proxy - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x3086985b0>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'openresty'), (b'Content-Type', b'application/json'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true'), (b'x-ds-trace-id', b'd52d7a19ddd0e3859506bbd6f5e44277'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Age', b'0'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 19 Jun 2026 15:22:37 GMT'), (b'EO-LOG-UUID', b'2680029414458329343'), (b'EO-Cache-Status', b'MISS')])",
+          "[INFO] httpx - HTTP Request: POST https://api.deepseek.com/chat/completions \"HTTP/1.1 200 OK\"",
+          "[DEBUG] httpcore.http11 - receive_response_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_body.complete",
+          "[DEBUG] httpcore.http11 - response_closed.started",
+          "[DEBUG] httpcore.http11 - response_closed.complete",
+          "[DEBUG] openai._base_client - HTTP Response: POST https://api.deepseek.com/chat/completions \"200 OK\" Headers({'server': 'openresty', 'content-type': 'application/json', 'vary': 'origin, access-control-request-method, access-control-request-headers', 'access-control-allow-credentials': 'true', 'x-ds-trace-id': 'd52d7a19ddd0e3859506bbd6f5e44277', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'age': '0', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'date': 'Fri, 19 Jun 2026 15:22:37 GMT', 'eo-log-uuid': '2680029414458329343', 'eo-cache-status': 'MISS'})",
+          "[DEBUG] openai._base_client - request_id: None",
+          "[DEBUG] openai._base_client - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'json_data': {'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': 'You are an expert AI agent trainer analyzing a successful task execution. Extract structured memory components that capture the strategic thinking and methodologies used.\\n\\nQuestion: test query for memory ingestion simulation\\n\\nExecution Trajectory:\\nQuery: test query for memory ingestion simulation\\nStep 1 (step): test query\\nStep 2 (step): test response\\nResult: test result - successful task completion\\n\\nFinal Result: test result - successful task completion\\n\\nExtract the following four fields in JSON format. Each field must contain substantial, actionable content (at least 2-3 sentences). Focus on specific techniques, tool choices, and reasoning patterns.\\n\\nJSON format:\\n{\\n    \"agent_planning\": \"Detailed planning approach including decision points and tool selection\",\\n    \"search_agent_planning\": \"Search strategy and query formulation techniques\",\\n    \"agent_experience\": \"Key lessons learned and best practices\",\\n    \"search_agent_experience\": \"Search-specific insights and validation methods\"\\n}\\n\\nReturn only the JSON object, no other text.'}]}], 'model': 'deepseek-v4-flash', 'max_completion_tokens': 32768}}",
+          "[DEBUG] openai._base_client - Sending HTTP Request: POST https://api.deepseek.com/chat/completions",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'openresty'), (b'Content-Type', b'application/json'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true'), (b'x-ds-trace-id', b'1568909211299cc38e8cf7a3e9ce923e'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Age', b'0'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 19 Jun 2026 15:22:41 GMT'), (b'EO-LOG-UUID', b'1249548379395961630'), (b'EO-Cache-Status', b'MISS')])",
+          "[INFO] httpx - HTTP Request: POST https://api.deepseek.com/chat/completions \"HTTP/1.1 200 OK\"",
+          "[DEBUG] httpcore.http11 - receive_response_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_body.complete",
+          "[DEBUG] httpcore.http11 - response_closed.started",
+          "[DEBUG] httpcore.http11 - response_closed.complete",
+          "[DEBUG] openai._base_client - HTTP Response: POST https://api.deepseek.com/chat/completions \"200 OK\" Headers({'server': 'openresty', 'content-type': 'application/json', 'vary': 'origin, access-control-request-method, access-control-request-headers', 'access-control-allow-credentials': 'true', 'x-ds-trace-id': '1568909211299cc38e8cf7a3e9ce923e', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'age': '0', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'date': 'Fri, 19 Jun 2026 15:22:41 GMT', 'eo-log-uuid': '1249548379395961630', 'eo-cache-status': 'MISS'})",
+          "[DEBUG] openai._base_client - request_id: None",
+          ""
+        ],
+        "memory_details": {
+          "provide_memory": {
+            "count": 0,
+            "memories": [],
+            "response_type": "MemoryResponse"
+          },
+          "take_in_memory": {
+            "success": true,
+            "description": "Stored raw and refined core memory for 'test query for memory ingestion simulation'",
+            "storage_before": {},
+            "storage_after": {},
+            "storage_changes": {}
+          }
+        }
+      }
+    },
+    "thought_loom_memory": {
+      "system": "thought_loom_memory",
+      "timestamp": "2026-06-19T23:22:53.348390",
+      "static_check": {
+        "passed": true,
+        "issues": [
+          {
+            "type": "missing_import",
+            "description": "Uses BaseMemoryProvider but missing import from EvolveLab.base_memory",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryRequest but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          },
+          {
+            "type": "missing_import",
+            "description": "Uses MemoryResponse but missing import from EvolveLab.memory_types",
+            "severity": "medium"
+          }
+        ]
+      },
+      "test_results": {},
+      "logs": [
+        "Simulation test passed: all core methods available"
+      ],
+      "error_logs": [],
+      "verdict": "passed",
+      "fast_validation": {
+        "verdict": "passed",
+        "tests": {
+          "import": {
+            "status": "passed",
+            "class_name": "ThoughtLoomMemoryProvider",
+            "module_name": "thought_loom_memory_provider"
+          },
+          "instantiation": {
+            "status": "passed"
+          },
+          "initialize": {
+            "status": "passed",
+            "returned": true
+          },
+          "provide_memory": {
+            "status": "passed",
+            "memories_count": 2
+          },
+          "take_in_memory": {
+            "status": "passed",
+            "success": true,
+            "description": "Inserted new memory: c3751924-0086-4d06-beca-dbb7be1f8263",
+            "storage_changes": {}
+          }
+        },
+        "errors": [],
+        "error_logs": [],
+        "captured_logs": [
+          "[INFO] sentence_transformers.SentenceTransformer - Use pytorch device_name: mps",
+          "[INFO] sentence_transformers.SentenceTransformer - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2",
+          "[DEBUG] urllib3.connectionpool - Starting new HTTPS connection (1): huggingface.co:443",
+          "[WARNING] sentence_transformers.SentenceTransformer - No sentence-transformers model found with name sentence-transformers/all-MiniLM-L6-v2. Creating a new one with mean pooling.",
+          "[DEBUG] urllib3.connectionpool - Starting new HTTPS connection (2): huggingface.co:443",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/1.1\" 404 0",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/1.1\" 307 0",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json HTTP/1.1\" 200 0",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/1.1\" 307 0",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json HTTP/1.1\" 200 0",
+          "[DEBUG] urllib3.connectionpool - https://huggingface.co:443 \"GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/1.1\" 200 None",
+          "[DEBUG] openai._base_client - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'json_data': {'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': 'Given the following task execution trajectory, extract structured memory components.\\nTask: test query for memory ingestion simulation\\nTrajectory:\\nStep 0: test query\\nStep 1: test response\\nResult: test result - successful task completion\\n\\nReturn a JSON object with these keys:\\n- \"plan\": strategic planning approach (2-3 sentences)\\n- \"search_plan\": search strategy details\\n- \"experience\": execution lessons learned\\n- \"search_experience\": search‑specific insights\\n- \"insights\": list of key takeaways (max 3)\\n- \"error_patterns\": list of pitfalls encountered (max 3)\\n\\nIf the task failed, include error patterns. Output ONLY JSON.'}]}], 'model': 'deepseek-v4-flash', 'max_completion_tokens': 32768}}",
+          "[DEBUG] openai._base_client - Sending HTTP Request: POST https://api.deepseek.com/chat/completions",
+          "[DEBUG] httpcore.connection - connect_tcp.started host='127.0.0.1' port=17891 local_address=None timeout=5.0 socket_options=None",
+          "[DEBUG] httpcore.connection - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x322c7d510>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'CONNECT']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'Connection established', [])",
+          "[DEBUG] httpcore.proxy - start_tls.started ssl_context=<ssl.SSLContext object at 0x3086efd40> server_hostname='api.deepseek.com' timeout=5.0",
+          "[DEBUG] httpcore.proxy - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x322c7d4e0>",
+          "[DEBUG] httpcore.http11 - send_request_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_headers.complete",
+          "[DEBUG] httpcore.http11 - send_request_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - send_request_body.complete",
+          "[DEBUG] httpcore.http11 - receive_response_headers.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Server', b'openresty'), (b'Content-Type', b'application/json'), (b'vary', b'origin, access-control-request-method, access-control-request-headers'), (b'access-control-allow-credentials', b'true'), (b'x-ds-trace-id', b'5c468da92a67b471988657a041025a81'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'Age', b'0'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Date', b'Fri, 19 Jun 2026 15:23:00 GMT'), (b'EO-LOG-UUID', b'8883081450902374787'), (b'EO-Cache-Status', b'MISS')])",
+          "[INFO] httpx - HTTP Request: POST https://api.deepseek.com/chat/completions \"HTTP/1.1 200 OK\"",
+          "[DEBUG] httpcore.http11 - receive_response_body.started request=<Request [b'POST']>",
+          "[DEBUG] httpcore.http11 - receive_response_body.complete",
+          "[DEBUG] httpcore.http11 - response_closed.started",
+          "[DEBUG] httpcore.http11 - response_closed.complete",
+          "[DEBUG] openai._base_client - HTTP Response: POST https://api.deepseek.com/chat/completions \"200 OK\" Headers({'server': 'openresty', 'content-type': 'application/json', 'vary': 'origin, access-control-request-method, access-control-request-headers', 'access-control-allow-credentials': 'true', 'x-ds-trace-id': '5c468da92a67b471988657a041025a81', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'age': '0', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'date': 'Fri, 19 Jun 2026 15:23:00 GMT', 'eo-log-uuid': '8883081450902374787', 'eo-cache-status': 'MISS'})",
+          "[DEBUG] openai._base_client - request_id: None",
+          ""
+        ],
+        "memory_details": {
+          "provide_memory": {
+            "count": 2,
+            "memories": [
+              {
+                "index": 0,
+                "content_preview": "MemoryItem(id='f839344f-66c6-40d8-8c95-25687b7a319a', content='### Similar Task: How to search for information efficiently?\\n**Strategic Plan:** 1. Break complex question into sub‑queries. 2. Use targ",
+                "type": "MemoryItem"
+              },
+              {
+                "index": 1,
+                "content_preview": "MemoryItem(id='f9726e42-8234-4243-b8e9-d836068e0061', content='### Similar Task: How to handle tool quota exhaustion?\\n**Strategic Plan:** If quota error occurs, retry with exponential backoff. Switch",
+                "type": "MemoryItem"
+              }
+            ],
+            "response_type": "MemoryResponse"
+          },
+          "take_in_memory": {
+            "success": true,
+            "description": "Inserted new memory: c3751924-0086-4d06-beca-dbb7be1f8263",
+            "storage_before": {},
+            "storage_after": {},
+            "storage_changes": {}
+          }
+        }
+      }
+    }
+  }
+}
