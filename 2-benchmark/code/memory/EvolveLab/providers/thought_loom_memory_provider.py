@@ -1,0 +1,492 @@
+import json
+import os
+import uuid
+import sys
+from typing import List, Optional, Dict, Any, Tuple
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
+from datetime import datetime
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
+from ..base_memory import BaseMemoryProvider
+from ..memory_types import (
+    MemoryRequest,
+    MemoryResponse,
+    TrajectoryData,
+    MemoryType,
+    MemoryItem,
+    MemoryStatus,
+    MemoryItemType
+)
+
+# ----------------------------------------------------------------------
+# Data Structures
+# ----------------------------------------------------------------------
+
+@dataclass
+class MemoryNode:
+    id: str
+    query: str
+    content: str                             # concatenated all fields
+    plan: str
+    search_plan: str
+    experience: str
+    search_experience: str
+    insights: List[str]                      # extracted key insights
+    error_patterns: List[str]                # failure patterns (if any)
+    confidence: float = 0.5                  # success confidence
+    retrieval_count: int = 0
+    last_access: float = 0.0                 # unix timestamp
+    embedding: Optional[np.ndarray] = None
+    graph_edges: List[str] = field(default_factory=list)  # ids of similar nodes
+
+@dataclass
+class GraphIndex:
+    nodes: Dict[str, MemoryNode] = field(default_factory=dict)
+    adjacency: Dict[str, List[str]] = field(default_factory=dict)
+
+# ----------------------------------------------------------------------
+# Default Seed Patterns (self‑seeding on cold start)
+# ----------------------------------------------------------------------
+
+DEFAULT_SEEDS = [
+    {
+        "query": "How to search for information efficiently?",
+        "plan": "1. Break complex question into sub‑queries. 2. Use targeted keywords. 3. Verify sources.",
+        "search_plan": "Use boolean operators; prefer Wikipedia and official documentation.",
+        "experience": "When tool quota is low, reuse previous search results.",
+        "search_experience": "Always check date of last update; cache results locally.",
+        "insights": ["Query decomposition reduces search space"],
+        "error_patterns": ["Avoid overly broad queries – they waste tool calls"]
+    },
+    {
+        "query": "How to handle tool quota exhaustion?",
+        "plan": "If quota error occurs, retry with exponential backoff. Switch to alternative tools if available.",
+        "search_plan": "Look for aggregation APIs that return many results in one call.",
+        "experience": "Monitored remaining quota; switched to web page crawling when search quota low.",
+        "search_experience": "Use site‑restricted queries (site:xyz) to limit results.",
+        "insights": ["Always estimate tool cost before starting a task"],
+        "error_patterns": ["Never ignore quota warnings – they cause irreversible failures"]
+    }
+]
+
+# ----------------------------------------------------------------------
+# Core Provider
+# ----------------------------------------------------------------------
+
+class ThoughtLoomMemoryProvider(BaseMemoryProvider):
+
+    def __init__(self, config: Optional[Dict] = None):
+        super().__init__(config)   # MemoryType will be set later in provider mapping
+
+        # Config
+        self.database_path = config.get("database_path", "../storage/thought_loom_memory/memories.json")
+        self.graph_path = config.get("graph_path", "../storage/thought_loom_memory/graph.json")
+        self.top_k = config.get("top_k", 5)
+        self.similarity_threshold = config.get("similarity_threshold", 0.7)
+        self.max_memories = config.get("max_memories", 1000)
+        self.prune_interval = config.get("prune_interval", 50)
+        self.seed_on_cold_start = config.get("seed_on_cold_start", True)
+
+        # Model
+        self.model = config.get("model", None)
+        self.embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+        # Internal state
+        self.graph: Optional[GraphIndex] = None
+        self.insert_count = 0
+        self.tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+        self.tfidf_matrix = None
+        self.node_ids_sorted = []  # order for tfidf matrix rows
+
+    # ---------- Lifecycle ----------
+    def initialize(self) -> bool:
+        try:
+            os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
+            os.makedirs(os.path.dirname(self.graph_path), exist_ok=True)
+
+            # Load existing data or seed
+            if os.path.exists(self.database_path):
+                self._load()
+            else:
+                self.graph = GraphIndex()
+                if self.seed_on_cold_start:
+                    self._seed_defaults()
+                self._save()
+
+            # Build indices
+            self._rebuild_indices()
+            return True
+        except Exception as e:
+            print(f"Initialization error: {e}")
+            return False
+
+    # ---------- PROVIDE ----------
+    def provide_memory(self, request: MemoryRequest) -> MemoryResponse:
+        if not self.graph or not self.graph.nodes:
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+        # Phase‑aware retrieval
+        try:
+            # Expand query to include phase context
+            phase_hint = "planning and strategy" if request.status == MemoryStatus.BEGIN else "execution and experience"
+            augmented_query = f"{request.query} {phase_hint}"
+
+            # Hybrid search (TF‑IDF + semantic)
+            seed_ids, seed_scores = self._hybrid_search(augmented_query, top_k=self.top_k * 2)
+
+            # Graph traversal to enrich results
+            expanded_ids = set(seed_ids)
+            for nid in seed_ids:
+                if nid in self.graph.adjacency:
+                    for neighbor_id in self.graph.adjacency[nid][:5]:  # limit per node
+                        if neighbor_id not in expanded_ids:
+                            expanded_ids.add(neighbor_id)
+
+            # Score all expanded nodes using semantic similarity to query
+            query_emb = self.embedding_model.encode([augmented_query], convert_to_numpy=True)[0]
+            scored = []
+            for nid in expanded_ids:
+                node = self.graph.nodes.get(nid)
+                if node and node.embedding is not None:
+                    sim = cosine_similarity([query_emb], [node.embedding])[0][0]
+                    # Apply phase‑weighted fields boost
+                    field_boost = 1.0
+                    if request.status == MemoryStatus.BEGIN:
+                        field_boost = 0.3 * (len(node.plan) + len(node.search_plan)) / 100
+                    else:
+                        field_boost = 0.3 * (len(node.experience) + len(node.search_experience)) / 100
+                    score = sim * (node.confidence + 0.5) * (1 + field_boost)
+                    scored.append((nid, score))
+
+            # Sort and keep top_k
+            scored.sort(key=lambda x: x[1], reverse=True)
+            top_ids = [sid for sid, _ in scored[:self.top_k]]
+
+            # Build text memories
+            memories = []
+            for nid in top_ids:
+                node = self.graph.nodes[nid]
+                # Increment retrieval count
+                node.retrieval_count += 1
+                node.last_access = datetime.now().timestamp()
+
+                # Phase‑specific content
+                if request.status == MemoryStatus.BEGIN:
+                    content = f"### Similar Task: {node.query}\n**Strategic Plan:** {node.plan}\n**Search Plan:** {node.search_plan}"
+                else:
+                    content = f"### Similar Task: {node.query}\n**Execution Experience:** {node.experience}\n**Search Experience:** {node.search_experience}"
+
+                memories.append(MemoryItem(
+                    id=nid,
+                    content=content,
+                    metadata={
+                        "confidence": node.confidence,
+                        "retrieval_count": node.retrieval_count,
+                        "phase": request.status.value
+                    },
+                    score=scored[top_ids.index(nid)][1] if nid in [s[0] for s in scored] else 0.0,
+                    type=MemoryItemType.TEXT
+                ))
+
+            return MemoryResponse(
+                memories=memories,
+                memory_type=self.memory_type,
+                total_count=len(memories),
+                request_id=str(uuid.uuid4())
+            )
+        except Exception as e:
+            print(f"Provide memory error: {e}")
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+    # ---------- TAKE IN ----------
+    def take_in_memory(self, trajectory_data: TrajectoryData) -> Tuple[bool, str]:
+        try:
+            # Accept ALL tasks – assign confidence based on success metadata
+            metadata = trajectory_data.metadata or {}
+            success = metadata.get("is_correct", False) or metadata.get("success", False)
+            confidence = 1.0 if success else 0.2
+
+            # Use LLM to extract structured memory (with fallback)
+            extracted = self._extract_with_model(trajectory_data)
+            if extracted is None:
+                # fallback: use raw trajectory data
+                extracted = {
+                    "plan": "Automatic extraction failed – using raw trajectory",
+                    "search_plan": "",
+                    "experience": trajectory_data.result or "",
+                    "search_experience": "",
+                    "insights": [],
+                    "error_patterns": []
+                }
+
+            # Build memory node
+            content = " ".join([
+                trajectory_data.query,
+                extracted.get("plan", ""),
+                extracted.get("search_plan", ""),
+                extracted.get("experience", ""),
+                extracted.get("search_experience", ""),
+                " ".join(extracted.get("insights", [])),
+                " ".join(extracted.get("error_patterns", []))
+            ])
+
+            # Embed and deduplicate
+            emb = self.embedding_model.encode([content], convert_to_numpy=True)[0]
+            new_node = MemoryNode(
+                id=str(uuid.uuid4()),
+                query=trajectory_data.query,
+                content=content,
+                plan=extracted.get("plan", ""),
+                search_plan=extracted.get("search_plan", ""),
+                experience=extracted.get("experience", ""),
+                search_experience=extracted.get("search_experience", ""),
+                insights=extracted.get("insights", []),
+                error_patterns=extracted.get("error_patterns", []),
+                confidence=confidence,
+                embedding=emb
+            )
+
+            # Deduplication: check similarity with existing nodes
+            dup_found = None
+            for node in self.graph.nodes.values():
+                if node.embedding is not None:
+                    sim = cosine_similarity([emb], [node.embedding])[0][0]
+                    if sim > 0.95:
+                        dup_found = node.id
+                        break
+
+            if dup_found:
+                # Merge: update fields, keep higher confidence
+                dup_node = self.graph.nodes[dup_found]
+                dup_node.confidence = max(dup_node.confidence, confidence)
+                # Append insights / error patterns
+                dup_node.insights = list(set(dup_node.insights + new_node.insights))
+                dup_node.error_patterns = list(set(dup_node.error_patterns + new_node.error_patterns))
+                # Update content
+                dup_node.content = content
+                self.graph.nodes[dup_found] = dup_node
+                msg = f"Merged duplicate memory: {dup_found}"
+            else:
+                # Insert new node
+                self.graph.nodes[new_node.id] = new_node
+                # Build graph edges (connect to similar nodes)
+                self._connect_to_graph(new_node)
+                msg = f"Inserted new memory: {new_node.id}"
+
+            # Incremental index update (append to TF‑IDF later)
+            self.insert_count += 1
+            self._save()
+
+            # Prune if needed
+            if self.insert_count % self.prune_interval == 0:
+                self._prune()
+
+            return True, msg
+
+        except Exception as e:
+            return False, f"Take‑in error: {e}"
+
+    # ---------- Internal Helpers ----------
+
+    def _extract_with_model(self, trajectory: TrajectoryData) -> Optional[Dict]:
+        if not self.model:
+            return None
+        try:
+            # Format trajectory
+            steps = "\n".join([f"Step {i}: {s.get('content','')}" for i, s in enumerate(trajectory.trajectory)])
+            prompt = f"""Given the following task execution trajectory, extract structured memory components.
+Task: {trajectory.query}
+Trajectory:
+{steps}
+Result: {trajectory.result}
+
+Return a JSON object with these keys:
+- "plan": strategic planning approach (2-3 sentences)
+- "search_plan": search strategy details
+- "experience": execution lessons learned
+- "search_experience": search‑specific insights
+- "insights": list of key takeaways (max 3)
+- "error_patterns": list of pitfalls encountered (max 3)
+
+If the task failed, include error patterns. Output ONLY JSON."""
+            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+            response = self.model(messages)
+            text = getattr(response, "content", str(response)).strip()
+            # Parse JSON
+            import re
+            match = re.search(r'\{.*\}', text, re.DOTALL)
+            if match:
+                return json.loads(match.group())
+            return None
+        except:
+            return None
+
+    def _seed_defaults(self):
+        for entry in DEFAULT_SEEDS:
+            content = " ".join([entry["query"], entry["plan"], entry["search_plan"],
+                                entry["experience"], entry["search_experience"],
+                                " ".join(entry["insights"]), " ".join(entry["error_patterns"])])
+            emb = self.embedding_model.encode([content], convert_to_numpy=True)[0]
+            node = MemoryNode(
+                id=str(uuid.uuid4()),
+                query=entry["query"],
+                content=content,
+                plan=entry["plan"],
+                search_plan=entry["search_plan"],
+                experience=entry["experience"],
+                search_experience=entry["search_experience"],
+                insights=entry["insights"],
+                error_patterns=entry["error_patterns"],
+                confidence=0.5,
+                embedding=emb
+            )
+            self.graph.nodes[node.id] = node
+            self._connect_to_graph(node)
+
+    def _connect_to_graph(self, new_node: MemoryNode):
+        """Create similarity edges between new node and existing nodes above threshold."""
+        for nid, node in self.graph.nodes.items():
+            if nid == new_node.id:
+                continue
+            if node.embedding is not None and new_node.embedding is not None:
+                sim = cosine_similarity([new_node.embedding], [node.embedding])[0][0]
+                if sim > self.similarity_threshold:
+                    # Add bidirectional edge
+                    self.graph.adjacency.setdefault(new_node.id, []).append(nid)
+                    self.graph.adjacency.setdefault(nid, []).append(new_node.id)
+
+    def _hybrid_search(self, query: str, top_k: int) -> Tuple[List[str], List[float]]:
+        """Return (node_ids, scores) using TF‑IDF + semantic fusion."""
+        if not self.graph.nodes:
+            return [], []
+
+        # Semantic search
+        query_emb = self.embedding_model.encode([query], convert_to_numpy=True)[0]
+        all_embs = []
+        all_ids = []
+        for nid, node in self.graph.nodes.items():
+            if node.embedding is not None:
+                all_embs.append(node.embedding)
+                all_ids.append(nid)
+        if not all_embs:
+            return [], []
+        sem_scores = cosine_similarity([query_emb], all_embs)[0]
+
+        # TF‑IDF search (use content field)
+        tfidf_scores = np.zeros(len(all_ids))
+        if self.tfidf_matrix is not None and len(self.node_ids_sorted) > 0:
+            query_vec = self.tfidf_vectorizer.transform([query])
+            # Align ids
+            ordered_scores = cosine_similarity(query_vec, self.tfidf_matrix).flatten()
+            # map back to all_ids order
+            idx_map = {nid: i for i, nid in enumerate(all_ids)}
+            for i, nid in enumerate(self.node_ids_sorted):
+                if nid in idx_map:
+                    tfidf_scores[idx_map[nid]] = ordered_scores[i]
+
+        # Fuse scores (equal weight)
+        combined = 0.5 * sem_scores + 0.5 * tfidf_scores
+        top_indices = combined.argsort()[-top_k:][::-1]
+        result_ids = [all_ids[i] for i in top_indices]
+        result_scores = [float(combined[i]) for i in top_indices]
+        return result_ids, result_scores
+
+    def _rebuild_indices(self):
+        """Rebuild TF‑IDF matrix from all node contents."""
+        if not self.graph or not self.graph.nodes:
+            return
+        contents = []
+        self.node_ids_sorted = []
+        for nid, node in self.graph.nodes.items():
+            contents.append(node.content)
+            self.node_ids_sorted.append(nid)
+        if contents:
+            self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(contents)
+
+    def _prune(self):
+        """Remove lowest‑utility nodes if over capacity."""
+        if len(self.graph.nodes) <= self.max_memories:
+            return
+        now = datetime.now().timestamp()
+        utility = []
+        for nid, node in self.graph.nodes.items():
+            age = now - node.last_access + 1  # avoid division by zero
+            u = (node.retrieval_count / age) * node.confidence
+            utility.append((u, nid))
+        utility.sort(reverse=True)
+        keep_ids = set(nid for _, nid in utility[:self.max_memories])
+        # Remove nodes not in keep set
+        for nid in list(self.graph.nodes.keys()):
+            if nid not in keep_ids:
+                del self.graph.nodes[nid]
+                # Remove adjacency entries
+                if nid in self.graph.adjacency:
+                    del self.graph.adjacency[nid]
+                for neighbors in self.graph.adjacency.values():
+                    if nid in neighbors:
+                        neighbors.remove(nid)
+        self._rebuild_indices()
+        self._save()
+
+    # ---------- Persistence ----------
+    def _save(self):
+        # Save nodes
+        serializable = []
+        for node in self.graph.nodes.values():
+            serializable.append({
+                "id": node.id,
+                "query": node.query,
+                "content": node.content,
+                "plan": node.plan,
+                "search_plan": node.search_plan,
+                "experience": node.experience,
+                "search_experience": node.search_experience,
+                "insights": node.insights,
+                "error_patterns": node.error_patterns,
+                "confidence": node.confidence,
+                "retrieval_count": node.retrieval_count,
+                "last_access": node.last_access,
+                "embedding": node.embedding.tolist() if node.embedding is not None else None
+            })
+        with open(self.database_path, 'w', encoding='utf-8') as f:
+            json.dump(serializable, f, ensure_ascii=False, indent=2)
+        # Save adjacency
+        with open(self.graph_path, 'w', encoding='utf-8') as f:
+            json.dump(self.graph.adjacency, f, ensure_ascii=False, indent=2)
+
+    def _load(self):
+        with open(self.database_path, 'r', encoding='utf-8') as f:
+            nodes_data = json.load(f)
+        self.graph = GraphIndex()
+        for nd in nodes_data:
+            emb = np.array(nd["embedding"]) if nd["embedding"] else None
+            node = MemoryNode(
+                id=nd["id"],
+                query=nd["query"],
+                content=nd["content"],
+                plan=nd["plan"],
+                search_plan=nd["search_plan"],
+                experience=nd["experience"],
+                search_experience=nd["search_experience"],
+                insights=nd["insights"],
+                error_patterns=nd["error_patterns"],
+                confidence=nd["confidence"],
+                retrieval_count=nd["retrieval_count"],
+                last_access=nd["last_access"],
+                embedding=emb
+            )
+            self.graph.nodes[node.id] = node
+        # Load adjacency
+        if os.path.exists(self.graph_path):
+            with open(self.graph_path, 'r', encoding='utf-8') as f:
+                self.graph.adjacency = json.load(f)
+        else:
+            self.graph.adjacency = {}
+        self._rebuild_indices()

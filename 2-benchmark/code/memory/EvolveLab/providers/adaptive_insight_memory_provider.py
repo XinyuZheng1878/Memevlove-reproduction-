@@ -1,0 +1,519 @@
+import json
+import os
+import uuid
+import sys
+import re
+import hashlib
+from typing import List, Optional, Dict, Any, Tuple
+from collections import defaultdict
+from dataclasses import dataclass, field, asdict
+from datetime import datetime, timedelta
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
+from ..base_memory import BaseMemoryProvider
+from ..memory_types import (
+    MemoryRequest, MemoryResponse, MemoryItem, MemoryItemType,
+    MemoryStatus, MemoryType, TrajectoryData
+)
+
+
+def load_embedding_model(model_name: str = 'sentence-transformers/all-MiniLM-L6-v2',
+                         cache_dir: str = '../storage/models') -> SentenceTransformer:
+    os.makedirs(cache_dir, exist_ok=True)
+    local_model_path = os.path.join(cache_dir, model_name.replace('/', '_'))
+    try:
+        if os.path.exists(local_model_path) and os.listdir(local_model_path):
+            return SentenceTransformer(local_model_path)
+    except Exception:
+        pass
+    model = SentenceTransformer(model_name)
+    model.save(local_model_path)
+    return model
+
+
+@dataclass
+class InsightEntry:
+    entry_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    query: str = ""
+    agent_planning: str = ""
+    search_agent_planning: str = ""
+    agent_experience: str = ""
+    search_agent_experience: str = ""
+    quality_score: float = 1.0          # 0-1 based on field completeness
+    utility_score: float = 1.0          # increased on successful retrieval
+    retrieval_count: int = 0
+    last_accessed: Optional[str] = None
+    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    query_embedding: Optional[np.ndarray] = None
+    planning_embedding: Optional[np.ndarray] = None
+    experience_embedding: Optional[np.ndarray] = None
+
+
+class InsightGraphDatabase:
+    """
+    Manages memory entries with multi-field indexing and incremental updates.
+    Uses TF-IDF and semantic embeddings for hybrid retrieval.
+    """
+    def __init__(self, db_path: str, model_cache_dir: str = '../storage/models'):
+        self.db_path = db_path
+        self.entries: Dict[str, InsightEntry] = {}
+        self.embedding_model = load_embedding_model(cache_dir=model_cache_dir)
+        self.tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+        self.tfidf_matrix = None
+        self.embedding_matrix = None
+        self.field_keys = ['query', 'agent_planning', 'search_agent_planning',
+                           'agent_experience', 'search_agent_experience']
+        self.pending_writes = 0
+        self.MAX_PENDING_BEFORE_REBUILD = 5
+        self.load()
+
+    def load(self):
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        if os.path.exists(self.db_path) and os.path.getsize(self.db_path) > 0:
+            with open(self.db_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for item in data:
+                    entry = InsightEntry(
+                        entry_id=item.get('entry_id', str(uuid.uuid4())),
+                        query=item.get('query', ''),
+                        agent_planning=item.get('agent_planning', ''),
+                        search_agent_planning=item.get('search_agent_planning', ''),
+                        agent_experience=item.get('agent_experience', ''),
+                        search_agent_experience=item.get('search_agent_experience', ''),
+                        quality_score=item.get('quality_score', 1.0),
+                        utility_score=item.get('utility_score', 1.0),
+                        retrieval_count=item.get('retrieval_count', 0),
+                        last_accessed=item.get('last_accessed'),
+                        timestamp=item.get('timestamp', datetime.now().isoformat()),
+                        metadata=item.get('metadata', {})
+                    )
+                    self.entries[entry.entry_id] = entry
+        self._build_indices()
+
+    def save(self):
+        with open(self.db_path, 'w', encoding='utf-8') as f:
+            data = []
+            for entry in self.entries.values():
+                d = asdict(entry)
+                # Remove non-serializable embeddings
+                d.pop('query_embedding', None)
+                d.pop('planning_embedding', None)
+                d.pop('experience_embedding', None)
+                data.append(d)
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        self.pending_writes = 0
+
+    def add_entry(self, entry: InsightEntry, force_rebuild: bool = False):
+        # Check for consolidation with existing entries
+        if self.entries:
+            similar_entry = self._find_most_similar(entry, threshold=0.85)
+            if similar_entry:
+                # Merge experience into the existing entry
+                self._merge_entries(similar_entry, entry)
+                self.pending_writes += 1
+                if self.pending_writes >= self.MAX_PENDING_BEFORE_REBUILD or force_rebuild:
+                    self._build_indices()
+                    self.save()
+                return similar_entry.entry_id
+
+        self.entries[entry.entry_id] = entry
+        self.pending_writes += 1
+        if self.pending_writes >= self.MAX_PENDING_BEFORE_REBUILD or force_rebuild:
+            self._build_indices()
+            self.save()
+        return entry.entry_id
+
+    def get_entry(self, entry_id: str) -> Optional[InsightEntry]:
+        return self.entries.get(entry_id)
+
+    def _find_most_similar(self, entry: InsightEntry, threshold: float = 0.85) -> Optional[InsightEntry]:
+        query_emb = self.embedding_model.encode([entry.query], convert_to_numpy=True)[0]
+        best_score = 0
+        best_entry = None
+        for existing in self.entries.values():
+            if existing.query_embedding is None:
+                continue
+            sim = cosine_similarity([query_emb], [existing.query_embedding])[0][0]
+            if sim > best_score and sim >= threshold:
+                best_score = sim
+                best_entry = existing
+        return best_entry
+
+    def _merge_entries(self, target: InsightEntry, source: InsightEntry):
+        """Merge source into target, combining non-empty fields and updating metadata."""
+        target.retrieval_count += source.retrieval_count
+        for field in ['agent_planning', 'search_agent_planning', 'agent_experience', 'search_agent_experience']:
+            src_val = getattr(source, field, '')
+            tgt_val = getattr(target, field, '')
+            if src_val and (not tgt_val or len(src_val) > len(tgt_val)):
+                setattr(target, field, src_val)
+        # Update quality score as average
+        target.quality_score = (target.quality_score + source.quality_score) / 2
+        target.last_accessed = datetime.now().isoformat()
+        # Merge metadata optionally
+        target.metadata.update(source.metadata.get('additional_info', {}))
+        # Invalidate embeddings to force rebuild
+        target.query_embedding = None
+        target.planning_embedding = None
+        target.experience_embedding = None
+
+    def _build_indices(self):
+        if not self.entries:
+            self.tfidf_matrix = None
+            self.embedding_matrix = None
+            return
+        # Build TF-IDF on combined text of all fields for each entry
+        corpus = []
+        for entry in self.entries.values():
+            combined = ' '.join([
+                entry.query, entry.agent_planning, entry.search_agent_planning,
+                entry.agent_experience, entry.search_agent_experience
+            ])
+            corpus.append(combined)
+        self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(corpus)
+
+        # Build embeddings for each field separately (store per entry)
+        queries = [e.query for e in self.entries.values()]
+        plans = [e.agent_planning + ' ' + e.search_agent_planning for e in self.entries.values()]
+        exps = [e.agent_experience + ' ' + e.search_agent_experience for e in self.entries.values()]
+        q_emb = self.embedding_model.encode(queries, convert_to_numpy=True)
+        p_emb = self.embedding_model.encode(plans, convert_to_numpy=True)
+        e_emb = self.embedding_model.encode(exps, convert_to_numpy=True)
+        for i, eid in enumerate(self.entries.keys()):
+            self.entries[eid].query_embedding = q_emb[i]
+            self.entries[eid].planning_embedding = p_emb[i]
+            self.entries[eid].experience_embedding = e_emb[i]
+        # Store combined embedding matrix for field-agnostic search
+        self.embedding_matrix = q_emb
+
+    def hybrid_search(self, query: str, top_k: int = 5,
+                      weights: Dict[str, float] = None,
+                      score_threshold: float = 0.2) -> List[Dict[str, Any]]:
+        if not self.entries:
+            return []
+        weights = weights or {'text': 0.5, 'semantic': 0.5}
+
+        # TF-IDF search
+        query_vec = self.tfidf_vectorizer.transform([query])
+        text_scores = cosine_similarity(query_vec, self.tfidf_matrix).flatten()
+
+        # Semantic search over combined query embedding
+        query_emb = self.embedding_model.encode([query], convert_to_numpy=True)[0]
+        sem_scores = cosine_similarity([query_emb], self.embedding_matrix).flatten()
+
+        # Combine scores
+        combined = {}
+        entry_ids = list(self.entries.keys())
+        for i, eid in enumerate(entry_ids):
+            score = weights.get('text', 0.5) * text_scores[i] + weights.get('semantic', 0.5) * sem_scores[i]
+            if score >= score_threshold:
+                combined[eid] = score
+
+        if not combined:
+            return []
+
+        sorted_results = sorted(combined.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        results = []
+        for eid, score in sorted_results:
+            entry = self.entries[eid]
+            results.append({
+                'entry_id': eid,
+                'score': score,
+                'query': entry.query,
+                'agent_planning': entry.agent_planning,
+                'search_agent_planning': entry.search_agent_planning,
+                'agent_experience': entry.agent_experience,
+                'search_agent_experience': entry.search_agent_experience,
+                'quality_score': entry.quality_score,
+                'utility_score': entry.utility_score,
+                'retrieval_count': entry.retrieval_count,
+                'timestamp': entry.timestamp
+            })
+        return results
+
+
+class AdaptiveInsightMemoryProvider(BaseMemoryProvider):
+
+    def __init__(self, config: Optional[dict] = None):
+        super().__init__(MemoryType.ADAPTIVE_INSIGHT_MEMORY, config)
+
+        self.database_path = self.config.get(
+            'database_path', '../storage/adaptive_insight_memory/insight_db.json'
+        )
+        self.top_k = self.config.get('top_k', 5)
+        self.search_weights = self.config.get(
+            'search_weights', {'text': 0.3, 'semantic': 0.7}
+        )
+        self.score_threshold = self.config.get('score_threshold', 0.25)
+        self.in_phase_top_k = self.config.get('in_phase_top_k', 3)
+        self.field_search_weights = self.config.get(
+            'field_search_weights',
+            {'query': 1.0, 'planning': 1.2, 'experience': 1.5}  # prioritise experience during IN
+        )
+        self.model_cache_dir = self.config.get('model_cache_dir', '../storage/models')
+        self.model = self.config.get('model', None)
+
+        self.db: Optional[InsightGraphDatabase] = None
+        self.last_rebuild_time = None
+
+    def initialize(self) -> bool:
+        try:
+            self.db = InsightGraphDatabase(
+                db_path=self.database_path,
+                model_cache_dir=self.model_cache_dir
+            )
+            return True
+        except Exception as e:
+            print(f"Error initializing AdaptiveInsightMemory: {e}")
+            return False
+
+    def _refine_query(self, query: str, phase: str) -> str:
+        if not self.model:
+            return query
+        prompt = (
+            "You are a memory retrieval specialist. Given an agent's current task, "
+            "generate a refined, search-optimized query that captures core concepts, "
+            "ignoring irrelevant details. Phase: {phase}. Raw query: {query}. "
+            "Output only the refined query."
+        ).format(phase=phase, query=query)
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        try:
+            response = self.model(messages)
+            refined = getattr(response, "content", str(response)).strip()
+            return refined if refined else query
+        except Exception:
+            return query
+
+    def provide_memory(self, request: MemoryRequest) -> MemoryResponse:
+        if not self.db:
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+        refined_query = self._refine_query(request.query, request.status.value)
+
+        # Choose top_k based on phase
+        if request.status == MemoryStatus.BEGIN:
+            top_k = self.top_k
+            weights = self.search_weights
+        else:  # IN phase
+            top_k = self.in_phase_top_k
+            # Give more weight to experience for execution tips
+            weights = {'text': 0.2, 'semantic': 0.8}
+
+        results = self.db.hybrid_search(
+            query=refined_query,
+            top_k=top_k,
+            weights=weights,
+            score_threshold=self.score_threshold
+        )
+
+        if not results:
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+        # Synthesize memory content
+        if request.status == MemoryStatus.BEGIN:
+            content = self._synthesize_begin_guidance(results, request.query)
+        else:
+            content = self._synthesize_in_tips(results, request.query)
+
+        if not content:
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+        # Update utility scores for retrieved entries
+        avg_score = sum(r['score'] for r in results) / len(results)
+        for r in results:
+            entry = self.db.get_entry(r['entry_id'])
+            if entry:
+                entry.retrieval_count += 1
+                entry.utility_score = min(10.0, entry.utility_score + 0.1)
+                entry.last_accessed = datetime.now().isoformat()
+
+        memory_item = MemoryItem(
+            id=f"insight_{uuid.uuid4()}",
+            content=content,
+            metadata={
+                'phase': request.status.value,
+                'num_sources': len(results),
+                'avg_score': avg_score,
+                'refined_query': refined_query,
+                'source_ids': [r['entry_id'] for r in results]
+            },
+            score=avg_score,
+            type=MemoryItemType.TEXT
+        )
+        return MemoryResponse(
+            memories=[memory_item],
+            memory_type=self.memory_type,
+            total_count=1,
+            request_id=str(uuid.uuid4())
+        )
+
+    def _synthesize_begin_guidance(self, results: List[Dict], query: str) -> str:
+        if not self.model:
+            # Simple concatenation fallback
+            parts = []
+            for r in results:
+                plan = r.get('agent_planning') or r.get('search_agent_planning') or ''
+                if plan:
+                    parts.append(f"From similar task '{r['query']}': {plan[:200]}")
+            return '; '.join(parts) if parts else ""
+
+        examples = []
+        for i, r in enumerate(results, 1):
+            examples.append(f"Example {i} (score={r['score']:.2f}):\n"
+                            f"Query: {r['query']}\n"
+                            f"Planning: {r['agent_planning'][:500]}\n"
+                            f"Search Planning: {r['search_agent_planning'][:500]}")
+
+        prompt = (
+            "You are an expert memory synthesizer for an AI agent. "
+            "Given the current task and several similar past experiences, "
+            "generate concise, actionable planning guidance for the agent. "
+            "Focus on strategies, tool choices, and decomposition patterns.\n\n"
+            "Current task: {query}\n\n"
+            "Retrieved experiences:\n{examples}\n\n"
+            "Provide 2-4 specific, numbered suggestions that integrate insights from all sources. "
+            "Use gentle, suggestive language. No markdown or extra text."
+        ).format(query=query, examples='\n\n'.join(examples))
+
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        try:
+            response = self.model(messages)
+            return getattr(response, "content", str(response)).strip()
+        except Exception:
+            return ""
+
+    def _synthesize_in_tips(self, results: List[Dict], query: str) -> str:
+        if not self.model:
+            # Use shortest experience snippet
+            for r in results:
+                exp = r.get('agent_experience') or r.get('search_agent_experience') or ''
+                if exp:
+                    return f"Tip from '{r['query']}': {exp[:200]}"
+            return ""
+
+        examples = []
+        for i, r in enumerate(results, 1):
+            examples.append(f"Source {i} (score={r['score']:.2f}):\n"
+                            f"Query: {r['query']}\n"
+                            f"Agent Experience: {r['agent_experience'][:400]}\n"
+                            f"Search Experience: {r['search_agent_experience'][:400]}")
+
+        prompt = (
+            "You are an execution coach for an AI agent. During active task execution, "
+            "the agent needs short, operational tips to avoid common pitfalls and improve efficiency. "
+            "Based on the following past experiences, provide 1-2 very specific, actionable tips "
+            "that directly address the current situation.\n\n"
+            "Current task (in progress): {query}\n\n"
+            "Relevant experiences:\n{examples}\n\n"
+            "Output only the tips, 1-2 sentences each, no explanations."
+        ).format(query=query, examples='\n\n'.join(examples))
+
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        try:
+            response = self.model(messages)
+            return getattr(response, "content", str(response)).strip()
+        except Exception:
+            return ""
+
+    def take_in_memory(self, trajectory_data: TrajectoryData) -> Tuple[bool, str]:
+        try:
+            if not self.model:
+                return False, "No model available for summarization"
+
+            # Determine success status
+            success = self._is_task_successful(trajectory_data)
+            # Always store text memory (experience), but tool memory only on success
+            text_summary = self._extract_text_memory(trajectory_data)
+            if not text_summary:
+                return False, "Failed to extract text memory"
+
+            # Build InsightEntry
+            entry = InsightEntry(
+                query=trajectory_data.query,
+                agent_planning=text_summary.get('agent_planning', ''),
+                search_agent_planning=text_summary.get('search_agent_planning', ''),
+                agent_experience=text_summary.get('agent_experience', ''),
+                search_agent_experience=text_summary.get('search_agent_experience', ''),
+                metadata={'source_trajectory_id': trajectory_data.metadata.get('id', '')}
+            )
+            # Compute quality score based on field length
+            fields = ['agent_planning', 'search_agent_planning', 'agent_experience', 'search_agent_experience']
+            filled = sum(1 for f in fields if len(getattr(entry, f, '')) >= 30)
+            entry.quality_score = filled / len(fields)
+
+            # Add to database (with consolidation)
+            self.db.add_entry(entry)
+
+            return True, f"Stored memory entry {entry.entry_id} (quality={entry.quality_score:.2f})"
+        except Exception as e:
+            return False, f"Error taking in memory: {e}"
+
+    def _is_task_successful(self, trajectory_data: TrajectoryData) -> bool:
+        metadata = trajectory_data.metadata or {}
+        for key in ('is_correct', 'success', 'task_success'):
+            if key in metadata and metadata[key] is True:
+                return True
+        return False
+
+    def _extract_text_memory(self, trajectory_data: TrajectoryData) -> Optional[Dict[str, str]]:
+        try:
+            trajectory_text = self._format_trajectory(trajectory_data)
+            prompt = (
+                "You are an expert AI agent trainer. Analyze the following task execution trajectory "
+                "and extract structured memory components. Even if the task failed, capture partial insights.\n\n"
+                "Task: {query}\n\n"
+                "Trajectory:\n{trajectory}\n\n"
+                "Result: {result}\n\n"
+                "Extract the following in JSON format (all fields required, but may be brief if not applicable):\n"
+                "{{"
+                "\"agent_planning\": \"Strategic planning approach used (steps, decisions)\","
+                "\"search_agent_planning\": \"Search strategies employed\","
+                "\"agent_experience\": \"Key lessons learned, best practices, or pitfalls\","
+                "\"search_agent_experience\": \"Search-specific insights\""
+                "}}\n\n"
+                "Return ONLY the JSON object. Use empty strings for missing fields."
+            ).format(
+                query=trajectory_data.query,
+                trajectory=trajectory_text[:3000],  # truncate to avoid token limits
+                result=trajectory_data.result or 'No explicit result'
+            )
+
+            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+            response = self.model(messages)
+            response_text = getattr(response, "content", str(response)).strip()
+
+            # Extract JSON
+            try:
+                summary = json.loads(response_text)
+            except json.JSONDecodeError:
+                match = re.search(r'\{.*?\}', response_text, re.DOTALL)
+                if match:
+                    summary = json.loads(match.group(0))
+                else:
+                    print(f"Failed to parse JSON from model response: {response_text[:200]}")
+                    return None
+
+            # Validate fields
+            required = ['agent_planning', 'search_agent_planning', 'agent_experience', 'search_agent_experience']
+            for field in required:
+                if field not in summary or not isinstance(summary[field], str):
+                    summary[field] = ''
+            return summary
+        except Exception as e:
+            print(f"Error extracting text memory: {e}")
+            return None
+
+    def _format_trajectory(self, trajectory_data: TrajectoryData) -> str:
+        if not trajectory_data.trajectory:
+            return "No trajectory steps."
+        lines = [f"Step {i}: {step.get('type','step')} - {step.get('content','')[:200]}"
+                 for i, step in enumerate(trajectory_data.trajectory, 1)]
+        return '\n'.join(lines)

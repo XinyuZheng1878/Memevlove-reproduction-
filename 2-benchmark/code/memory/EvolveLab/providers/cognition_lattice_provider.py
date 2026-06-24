@@ -1,0 +1,386 @@
+import json
+import os
+import uuid
+import sys
+from typing import List, Optional, Dict, Any, Tuple
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime
+import numpy as np
+from sentence_transformers import SentenceTransformer
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
+from ..base_memory import BaseMemoryProvider
+from ..memory_types import (
+    MemoryRequest,
+    MemoryResponse,
+    MemoryItem,
+    MemoryItemType,
+    MemoryStatus,
+    MemoryType,
+    TrajectoryData
+)
+
+
+def load_embedding_model(model_name: str = 'sentence-transformers/all-MiniLM-L6-v2',
+                         cache_dir: str = '../storage/models') -> SentenceTransformer:
+    os.makedirs(cache_dir, exist_ok=True)
+    local_path = os.path.join(cache_dir, model_name.replace('/', '_'))
+    try:
+        if os.path.exists(local_path) and os.listdir(local_path):
+            return SentenceTransformer(local_path)
+    except Exception:
+        pass
+    model = SentenceTransformer(model_name)
+    model.save(local_path)
+    return model
+
+
+@dataclass
+class LatticeNode:
+    """Single memory node with multi-level abstraction and metadata"""
+    node_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    query: str = ""
+    trace_summary: str = ""
+    level1_specific: str = ""    # task-specific steps
+    level2_strategic: str = ""   # domain strategies
+    level3_universal: str = ""   # universal principles
+    failure_pattern: str = ""    # error pattern if failed
+    is_success: bool = True
+    embedding: Optional[np.ndarray] = None
+    retrieval_count: int = 0
+    success_rate: float = 1.0   # of tasks that used this node
+    created: str = ""
+    last_retrieved: str = ""
+    domain_tags: List[str] = field(default_factory=list)
+
+
+class CognitionLattice:
+    """In-memory lattice storing all extracted memory nodes with embeddings and utility tracking."""
+
+    def __init__(self, model_cache_dir: str = '../storage/models'):
+        self.nodes: Dict[str, LatticeNode] = {}
+        self.embedding_model = load_embedding_model(cache_dir=model_cache_dir)
+        self.node_embeddings: Dict[str, np.ndarray] = {}  # node_id -> embedding (normalized)
+
+    def add_node(self, node: LatticeNode):
+        self.nodes[node.node_id] = node
+        # store normalized query embedding
+        emb = self.embedding_model.encode(node.query, convert_to_numpy=True)
+        node.embedding = emb / np.linalg.norm(emb)
+        self.node_embeddings[node.node_id] = node.embedding
+
+    def delete_node(self, node_id: str):
+        self.nodes.pop(node_id, None)
+        self.node_embeddings.pop(node_id, None)
+
+    def search(self, query: str, phase: MemoryStatus, top_k: int = 5,
+               min_utility: float = 0.0) -> List[LatticeNode]:
+        """Search nodes with hybrid semantic similarity and phase-aware filtering."""
+        if not self.node_embeddings:
+            return []
+
+        query_emb = self.embedding_model.encode(query, convert_to_numpy=True)
+        query_emb = query_emb / np.linalg.norm(query_emb)
+
+        scores = []
+        for nid, node in self.nodes.items():
+            similarity = float(np.dot(query_emb, node.embedding))
+            # phase boost: for BEGIN prefer level2/3; for IN prefer level1/failure
+            if phase == MemoryStatus.BEGIN:
+                content_len = len(node.level2_strategic) + len(node.level3_universal)
+            else:
+                content_len = len(node.level1_specific) + len(node.failure_pattern)
+            utility = node.success_rate * (1.0 - 0.1 * (datetime.now() -
+                         datetime.fromisoformat(node.last_retrieved) if node.last_retrieved else datetime.min).days)
+            utility = max(0.0, min(1.0, utility))
+            if utility < min_utility:
+                continue
+            scores.append((similarity + 0.2 * utility, node))
+
+        scores.sort(key=lambda x: x[0], reverse=True)
+        return [node for score, node in scores[:top_k]]
+
+    def get_merged_guidance(self, nodes: List[LatticeNode], phase: MemoryStatus, query: str) -> str:
+        """Merge retrieved nodes into cohesive guidance using LLM."""
+        # Combine levels based on phase
+        snippets = []
+        if phase == MemoryStatus.BEGIN:
+            for n in nodes:
+                if n.level2_strategic:
+                    snippets.append(f"[Strategy] {n.level2_strategic}")
+                if n.level3_universal:
+                    snippets.append(f"[Principle] {n.level3_universal}")
+                if not n.is_success and n.failure_pattern:
+                    snippets.append(f"[Avoid] {n.failure_pattern}")
+        else:
+            for n in nodes:
+                if n.level1_specific:
+                    snippets.append(f"[Step] {n.level1_specific}")
+                if not n.is_success and n.failure_pattern:
+                    snippets.append(f"[Warning] {n.failure_pattern}")
+                if n.level2_strategic:
+                    snippets.append(f"[Tip] {n.level2_strategic[:200]}")
+
+        if not snippets:
+            return ""
+
+        prompt = f"""You are a memory weaver synthesizing multiple insights for an AI agent.
+Current task: {query}
+Retrieved memory nodes:
+{'---'.join(snippets)}
+
+Synthesize a concise, actionable guidance (max 150 words) that merges the most relevant pieces.
+Focus on: {('planning strategy and overarching principles' if phase=='BEGIN' else 'execution tips and failure warnings')}
+Return only the guidance text, no extra commentary."""
+
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        response = self.model(messages)
+        return getattr(response, "content", str(response)).strip()
+
+    def update_utility(self, node_id: str, task_success: bool):
+        node = self.nodes.get(node_id)
+        if node:
+            node.retrieval_count += 1
+            node.last_retrieved = datetime.now().isoformat()
+            total = node.retrieval_count
+            node.success_rate = (node.success_rate * (total - 1) + (1.0 if task_success else 0.0)) / total
+
+    def prune_low_utility(self, threshold: float = 0.1):
+        """Remove nodes with very low utility (< threshold)."""
+        to_delete = []
+        for nid, node in self.nodes.items():
+            if node.retrieval_count > 0 and node.success_rate < threshold:
+                to_delete.append(nid)
+        for nid in to_delete:
+            self.delete_node(nid)
+
+    # We'll store model reference here for synthesis
+    model = None
+
+
+class CognitionLatticeProvider(BaseMemoryProvider):
+    """
+    Phase-aware, multi-level memory system that ingests both successes and failures,
+    extracts three abstraction levels, and provides adaptive guidance via LLM synthesis.
+    """
+
+    DEFAULT_CONFIG = {
+        "database_path": "../storage/cognition_lattice/memory_database.json",
+        "model_cache_dir": "../storage/models",
+        "top_k": 5,
+        "min_utility": 0.1,
+        "enable_utility_pruning": True,
+        "prune_interval": 50,  # number of ingests before pruning
+        "levels_to_extract": ["level1_specific", "level2_strategic", "level3_universal", "failure_pattern"]
+    }
+
+    def __init__(self, config: Optional[dict] = None):
+        super().__init__(MemoryType.COGNITION_LATTICE, config)
+        self.config = {**self.DEFAULT_CONFIG, **(config or {})}
+        self.lattice = CognitionLattice(model_cache_dir=self.config["model_cache_dir"])
+        self.ingest_counter = 0
+
+    def initialize(self) -> bool:
+        try:
+            os.makedirs(os.path.dirname(self.config["database_path"]), exist_ok=True)
+            # Load existing database if any
+            if os.path.exists(self.config["database_path"]):
+                with open(self.config["database_path"], 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                for entry in data:
+                    node = LatticeNode(
+                        query=entry.get("query", ""),
+                        trace_summary=entry.get("trace_summary", ""),
+                        level1_specific=entry.get("level1_specific", ""),
+                        level2_strategic=entry.get("level2_strategic", ""),
+                        level3_universal=entry.get("level3_universal", ""),
+                        failure_pattern=entry.get("failure_pattern", ""),
+                        is_success=entry.get("is_success", True),
+                        retrieval_count=entry.get("retrieval_count", 0),
+                        success_rate=entry.get("success_rate", 1.0),
+                        created=entry.get("created", ""),
+                        last_retrieved=entry.get("last_retrieved", ""),
+                        domain_tags=entry.get("domain_tags", [])
+                    )
+                    self.lattice.add_node(node)
+            # Set model for synthesis
+            self.lattice.model = self.config.get("model", None)
+            return True
+        except Exception as e:
+            print(f"CognitionLattice init error: {e}")
+            return False
+
+    def provide_memory(self, request: MemoryRequest) -> MemoryResponse:
+        if not self.lattice.nodes:
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+        try:
+            query = request.query
+            status = request.status
+            # Phase-aware search
+            candidates = self.lattice.search(query, phase=status,
+                                             top_k=self.config["top_k"],
+                                             min_utility=self.config["min_utility"])
+            if not candidates:
+                return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                      total_count=0, request_id=str(uuid.uuid4()))
+            # Use LLM to merge guidance if available, otherwise fallback to concatenation
+            if self.lattice.model:
+                guidance = self.lattice.get_merged_guidance(candidates, status, query)
+            else:
+                # Fallback: concat snippets
+                lines = []
+                for n in candidates:
+                    if status == MemoryStatus.BEGIN:
+                        lines.append(n.level2_strategic or n.level3_universal)
+                    else:
+                        lines.append(n.level1_specific or n.failure_pattern)
+                guidance = "; ".join(filter(None, lines))
+                if not guidance:
+                    guidance = "No specific guidance available."
+
+            memory_item = MemoryItem(
+                id=f"lattice_{uuid.uuid4()}",
+                content=guidance,
+                metadata={
+                    "phase": status.value,
+                    "num_sources": len(candidates),
+                    "sources": [n.node_id for n in candidates],
+                },
+                score=1.0  # all relevant
+            )
+            # Update retrieval success tracking later via external feedback (not implemented here)
+            return MemoryResponse(memories=[memory_item], memory_type=self.memory_type,
+                                  total_count=1, request_id=str(uuid.uuid4()))
+        except Exception as e:
+            print(f"provide_memory error: {e}")
+            return MemoryResponse(memories=[], memory_type=self.memory_type,
+                                  total_count=0, request_id=str(uuid.uuid4()))
+
+    def take_in_memory(self, trajectory_data: TrajectoryData) -> Tuple[bool, str]:
+        try:
+            query = trajectory_data.query
+            trajectory = trajectory_data.trajectory
+            result = trajectory_data.result
+            metadata = trajectory_data.metadata or {}
+
+            # Determine success (broadly check metadata)
+            is_success = metadata.get("is_correct", metadata.get("success", False))
+            if isinstance(is_success, str):
+                is_success = is_success.lower() == "true"
+
+            # Use LLM to extract multi-level abstractions if model present
+            if self.lattice.model:
+                mem = self._extract_with_llm(query, trajectory, result, is_success)
+            else:
+                # Fallback: create basic node without LLM extraction
+                mem = self._fallback_extract(query, trajectory, result, is_success)
+
+            node = LatticeNode(
+                query=query,
+                trace_summary=mem.get("trace_summary", ""),
+                level1_specific=mem.get("level1_specific", ""),
+                level2_strategic=mem.get("level2_strategic", ""),
+                level3_universal=mem.get("level3_universal", ""),
+                failure_pattern=mem.get("failure_pattern", ""),
+                is_success=is_success,
+                created=datetime.now().isoformat(),
+                last_retrieved=datetime.now().isoformat(),
+                domain_tags=metadata.get("domain_tags", [])
+            )
+            self.lattice.add_node(node)
+
+            # Persist to disk
+            self._save_database()
+
+            # Periodic pruning
+            self.ingest_counter += 1
+            if self.config["enable_utility_pruning"] and self.ingest_counter % self.config["prune_interval"] == 0:
+                self.lattice.prune_low_utility(threshold=self.config["min_utility"])
+                self._save_database()
+
+            return True, f"Node {node.node_id} ingested successfully (success={is_success})."
+        except Exception as e:
+            error_msg = f"take_in_memory error: {e}"
+            print(error_msg)
+            return False, error_msg
+
+    def _extract_with_llm(self, query, trajectory, result, is_success) -> Dict[str, str]:
+        """Use LLM to extract multi-level abstractions from trajectory."""
+        traj_str = self._format_trajectory(trajectory)
+        success_tag = "successful" if is_success else "failed"
+        prompt = f"""You are a memory extraction specialist. Given a {success_tag} task execution, extract structured memory at three abstraction levels and optionally a failure pattern.
+
+Task: {query}
+Execution Steps:
+{traj_str}
+Final Result: {result}
+
+Extract the following fields as JSON:
+1. "trace_summary": a brief summary of the execution (1-2 sentences)
+2. "level1_specific": specific step-by-step approach used (for exactly this task type)
+3. "level2_strategic": generalizable strategy for similar tasks in the same domain
+4. "level3_universal": universal principle applicable across many domains
+5. "failure_pattern": ONLY if task failed, describe the critical mistake and how to avoid it (if success, leave empty string)
+
+Output only JSON with these keys. Ensure each field is substantial (20-200 chars)."""
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        response = self.lattice.model(messages)
+        raw = getattr(response, "content", str(response)).strip()
+        # Parse JSON
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            # Try to find JSON block
+            import re
+            m = re.search(r'\{.*?\}', raw, re.DOTALL)
+            if m:
+                data = json.loads(m.group(0))
+            else:
+                data = {}
+        defaults = {"trace_summary": "", "level1_specific": "", "level2_strategic": "",
+                    "level3_universal": "", "failure_pattern": ""}
+        defaults.update(data)
+        return defaults
+
+    def _fallback_extract(self, query, trajectory, result, is_success) -> Dict[str, str]:
+        """Simple fallback without LLM (just store query and result)."""
+        return {
+            "trace_summary": f"Task: {query} -> {result}",
+            "level1_specific": "",
+            "level2_strategic": "",
+            "level3_universal": "",
+            "failure_pattern": "" if is_success else f"Task failed with result: {result}"
+        }
+
+    def _format_trajectory(self, trajectory: List[Dict]) -> str:
+        parts = [f"Step {i}: {step.get('type','')} - {step.get('content','')[:200]}"
+                 for i, step in enumerate(trajectory)]
+        return "\n".join(parts)
+
+    def _save_database(self):
+        try:
+            data = []
+            for node in self.lattice.nodes.values():
+                data.append({
+                    "query": node.query,
+                    "trace_summary": node.trace_summary,
+                    "level1_specific": node.level1_specific,
+                    "level2_strategic": node.level2_strategic,
+                    "level3_universal": node.level3_universal,
+                    "failure_pattern": node.failure_pattern,
+                    "is_success": node.is_success,
+                    "retrieval_count": node.retrieval_count,
+                    "success_rate": node.success_rate,
+                    "created": node.created,
+                    "last_retrieved": node.last_retrieved,
+                    "domain_tags": node.domain_tags
+                })
+            with open(self.config["database_path"], 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"Database save error: {e}")
+
+    def cleanup(self):
+        pass

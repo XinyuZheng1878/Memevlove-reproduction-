@@ -1,0 +1,411 @@
+import json
+import os
+import uuid
+import sys
+from typing import List, Optional, Dict, Any, Tuple
+from dataclasses import dataclass, field
+from datetime import datetime
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
+from ..base_memory import BaseMemoryProvider
+from ..memory_types import (
+    MemoryRequest,
+    MemoryResponse,
+    TrajectoryData,
+    MemoryType,
+    MemoryItem,
+    MemoryStatus,
+    MemoryItemType
+)
+
+# -----------------------------------------------------------------------------
+# Utility: embedding model loader with local cache
+# -----------------------------------------------------------------------------
+def load_embedding_model(model_name: str = 'sentence-transformers/all-MiniLM-L6-v2',
+                         cache_dir: str = '../storage/models') -> SentenceTransformer:
+    os.makedirs(cache_dir, exist_ok=True)
+    local_model_path = os.path.join(cache_dir, model_name.replace('/', '_'))
+    try:
+        if os.path.exists(local_model_path) and os.listdir(local_model_path):
+            return SentenceTransformer(local_model_path)
+    except Exception:
+        pass
+    model = SentenceTransformer(model_name)
+    model.save(local_model_path)
+    return model
+
+# -----------------------------------------------------------------------------
+# Data structures
+# -----------------------------------------------------------------------------
+@dataclass
+class MemoryEntry:
+    entry_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    query: str = ""
+    planning: str = ""
+    experience: str = ""
+    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    utility_score: float = 0.0                           # learned utility (optional)
+    query_embedding: Optional[np.ndarray] = None
+    planning_embedding: Optional[np.ndarray] = None
+    experience_embedding: Optional[np.ndarray] = None
+
+    def to_dict(self) -> dict:
+        return {
+            "entry_id": self.entry_id,
+            "query": self.query,
+            "planning": self.planning,
+            "experience": self.experience,
+            "timestamp": self.timestamp,
+            "utility_score": self.utility_score,
+            # embeddings are stored separately, not serialised
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "MemoryEntry":
+        return cls(
+            entry_id=d.get("entry_id", str(uuid.uuid4())),
+            query=d.get("query", ""),
+            planning=d.get("planning", ""),
+            experience=d.get("experience", ""),
+            timestamp=d.get("timestamp", datetime.now().isoformat()),
+            utility_score=d.get("utility_score", 0.0),
+        )
+
+# -----------------------------------------------------------------------------
+# Main Provider
+# -----------------------------------------------------------------------------
+class CortexResonanceProvider(BaseMemoryProvider):
+
+    def __init__(self, config: Optional[dict] = None):
+        super().__init__(MemoryType.CORTEX_RESONANCE_MEMORY, config)
+
+        self.database_path = self.config.get(
+            "database_path",
+            "../storage/cortex_resonance_memory/entries.json"
+        )
+        self.top_k = self.config.get("top_k", 5)
+        self.similarity_threshold = self.config.get("similarity_threshold", 0.65)
+        self.merge_threshold = self.config.get("merge_threshold", 0.85)
+        self.model_cache_dir = self.config.get(
+            "model_cache_dir",
+            "../storage/models"
+        )
+        self.model = self.config.get("model", None)
+
+        # internal state
+        self.entries: List[MemoryEntry] = []
+        self.embedding_model = None
+
+    # -------------------------------------------------------------------------
+    # Base interface
+    # -------------------------------------------------------------------------
+    def initialize(self) -> bool:
+        try:
+            # Ensure storage directory exists
+            os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
+            # Load embeddings model
+            self.embedding_model = load_embedding_model(
+                cache_dir=self.model_cache_dir
+            )
+            # Load existing entries
+            if os.path.exists(self.database_path):
+                with open(self.database_path, "r", encoding="utf-8") as f:
+                    raw = json.load(f)
+                for d in raw:
+                    entry = MemoryEntry.from_dict(d)
+                    # Recompute embeddings if needed (caching could be improved)
+                    self._compute_entry_embeddings(entry)
+                    self.entries.append(entry)
+            return True
+        except Exception as e:
+            print(f"[CortexResonance] init error: {e}")
+            return False
+
+    def provide_memory(self, request: MemoryRequest) -> MemoryResponse:
+        if not self.entries or not self.embedding_model:
+            return MemoryResponse(
+                memories=[],
+                memory_type=self.memory_type,
+                total_count=0,
+                request_id=str(uuid.uuid4())
+            )
+
+        try:
+            # Encode the user query
+            query_vec = self.embedding_model.encode(
+                [request.query], convert_to_numpy=True
+            )[0]
+
+            # Compute similarities with all entries (query field)
+            scores = []
+            for entry in self.entries:
+                if entry.query_embedding is not None:
+                    sim = cosine_similarity([query_vec], [entry.query_embedding])[0][0]
+                    scores.append((sim, entry))
+
+            scores.sort(key=lambda x: x[0], reverse=True)
+            top_matches = scores[:self.top_k]
+
+            # Filter by threshold
+            relevant = [(s, e) for s, e in top_matches if s >= self.similarity_threshold]
+
+            if not relevant:
+                return MemoryResponse(
+                    memories=[],
+                    memory_type=self.memory_type,
+                    total_count=0,
+                    request_id=str(uuid.uuid4())
+                )
+
+            # Phase‑aware content selection
+            if request.status == MemoryStatus.BEGIN:
+                # Provide strategic guidance from planning fields
+                content = self._synthesize_guidance(
+                    [e.planning for _, e in relevant],
+                    request.query,
+                    "strategic planning guidance"
+                )
+            elif request.status == MemoryStatus.IN:
+                # Provide tactical hints from experience fields
+                content = self._synthesize_guidance(
+                    [e.experience for _, e in relevant],
+                    request.query,
+                    "tactical execution tips"
+                )
+            else:
+                content = ""
+
+            if not content.strip():
+                # Fallback: concatenate raw texts
+                content = " ; ".join([e.query for _, e in relevant])
+
+            memory_item = MemoryItem(
+                id=f"cortex_{uuid.uuid4()}",
+                content=content,
+                metadata={
+                    "num_sources": len(relevant),
+                    "status": request.status.value,
+                    "scores": [float(s) for s, _ in relevant],
+                },
+                score=sum(s for s, _ in relevant) / max(len(relevant), 1),
+                type=MemoryItemType.TEXT
+            )
+
+            return MemoryResponse(
+                memories=[memory_item],
+                memory_type=self.memory_type,
+                total_count=1,
+                request_id=str(uuid.uuid4())
+            )
+
+        except Exception as e:
+            print(f"[CortexResonance] provide error: {e}")
+            return MemoryResponse(
+                memories=[],
+                memory_type=self.memory_type,
+                total_count=0,
+                request_id=str(uuid.uuid4())
+            )
+
+    def take_in_memory(self, trajectory_data: TrajectoryData) -> Tuple[bool, str]:
+        if not self.model or not self.embedding_model:
+            return False, "Model or embedding model not available"
+
+        try:
+            # Only process successful trajectories (optional, configurable)
+            if not self._is_task_successful(trajectory_data):
+                return False, "Skipping unsuccessful task"
+
+            # Use LLM to extract structured fields
+            memory_fields = self._extract_with_model(trajectory_data)
+            if not memory_fields:
+                return False, "Model extraction failed"
+
+            new_entry = MemoryEntry(
+                query=trajectory_data.query,
+                planning=memory_fields.get("planning", ""),
+                experience=memory_fields.get("experience", ""),
+            )
+            self._compute_entry_embeddings(new_entry)
+
+            # Deduplication / merging
+            existing = self._find_duplicate(new_entry)
+            if existing:
+                merged = self._merge_entries(existing, new_entry)
+                # Replace existing entry
+                self.entries[self.entries.index(existing)] = merged
+                self._persist()
+                return True, "Merged with existing entry"
+            else:
+                self.entries.append(new_entry)
+                self._persist()
+                return True, "New memory stored"
+
+        except Exception as e:
+            print(f"[CortexResonance] take_in error: {e}")
+            return False, str(e)
+
+    # -------------------------------------------------------------------------
+    # Internal helpers
+    # -------------------------------------------------------------------------
+    def _compute_entry_embeddings(self, entry: MemoryEntry) -> None:
+        if not self.embedding_model:
+            return
+        try:
+            entry.query_embedding = self.embedding_model.encode(
+                [entry.query], convert_to_numpy=True
+            )[0]
+            if entry.planning.strip():
+                entry.planning_embedding = self.embedding_model.encode(
+                    [entry.planning], convert_to_numpy=True
+                )[0]
+            if entry.experience.strip():
+                entry.experience_embedding = self.embedding_model.encode(
+                    [entry.experience], convert_to_numpy=True
+                )[0]
+        except Exception as e:
+            print(f"Embedding computation error: {e}")
+
+    def _is_task_successful(self, traj: TrajectoryData) -> bool:
+        meta = traj.metadata or {}
+        return meta.get("is_correct", False) or meta.get("success", False)
+
+    def _extract_with_model(self, traj: TrajectoryData) -> Optional[Dict[str, str]]:
+        """Extract planning and experience from trajectory using LLM, with retry."""
+        prompt = f"""You are an expert memory curator. Analyze the following task execution and extract two fields:
+
+1. **planning**: The strategic approach, decomposition, tool‑use decisions, step‑by‑step reasoning.
+2. **experience**: Key lessons, pitfalls avoided, best practices, tactical insights.
+
+Return **only** valid JSON with keys "planning" and "experience". Each must be at least two detailed sentences.
+
+Task query: {traj.query}
+
+Execution trajectory:
+{self._format_trajectory(traj)}
+
+Final result: {traj.result if traj.result else "completed"}
+
+Now output the JSON."""
+        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        try:
+            response = self.model(messages)
+            text = getattr(response, "content", str(response)).strip()
+            # Parse JSON
+            import re
+            match = re.search(r'\{.*\}', text, re.DOTALL)
+            if match:
+                data = json.loads(match.group(0))
+                if "planning" in data and "experience" in data:
+                    return data
+        except Exception as e:
+            print(f"Model extraction failed: {e}")
+        # Fallback: use simple extraction (keywords)
+        return self._fallback_extraction(traj)
+
+    def _fallback_extraction(self, traj: TrajectoryData) -> Optional[Dict[str, str]]:
+        """Simple extraction without model – takes first few sentences of trajectory."""
+        if traj.trajectory:
+            steps = [s.get("content", "") for s in traj.trajectory if s.get("content")]
+            raw = " ".join(steps[:5])
+            return {
+                "planning": "Plan: " + raw[:500],
+                "experience": "Exp: " + raw[-500:]
+            }
+        return None
+
+    def _format_trajectory(self, traj: TrajectoryData) -> str:
+        parts = [f"Query: {traj.query}"]
+        for i, step in enumerate(traj.trajectory or []):
+            parts.append(f"Step {i+1}: {step.get('content', '')}")
+        return "\n".join(parts)
+
+    def _find_duplicate(self, entry: MemoryEntry) -> Optional[MemoryEntry]:
+        if not self.entries:
+            return None
+        query_vec = entry.query_embedding
+        for existing in self.entries:
+            if existing.query_embedding is None:
+                continue
+            sim = cosine_similarity([query_vec], [existing.query_embedding])[0][0]
+            if sim >= self.merge_threshold:
+                return existing
+        return None
+
+    def _merge_entries(self, old: MemoryEntry, new: MemoryEntry) -> MemoryEntry:
+        """Merge two entries into one, using LLM if available, else concatenation."""
+        if self.model:
+            prompt = f"""You are merging two memory entries about the same task. Synthesize a single, more comprehensive entry.
+
+Old entry:
+Query: {old.query}
+Planning: {old.planning}
+Experience: {old.experience}
+
+New entry:
+Query: {new.query}
+Planning: {new.planning}
+Experience: {new.experience}
+
+Return JSON with fields "query", "planning", "experience". Keep the query as the common theme. Combine the best insights."""
+            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+            try:
+                response = self.model(messages)
+                text = getattr(response, "content", str(response)).strip()
+                import re
+                match = re.search(r'\{.*\}', text, re.DOTALL)
+                if match:
+                    data = json.loads(match.group(0))
+                    merged = MemoryEntry(
+                        query=data.get("query", old.query),
+                        planning=data.get("planning", old.planning + " " + new.planning),
+                        experience=data.get("experience", old.experience + " " + new.experience),
+                    )
+                    self._compute_entry_embeddings(merged)
+                    return merged
+            except Exception:
+                pass
+        # Fallback: concatenation
+        merged = MemoryEntry(
+            query=old.query,
+            planning=old.planning + "\n---\n" + new.planning,
+            experience=old.experience + "\n---\n" + new.experience,
+        )
+        self._compute_entry_embeddings(merged)
+        return merged
+
+    def _synthesize_guidance(self, texts: List[str], query: str, guidance_type: str) -> str:
+        """Combine multiple memory texts into a concise guidance paragraph."""
+        if not texts:
+            return ""
+        if self.model and len(texts) > 1:
+            combined = "\n\n".join(f"Source {i+1}: {t}" for i, t in enumerate(texts))
+            prompt = f"""You are an AI teacher creating {guidance_type} for the agent.
+
+Current task: {query}
+
+Relevant memories:
+{combined}
+
+Synthesize **one** cohesive paragraph (2‑4 sentences) that captures the most actionable advice.
+Focus on concrete, transferable tips. Use gentle language.
+
+Output only the paragraph, no extra text."""
+            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+            try:
+                response = self.model(messages)
+                return getattr(response, "content", str(response)).strip()
+            except Exception:
+                pass
+        # fallback: join with separator
+        return " ; ".join(texts[:3])
+
+    def _persist(self) -> None:
+        """Write all entries to file (embeddings not serialised)."""
+        data = [e.to_dict() for e in self.entries]
+        os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
+        with open(self.database_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
